@@ -100,7 +100,7 @@ export function AppleBentoGrid() {
                       )}
                       style={addedId === p.id ? { animation: "btn-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards" } : undefined}
                     >
-                      {oos ? "Out of Stock" : addedId === p.id ? "Added ✓" : "Add to Cart"}
+                      {oos ? "Out of Stock" : addedId === p.id ? "Added ✓" : "Add to Bag"}
                     </button>
                   </div>
                 </div>

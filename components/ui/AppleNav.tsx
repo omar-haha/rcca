@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useCart } from "@/components/providers/CartProvider";
-import { Moon, Sun, ShoppingCart, Menu, X } from "lucide-react";
+import { Moon, Sun, ShoppingBag, Menu, X } from "lucide-react";
 import { RccaLogo } from "./RccaLogo";
 
 const NAV_LINKS = [
@@ -58,9 +58,9 @@ export function AppleNav() {
             <button
               onClick={() => setCartOpen(true)}
               className="relative text-primary opacity-80 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none flex items-center justify-center p-0"
-              aria-label="Cart"
+              aria-label="Open bag"
             >
-              <ShoppingCart size={16} strokeWidth={1.5} />
+              <ShoppingBag size={16} strokeWidth={1.5} />
               {cartCount > 0 && (
                 <span className="absolute -bottom-1.5 -right-1.5 w-3.5 h-3.5 bg-accent rounded-full text-[9px] font-bold flex items-center justify-center">
                   {cartCount}

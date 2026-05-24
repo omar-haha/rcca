@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, ShoppingCart, Plus, Minus } from "lucide-react";
+import { Trash2, ShoppingBag, Plus, Minus } from "lucide-react";
 import { useCart } from "../providers/CartProvider";
 import { GlassVial } from "@/components/ui/GlassVial";
 import { cn } from "@/lib/utils";
@@ -99,12 +99,11 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
         >
           {/* Header */}
           <div className="pt-12 pb-6 px-6 flex items-center justify-between shrink-0">
-            <h2 className="text-[28px] font-semibold tracking-tight m-0" style={{ color: "var(--text)" }}>Cart</h2>
+            <h2 className="text-[28px] font-semibold tracking-tight m-0" style={{ color: "var(--text)" }}>Bag</h2>
             <button
               onClick={() => setCartOpen(false)}
-              className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-colors border-none text-[13px] font-medium"
-              style={{ backgroundColor: "var(--surface)", color: "var(--text-muted)" }}
-              aria-label="Close cart"
+              className="p-2 rounded-full hover:bg-[color:var(--surface-hover)] transition-colors border-none bg-transparent cursor-pointer"
+              aria-label="Close bag"
             >
               ✕
             </button>
@@ -113,9 +112,9 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
           {/* Items */}
           <div className="flex-1 overflow-y-auto px-6 flex flex-col gap-3 pb-4">
             {items.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-center gap-4 py-20">
-                <ShoppingCart size={48} strokeWidth={1} className="opacity-30" style={{ color: "var(--text-muted)" }} />
-                <p className="text-[17px] tracking-tight" style={{ color: "var(--text-muted)" }}>Your cart is empty.</p>
+              <div className="flex flex-col items-center justify-center h-full gap-4 mt-20">
+                <ShoppingBag size={48} strokeWidth={1} className="opacity-30" style={{ color: "var(--text-muted)" }} />
+                <p className="text-[17px] tracking-tight" style={{ color: "var(--text-muted)" }}>Your bag is empty.</p>
                 <button
                   onClick={handleBrowseStore}
                   className="mt-2 px-6 py-3 rounded-full text-[15px] font-medium cursor-pointer border-none transition-all hover:scale-[1.03]"
