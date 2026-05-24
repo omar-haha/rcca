@@ -9,7 +9,7 @@ import { RccaLogo } from "./RccaLogo";
 const NAV_LINKS = [
   { label: "Store",   href: "#store" },
   { label: "Quality", href: "#quality" },
-  { label: "Legal",   href: "#legal" },
+  { label: "3D Lab",  href: "/3d" },
   { label: "Contact", href: "#contact" },
 ];
 

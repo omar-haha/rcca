@@ -28,8 +28,8 @@ export default function Home() {
         {/* Hero: COA Ribbon */}
         <AppleHero
           variant="secondary"
-          headline="Third-Party COA."
-          subheadline="Uncompromising quality assurance on every batch."
+          headline="Pure Precision."
+          subheadline="Third-party tested. 99%+ purity guaranteed on every batch."
           ctaText="Shop Now"
           ctaLink="#store"
           ctaSecondaryText="View Quality"
