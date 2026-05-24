@@ -25,27 +25,7 @@ export default function Home() {
       <CheckoutModal isOpen={checkoutOpen} onClose={() => setCheckoutOpen(false)} />
 
       <main className="pt-[44px]">
-        {/* Hero 1: Primary Ribbon */}
-        <AppleHero
-          variant="primary"
-          headline={
-            <>
-              Retatrutide. <br className="hidden md:block" />
-              The New Standard.
-            </>
-          }
-          subheadline="Next-generation tri-agonist for advanced metabolic research."
-          ctaText="Shop Retatrutide"
-          ctaLink="#store"
-          ctaSecondaryText="Learn more"
-          ctaSecondaryLink="#quality"
-        >
-          <div className="w-[400px] max-w-full flex justify-center -mb-[100px]">
-            <GlassVial productName="Retatrutide" weight={10} unit="10mg" className="w-full max-w-[280px]" />
-          </div>
-        </AppleHero>
-
-        {/* Hero 2: Secondary Ribbon */}
+        {/* Hero: COA Ribbon */}
         <AppleHero
           variant="secondary"
           headline="Third-Party COA."
