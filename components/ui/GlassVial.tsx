@@ -1,23 +1,22 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useTheme } from "../providers/ThemeProvider";
+import { RccaLogo } from "./RccaLogo";
 
 interface GlassVialProps {
   productName: string;
-  weight: number; // in mg
+  weight: number;
   unit: string;
   className?: string;
   blur?: boolean;
+  showLabel?: boolean;
 }
 
-export function GlassVial({ productName, weight, unit, className, blur = false }: GlassVialProps) {
-  const { theme } = useTheme();
-  
-  // Scale powder height based on weight (e.g. 2mg -> 12%, 100mg -> 45%)
+export function GlassVial({ productName, weight, unit, className, blur = false, showLabel = true }: GlassVialProps) {
   const maxWeight = 100;
   const powderHeightPercent = Math.min(12 + (weight / maxWeight) * 35, 55);
+  const productNameSize = `${Math.min(11, Math.max(6.5, 90 / productName.length))}cqi`;
 
   return (
     <div
@@ -28,28 +27,28 @@ export function GlassVial({ productName, weight, unit, className, blur = false }
       )}
       style={{ perspective: "800px" }}
     >
-      {/* Background Powder Puck (Lyophilized Cake) */}
       <div
-        className="absolute bottom-[3%] w-[76%] left-[52%] -translate-x-1/2 overflow-hidden"
+        className="absolute bottom-[3%] w-[76%] left-[50%] -translate-x-1/2 overflow-hidden"
         style={{
           height: `${powderHeightPercent}%`,
-          background: "linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(245,245,245,0.85) 70%, rgba(255,255,255,0.4) 100%)",
-          boxShadow: "inset 0px -15px 20px rgba(0,0,0,0.15), inset 0px 5px 10px rgba(255,255,255,0.9), 0px 5px 15px rgba(0,0,0,0.1)",
+          background:
+            "linear-gradient(to top, #ffffff 0%, #f5f5f5 70%, #fafafa 100%)",
+          boxShadow:
+            "inset 0px -15px 20px rgba(0,0,0,0.15), inset 0px 5px 10px rgba(255,255,255,0.9), 0px 5px 15px rgba(0,0,0,0.1)",
           borderRadius: "5% 5% 45% 45% / 5% 5% 25% 25%",
           zIndex: 0,
         }}
       >
-        {/* Powder Texture Noise */}
-        <div 
-          className="absolute inset-0 opacity-[0.15] mix-blend-multiply" 
-          style={{ 
-            backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E')",
-            backgroundSize: "40px 40px"
-          }} 
+        <div
+          className="absolute inset-0 opacity-[0.15] mix-blend-multiply"
+          style={{
+            backgroundImage:
+              "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E')",
+            backgroundSize: "40px 40px",
+          }}
         />
       </div>
 
-      {/* Transparent Glass Image */}
       <div className="relative z-10 w-full h-full pointer-events-none flex justify-center">
         <Image
           src="/images/vial-rembg-cropped.png"
@@ -61,84 +60,92 @@ export function GlassVial({ productName, weight, unit, className, blur = false }
         />
       </div>
 
-      {/* 3D Curved Label (Perfectly Sized & Research Grade) */}
-      {!blur && (
+      {!blur && showLabel && (
         <div
-          className="absolute z-20 flex overflow-hidden pointer-events-none"
+          className="vial-label absolute z-20 flex flex-col overflow-hidden pointer-events-none"
           style={{
-            top: "28%",
+            top: "40%",
             width: "74%",
             height: "44%",
-            left: "52%",
+            left: "50%",
             transform: "translateX(-50%) rotateX(2deg)",
-            background: theme === "dark" 
-              ? "linear-gradient(90deg, #181818 0%, #2a2a2a 20%, #2a2a2a 80%, #181818 100%)" 
-              : "linear-gradient(90deg, #e5e5e5 0%, #ffffff 20%, #ffffff 80%, #e5e5e5 100%)",
-            boxShadow: theme === "dark"
-              ? "inset -10px 0 20px rgba(0,0,0,0.8), inset 10px 0 20px rgba(0,0,0,0.8), 0 4px 15px rgba(0,0,0,0.8)"
-              : "inset -10px 0 20px rgba(0,0,0,0.08), inset 10px 0 20px rgba(0,0,0,0.08), 0 4px 15px rgba(0,0,0,0.2)",
+            background: "linear-gradient(180deg, var(--label-bg) 0%, var(--label-bg-end) 100%)",
             borderRadius: "4px",
+            containerType: "inline-size",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.3), inset 0 0 0 0.5cqi rgba(0,0,0,0.05)",
           }}
         >
-          {/* Label Content */}
-          <div className="flex w-full h-full p-2 gap-2 relative">
-            
-            {/* Top color strip for class distinction (Blue) */}
-            <div className="absolute top-0 left-0 right-0 h-[4px] bg-[#0071e3]" />
-
-            {/* Simulated Barcode Left Side */}
-            <div className={cn("h-full w-[15%] flex flex-col justify-end items-center pt-2", theme === "dark" ? "text-gray-400" : "text-gray-600")}>
-               <div className="flex-1 w-full flex justify-between gap-[1px]">
-                 <div className="w-[1px] h-full bg-current" />
-                 <div className="w-[2px] h-full bg-current" />
-                 <div className="w-[1px] h-full bg-current" />
-                 <div className="w-[3px] h-full bg-current" />
-                 <div className="w-[1px] h-full bg-current" />
-                 <div className="w-[2px] h-full bg-current" />
-               </div>
-               <span className="text-[0.25rem] font-mono mt-0.5" style={{ transform: "scale(0.8)" }}>89211</span>
+          <div className="flex flex-col w-full h-full p-[6cqi] min-w-0">
+            <div className="flex items-end justify-between gap-[2cqi] pb-[2cqi] border-b-[0.8cqi] border-label mb-[3cqi] min-w-0">
+              <RccaLogo className="h-[7cqi] w-auto max-w-[52%] text-label shrink-0" />
+              <div
+                className="shrink-0 border-[0.5cqi] border-label bg-label-badge px-[2cqi] py-[0.5cqi] font-bold tracking-tight"
+                style={{ fontSize: "4.5cqi" }}
+              >
+                {unit}
+              </div>
             </div>
 
-            {/* Main Label Body */}
-            <div className="flex-1 flex flex-col justify-between pt-1">
-              {/* Header */}
-              <div className="flex justify-between items-start">
-                <p className={cn("text-[0.35rem] font-bold tracking-widest uppercase", theme === "dark" ? "text-gray-400" : "text-gray-500")}>
-                  RCCA BIOSCIENCES
-                </p>
-                <div className={cn("text-[0.3rem] font-mono text-right leading-tight", theme === "dark" ? "text-gray-500" : "text-gray-400")}>
-                  LOT: {productName.length * 1042}X<br/>
-                  EXP: 12/28
+            <div
+              className="font-[family-name:var(--font-orbitron)] font-semibold tracking-[0.04em] uppercase text-label leading-none w-full"
+              style={{ fontSize: productNameSize }}
+            >
+              {productName}
+            </div>
+
+            <div className="flex-1" />
+
+            <div className="flex items-center gap-[2cqi] pb-[2cqi] border-b-[0.8cqi] border-label mb-[2cqi]">
+              <div
+                className="bg-label-badge px-[1.5cqi] py-[0.5cqi] font-bold uppercase tracking-widest"
+                style={{ fontSize: "3cqi" }}
+              >
+                USAGE LAB
+              </div>
+              <div className="flex flex-col leading-none">
+                <div className="text-label-muted font-mono tracking-widest uppercase" style={{ fontSize: "3.5cqi" }}>
+                  Composé Lyophilisé
+                </div>
+                <div className="text-label-muted font-mono tracking-widest uppercase opacity-60" style={{ fontSize: "2.6cqi" }}>
+                  Lyophilized Compound
                 </div>
               </div>
+            </div>
 
-              {/* Title & Unit */}
-              <div className="flex flex-col">
-                <h3 className={cn("text-sm font-bold tracking-tight leading-none mb-0.5", theme === "dark" ? "text-white" : "text-black")}>
-                  {productName}
-                </h3>
-                <p className={cn("text-[0.55rem] font-semibold", theme === "dark" ? "text-[#3291ff]" : "text-[#0071e3]")}>
-                  {unit} <span className="text-[0.4rem] text-gray-500 font-normal ml-1">LYOPHILIZED</span>
-                </p>
+            <div className="flex justify-between items-end">
+              <div className="flex flex-col border-l-[1cqi] border-label pl-[2cqi]">
+                <div className="text-label font-mono tracking-widest uppercase leading-[1.4]" style={{ fontSize: "3.5cqi" }}>
+                  LOT: <span className="font-bold">7290X</span>
+                </div>
+                <div className="text-label font-mono tracking-widest uppercase leading-[1.4]" style={{ fontSize: "3.5cqi" }}>
+                  EXP: <span className="font-bold">12/28</span>
+                </div>
               </div>
-
-              {/* Footer Warning */}
-              <div className="w-full">
-                <div className={cn("h-[1px] w-full mb-0.5", theme === "dark" ? "bg-gray-700" : "bg-gray-300")} />
-                <p className="text-[0.3rem] font-bold tracking-widest text-red-500 uppercase leading-tight">
-                  FOR RESEARCH USE ONLY.<br/>NOT FOR HUMAN CONSUMPTION.
-                </p>
+              <div className="flex flex-col text-right leading-[1.3] max-w-[50%]">
+                <div
+                  className="text-label font-bold tracking-tight uppercase"
+                  style={{ fontSize: "3.5cqi" }}
+                >
+                  À fins de recherche
+                </div>
+                <div
+                  className="text-label font-bold tracking-tight uppercase opacity-60"
+                  style={{ fontSize: "2.6cqi" }}
+                >
+                  For Research Only
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Glossy overlay for realism */}
           <div
-            className="absolute inset-0 z-30"
+            className="absolute inset-0 z-30 pointer-events-none"
             style={{
-              background: theme === "dark"
-                ? "linear-gradient(105deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0) 60%)"
-                : "linear-gradient(105deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.3) 45%, rgba(255,255,255,0) 60%)",
+              background: [
+                "linear-gradient(to right, rgba(0,0,0,0.28) 0%, transparent 22%, transparent 78%, rgba(0,0,0,0.22) 100%)",
+                "linear-gradient(to bottom, rgba(255,255,255,0.13) 0%, transparent 40%, rgba(0,0,0,0.08) 100%)",
+                "linear-gradient(105deg, rgba(255,255,255,0) 28%, rgba(255,255,255,0.32) 43%, rgba(255,255,255,0) 58%)",
+              ].join(", "),
             }}
           />
         </div>

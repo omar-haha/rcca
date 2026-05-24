@@ -2,32 +2,40 @@
 
 import { X, CheckCircle2 } from "lucide-react";
 import { useCart } from "../providers/CartProvider";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
 
-export function CheckoutModal({ 
-  isOpen, 
-  onClose 
-}: { 
-  isOpen: boolean; 
-  onClose: () => void; 
-}) {
+const INPUT_CLASS =
+  "w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[color:var(--accent)] focus:bg-primary";
+
+const ATTESTATIONS = [
+  "I confirm all compounds are for <strong>in vitro research only</strong> and will not be used on or in any human or animal.",
+  "I am a licensed researcher or authorized representative of a registered research institution.",
+  "I have read and agree to the Legal Disclosures and Research Use Policy.",
+];
+
+const PAYMENT_OPTIONS = [
+  { value: "card", label: "Credit / Debit Card", sub: "Visa, Mastercard, Amex", badges: [{ bg: "#1A1F71", text: "VISA" }, { bg: "#EB001B", text: "MC" }] },
+  { value: "paypal", label: "PayPal", sub: "Pay with your PayPal account", badges: [{ bg: "#003087", text: "Pay" }, { bg: "#009CDE", text: "Pal" }] },
+  { value: "etransfer", label: "Interac e-Transfer", sub: "Canadian bank transfer", badges: [] },
+  { value: "crypto", label: "Cryptocurrency", sub: "BTC, ETH, USDT", badges: [] },
+];
+
+export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { cartItems, cartTotal, clearCart } = useCart();
   const items = Object.values(cartItems);
-  
+
+  const [checked, setChecked] = useState([false, false, false]);
   const [successOpen, setSuccessOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
 
+  const toggleCheck = (i: number) =>
+    setChecked((prev) => prev.map((v, idx) => (idx === i ? !v : v)));
+
   const handlePlaceOrder = () => {
-    const c1 = (document.getElementById("c1") as HTMLInputElement)?.checked;
-    const c2 = (document.getElementById("c2") as HTMLInputElement)?.checked;
-    const c3 = (document.getElementById("c3") as HTMLInputElement)?.checked;
-    
-    if (!c1 || !c2 || !c3) {
+    if (!checked.every(Boolean)) {
       alert("Please complete all compliance attestations to proceed.");
       return;
     }
-    
     setOrderId("W" + Math.floor(100000000 + Math.random() * 900000000));
     clearCart();
     setSuccessOpen(true);
@@ -35,6 +43,7 @@ export function CheckoutModal({
 
   const handleCloseSuccess = () => {
     setSuccessOpen(false);
+    setChecked([false, false, false]);
     onClose();
   };
 
@@ -56,74 +65,122 @@ export function CheckoutModal({
                 <X size={18} strokeWidth={2} />
               </button>
             </div>
-            
+
             {/* Scrollable Form Body */}
             <div className="p-8 overflow-y-auto">
+              {/* Researcher Information */}
               <div className="mb-10">
                 <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Researcher Information</h3>
                 <div className="flex flex-col gap-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="text" placeholder="First Name" className="w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[#0071e3] focus:bg-primary" />
-                    <input type="text" placeholder="Last Name" className="w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[#0071e3] focus:bg-primary" />
+                    <input type="text" placeholder="First Name" className={INPUT_CLASS} />
+                    <input type="text" placeholder="Last Name" className={INPUT_CLASS} />
                   </div>
-                  <input type="email" placeholder="Institutional Email Address" className="w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[#0071e3] focus:bg-primary" />
-                  <input type="text" placeholder="Research Institution / Lab Name" className="w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[#0071e3] focus:bg-primary" />
+                  <input type="email" placeholder="Institutional Email Address" className={INPUT_CLASS} />
+                  <input type="text" placeholder="Research Institution / Lab Name" className={INPUT_CLASS} />
                 </div>
               </div>
 
+              {/* Shipping Address */}
               <div className="mb-10">
                 <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Shipping Address</h3>
                 <div className="flex flex-col gap-4">
-                  <input type="text" placeholder="Street Address" className="w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[#0071e3] focus:bg-primary" />
+                  <input type="text" placeholder="Street Address" className={INPUT_CLASS} />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="text" placeholder="City" className="w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[#0071e3] focus:bg-primary" />
-                    <input type="text" placeholder="Postal Code" className="w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[#0071e3] focus:bg-primary" />
+                    <input type="text" placeholder="City" className={INPUT_CLASS} />
+                    <input type="text" placeholder="Postal Code" className={INPUT_CLASS} />
                   </div>
-                  <select className="w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary outline-none transition-all focus:border-[#0071e3] focus:bg-primary appearance-none cursor-pointer">
-                    <option>Canada</option><option>United States</option><option>United Kingdom</option>
-                    <option>Germany</option><option>Australia</option><option>Netherlands</option><option>Sweden</option>
+                  <select className={INPUT_CLASS + " appearance-none cursor-pointer"}>
+                    <option>Canada</option>
+                    <option>United States</option>
+                    <option>United Kingdom</option>
+                    <option>Germany</option>
+                    <option>Australia</option>
+                    <option>Netherlands</option>
+                    <option>Sweden</option>
                   </select>
                 </div>
               </div>
 
+              {/* Payment Method */}
+              <div className="mb-10">
+                <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Payment Method</h3>
+                <div className="flex flex-col gap-3">
+                  {PAYMENT_OPTIONS.map((opt, i) => (
+                    <label
+                      key={opt.value}
+                      className="flex items-center gap-4 p-4 bg-secondary rounded-[12px] cursor-pointer border border-transparent has-[:checked]:border-[color:var(--accent)] transition-colors"
+                    >
+                      <input
+                        type="radio"
+                        name="payment"
+                        value={opt.value}
+                        defaultChecked={i === 0}
+                        className="w-5 h-5 accent-[color:var(--accent)]"
+                      />
+                      <div className="flex-1">
+                        <div className="text-[15px] font-medium text-primary">{opt.label}</div>
+                        <div className="text-[13px] text-secondary mt-0.5">{opt.sub}</div>
+                      </div>
+                      {opt.badges.length > 0 && (
+                        <div className="flex gap-1.5 items-center">
+                          {opt.badges.map((b) => (
+                            <div
+                              key={b.text}
+                              className="w-8 h-5 rounded-[3px] flex items-center justify-center text-white text-[7px] font-bold"
+                              style={{ backgroundColor: b.bg }}
+                            >
+                              {b.text}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </label>
+                  ))}
+                </div>
+                <div className="flex flex-col gap-4 mt-4">
+                  <input type="text" placeholder="Card Number" className={INPUT_CLASS} />
+                  <div className="grid grid-cols-2 gap-4">
+                    <input type="text" placeholder="MM / YY" className={INPUT_CLASS} />
+                    <input type="text" placeholder="CVC" className={INPUT_CLASS} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Compliance Attestations */}
               <div className="mb-10">
                 <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Compliance Attestations</h3>
                 <div className="flex flex-col gap-4">
-                  <label className="flex items-start gap-4 cursor-pointer group">
-                    <div className="relative flex items-center justify-center w-6 h-6 shrink-0 mt-0.5">
-                      <input type="checkbox" id="c1" className="peer appearance-none w-6 h-6 border-2 border-secondary rounded-[6px] checked:bg-[#0071e3] checked:border-[#0071e3] transition-colors cursor-pointer" />
-                      <CheckCircle2 size={16} strokeWidth={3} className="absolute text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" />
-                    </div>
-                    <span className="text-[15px] text-primary leading-snug pt-0.5">I confirm all compounds are for <strong className="font-semibold">in vitro research only</strong> and will not be used on or in any human or animal.</span>
-                  </label>
-                  
-                  <label className="flex items-start gap-4 cursor-pointer group">
-                    <div className="relative flex items-center justify-center w-6 h-6 shrink-0 mt-0.5">
-                      <input type="checkbox" id="c2" className="peer appearance-none w-6 h-6 border-2 border-secondary rounded-[6px] checked:bg-[#0071e3] checked:border-[#0071e3] transition-colors cursor-pointer" />
-                      <CheckCircle2 size={16} strokeWidth={3} className="absolute text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" />
-                    </div>
-                    <span className="text-[15px] text-primary leading-snug pt-0.5">I am a licensed researcher or authorized representative of a registered research institution.</span>
-                  </label>
-
-                  <label className="flex items-start gap-4 cursor-pointer group">
-                    <div className="relative flex items-center justify-center w-6 h-6 shrink-0 mt-0.5">
-                      <input type="checkbox" id="c3" className="peer appearance-none w-6 h-6 border-2 border-secondary rounded-[6px] checked:bg-[#0071e3] checked:border-[#0071e3] transition-colors cursor-pointer" />
-                      <CheckCircle2 size={16} strokeWidth={3} className="absolute text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" />
-                    </div>
-                    <span className="text-[15px] text-primary leading-snug pt-0.5">I have read and agree to the Legal Disclosures and Research Use Policy.</span>
-                  </label>
+                  {ATTESTATIONS.map((text, i) => (
+                    <label key={i} className="flex items-start gap-4 cursor-pointer group">
+                      <div className="relative flex items-center justify-center w-6 h-6 shrink-0 mt-0.5">
+                        <input
+                          type="checkbox"
+                          checked={checked[i]}
+                          onChange={() => toggleCheck(i)}
+                          className="peer appearance-none w-6 h-6 border-2 border-secondary rounded-[6px] checked:bg-[color:var(--accent)] checked:border-[color:var(--accent)] transition-colors cursor-pointer"
+                        />
+                        <CheckCircle2 size={16} strokeWidth={3} className="absolute text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" />
+                      </div>
+                      <span
+                        className="text-[15px] text-primary leading-snug pt-0.5"
+                        dangerouslySetInnerHTML={{ __html: text }}
+                      />
+                    </label>
+                  ))}
                 </div>
               </div>
 
               {/* Order Summary & CTA */}
               <div className="pt-6 border-t border-primary">
                 <div className="flex justify-between items-end mb-6">
-                  <div className="text-[15px] text-secondary">{items.length} item{items.length !== 1 && 's'}</div>
+                  <div className="text-[15px] text-secondary">{items.length} item{items.length !== 1 && "s"}</div>
                   <div className="text-[24px] font-semibold tracking-tight text-primary">${cartTotal.toFixed(2)}</div>
                 </div>
                 <button
                   onClick={handlePlaceOrder}
-                  className="w-full bg-[#0071e3] text-white border-none py-4 rounded-[12px] text-[17px] font-normal transition-transform hover:scale-[1.01] hover:bg-[#0077ed] cursor-pointer"
+                  className="w-full text-white border-none py-4 rounded-[12px] text-[17px] font-normal transition-all hover:scale-[1.01] hover:opacity-90 cursor-pointer"
+                  style={{ backgroundColor: "var(--accent)" }}
                 >
                   Place Order
                 </button>

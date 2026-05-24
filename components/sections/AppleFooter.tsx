@@ -1,20 +1,29 @@
 export function AppleFooter() {
   return (
-    <footer className="bg-secondary pt-6 pb-12 px-4 border-t border-primary text-[12px] text-tertiary font-normal">
+    <footer id="contact" className="bg-secondary pt-6 pb-12 px-4 border-t border-primary text-[12px] text-tertiary font-normal">
       <div className="max-w-[1024px] mx-auto">
         {/* Top Footnotes */}
         <div className="border-b border-primary pb-4 mb-5">
           <p className="mb-2 leading-relaxed">
-            1. All compounds provided by RCCA are strictly for in vitro scientific research purposes only. Not intended, authorized, or permitted for use in humans or animals under any circumstances.
+            1. All compounds sold by RCCA Inc. are strictly for in vitro scientific research purposes only. Not intended, authorized, or permitted for use in humans or animals. Products are not drugs, food additives, cosmetics, or dietary supplements.
           </p>
           <p className="mb-2 leading-relaxed">
-            2. Purchasers acknowledge these compounds have not been evaluated by the FDA, Health Canada, or equivalent regulatory bodies for safety or efficacy, and must be handled only by trained scientific professionals.
+            2. These products have not been evaluated by the FDA, Health Canada, EMA, or any equivalent regulatory body for safety, efficacy, or quality. No therapeutic or diagnostic claims are made.
           </p>
           <p className="mb-2 leading-relaxed">
-            3. Misuse of research chemicals may violate federal, provincial, state, or local law and may result in serious injury or criminal prosecution.
+            3. Misuse of research chemicals — including human or animal administration — may violate federal, provincial, state, or local law and may result in serious injury, criminal prosecution, or civil liability.
+          </p>
+          <p className="mb-2 leading-relaxed">
+            4. By placing an order, you represent and warrant that you are at least 18 years of age and a licensed researcher or authorized representative of a registered research institution.
+          </p>
+          <p className="mb-2 leading-relaxed">
+            5. Certificates of Analysis (COAs) are lot-specific, based on independent third-party testing, and provided "as-is" without warranty.
+          </p>
+          <p className="mb-2 leading-relaxed">
+            6. Purchasers are solely responsible for compliance with all import/export regulations. Certain compounds may be restricted under local controlled substances legislation.
           </p>
           <p className="mb-0 leading-relaxed">
-            4. By placing an order, you represent and warrant that you are at least 18 years of age and a licensed researcher or authorized representative of a registered research institution.
+            7. RCCA Inc. reserves the right to refuse or cancel any order. The purchaser agrees to indemnify and hold harmless RCCA Inc. from any claims arising from product misuse.
           </p>
         </div>
 

@@ -23,6 +23,10 @@
     --accent-hover: var(--color-accent-dark-hover);
     --nav-bg: rgba(0, 0, 0, 0.8);
     --glass: rgba(255, 255, 255, 0.05);
+
+    /* Monochrome brand — logo flips with theme; vial label uses .vial-label (fixed white) */
+    --logo: #ffffff;
+    --logo-inverse: #000000;
   }
 
   [data-theme="light"] {
@@ -39,6 +43,22 @@
     --accent-hover: var(--color-accent-light-hover);
     --nav-bg: rgba(255, 255, 255, 0.8);
     --glass: rgba(0, 0, 0, 0.05);
+
+    /* Monochrome brand — logo flips with theme */
+    --logo: #000000;
+    --logo-inverse: #ffffff;
+  }
+
+  /* Physical vial label — always white, never tied to site theme */
+  .vial-label {
+    --label-bg: #ffffff;
+    --label-bg-end: #e8e8e8;
+    --label-fg: #000000;
+    --label-fg-muted: rgba(0, 0, 0, 0.75);
+    --label-border: #000000;
+    --label-badge-bg: #000000;
+    --label-badge-fg: #ffffff;
+    color: var(--label-fg);
   }
 
   html {
@@ -68,6 +88,12 @@
   .bg-surface { background-color: var(--surface); }
   
   .border-primary { border-color: var(--border); }
+
+  .text-logo { color: var(--logo); }
+  .text-label { color: var(--label-fg); }
+  .text-label-muted { color: var(--label-fg-muted); }
+  .border-label { border-color: var(--label-border); }
+  .bg-label-badge { background-color: var(--label-badge-bg); color: var(--label-badge-fg); }
   
   /* Apple Specific Utilities */
   .apple-headline {
@@ -90,4 +116,14 @@
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
   }
+}
+
+@keyframes cart-item-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes poof-particle {
+  from { transform: rotate(var(--rot, 0deg)) translateY(0) scale(1); opacity: 1; }
+  to   { transform: rotate(var(--rot, 0deg)) translateY(-24px) scale(0); opacity: 0; }
 }
