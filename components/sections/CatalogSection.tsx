@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PRODUCTS } from "@/lib/products";
+import { products as PRODUCTS } from "@/lib/products";
 import { useCart } from "../providers/CartProvider";
 import { cn } from "@/lib/utils";
 
