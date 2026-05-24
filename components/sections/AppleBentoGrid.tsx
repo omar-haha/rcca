@@ -5,11 +5,24 @@ import { products } from "@/lib/products";
 import { useCart } from "@/components/providers/CartProvider";
 import { GlassVial } from "@/components/ui/GlassVial";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 const CATEGORY_LABELS: Record<string, string> = {
   all: "All Products",
   peptide: "Peptides",
   misc: "Miscellaneous",
+};
+
+const containerVariants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 80, damping: 20 } },
 };
 
 export function AppleBentoGrid() {
@@ -32,17 +45,29 @@ export function AppleBentoGrid() {
   });
 
   return (
-    <section id="store" className="py-[80px] md:py-[120px] bg-primary">
+    <section id="store" className="py-[80px] md:py-[120px] bg-primary overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-4 md:px-6">
-        <div className="text-center mb-10 md:mb-16">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-10 md:mb-16"
+        >
           <h2 className="apple-headline mb-4">Research Store.</h2>
           <p className="apple-subheadline text-secondary">
             Precision-synthesized compounds for your next breakthrough.
           </p>
-        </div>
+        </motion.div>
 
         {/* Apple Style Filter Pills */}
-        <div className="flex justify-center gap-2 flex-wrap mb-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="flex justify-center gap-2 flex-wrap mb-12"
+        >
           {["all", "peptide", "misc"].map((cat) => (
             <button
               key={cat}
@@ -57,17 +82,25 @@ export function AppleBentoGrid() {
               {CATEGORY_LABELS[cat] ?? cat}
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* 2-Column Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           {filteredProducts.map((p) => {
             const oos = p.stock === "out";
             return (
-              <div
+              <motion.div
+                variants={itemVariants}
                 key={p.id}
+                whileHover={{ scale: 1.01 }}
                 className={cn(
-                  "bg-secondary rounded-[24px] overflow-hidden flex flex-col items-center pt-8 md:pt-12 relative group",
+                  "bg-secondary rounded-[24px] overflow-hidden flex flex-col items-center pt-8 md:pt-12 relative group cursor-pointer shadow-sm hover:shadow-md transition-shadow",
                   oos && "opacity-60 grayscale-[0.4]"
                 )}
               >
@@ -89,9 +122,12 @@ export function AppleBentoGrid() {
                     </span>
                     <button
                       disabled={oos}
-                      onClick={() => !oos && handleAdd(p)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!oos) handleAdd(p);
+                      }}
                       className={cn(
-                        "rounded-full px-5 py-2 text-[13px] font-medium no-underline cursor-pointer border-none",
+                        "rounded-full px-5 py-2 text-[13px] font-medium no-underline cursor-pointer border-none z-20 relative",
                         oos
                           ? "bg-surface text-tertiary cursor-not-allowed"
                           : addedId === p.id
@@ -106,14 +142,16 @@ export function AppleBentoGrid() {
 
                 {/* Vial */}
                 <div className="w-full h-[200px] md:h-[300px] mt-auto relative flex justify-center items-end">
-                  <div className="absolute -bottom-[30px] md:-bottom-[40px] w-[120px] md:w-[160px] pointer-events-none group-hover:scale-[1.05] transition-transform duration-700">
+                  <div 
+                    className="absolute -bottom-[30px] md:-bottom-[40px] w-[120px] md:w-[160px] pointer-events-none group-hover:scale-[1.05] group-hover:-translate-y-4 transition-transform duration-700"
+                  >
                     <GlassVial productName={p.name} weight={20} unit={p.unit} />
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

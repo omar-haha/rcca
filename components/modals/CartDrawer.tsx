@@ -15,9 +15,12 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
   useEffect(() => {
     if (cartOpen) {
       requestAnimationFrame(() => setMounted(true));
+      document.body.style.overflow = "hidden";
     } else {
       setMounted(false);
+      document.body.style.overflow = "";
     }
+    return () => { document.body.style.overflow = ""; };
   }, [cartOpen]);
 
   const handleRemove = (id: string, e: React.MouseEvent) => {
@@ -60,16 +63,19 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
           )}
           style={{ backgroundColor: "var(--bg)" }}
         >
+          {/* Close button — always top-right corner */}
+          <button
+            onClick={() => setCartOpen(false)}
+            className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors text-[13px] font-medium"
+            style={{ backgroundColor: "var(--surface)", color: "var(--text-muted)" }}
+            aria-label="Close bag"
+          >
+            ✕
+          </button>
+
           {/* Header */}
-          <div className="pt-12 pb-6 px-6 flex items-center justify-between shrink-0">
+          <div className="pt-12 pb-6 px-6 shrink-0">
             <h2 className="text-[28px] font-semibold tracking-tight m-0" style={{ color: "var(--text)" }}>Bag</h2>
-            <button
-              onClick={() => setCartOpen(false)}
-              className="p-2 rounded-full hover:bg-[color:var(--surface-hover)] transition-colors border-none bg-transparent cursor-pointer"
-              aria-label="Close bag"
-            >
-              ✕
-            </button>
           </div>
 
           {/* Items */}
