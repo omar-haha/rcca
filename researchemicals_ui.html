@@ -118,8 +118,7 @@ nav{
   font-size:13px;color:var(--text2);font-family:var(--font);
   transition:background .2s,border-color .2s;
 }
-.cart-pill:hover{background:var(--surface2);border-color:var(--border)}
-.cart-pill:hover{color:var(--text)}
+.cart-pill:hover{background:var(--surface2);border-color:var(--border);color:var(--text)}
 .cart-dot{
   width:16px;height:16px;background:var(--accent);border-radius:50%;
   font-size:10px;font-weight:600;color:#fff;
@@ -344,7 +343,6 @@ h2.section-title{
   transition:color .2s;letter-spacing:-.01em;
 }
 .toc-link:hover{color:var(--text)}
-.disclaimer-content{}
 .disc-section{margin-bottom:56px}
 .disc-section:last-child{margin-bottom:0}
 .disc-num{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
@@ -435,9 +433,9 @@ footer{
 #checkout-modal{
   position:fixed;inset:0;z-index:3000;
   background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
-  display:none;align-items:center;justify-content:center;padding:24px;
+  display:none;
 }
-#checkout-modal.open{display:flex}
+#checkout-modal.open{display:flex;align-items:center;justify-content:center;padding:24px}
 .co-box{
   background:var(--surface);border:1px solid var(--border2);
   border-radius:20px;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;
@@ -489,9 +487,9 @@ input:focus,select:focus{border-color:var(--accent)}
 #success-modal{
   position:fixed;inset:0;z-index:4000;
   background:rgba(0,0,0,.7);backdrop-filter:blur(12px);
-  display:none;align-items:center;justify-content:center;padding:24px;
+  display:none;
 }
-#success-modal.open{display:flex}
+#success-modal.open{display:flex;align-items:center;justify-content:center;padding:24px}
 .suc-box{
   background:var(--surface);border:1px solid var(--border2);
   border-radius:24px;padding:56px 48px;text-align:center;
@@ -564,7 +562,7 @@ input:focus,select:focus{border-color:var(--accent)}
     <a href="#disclaimer">Legal</a>
   </div>
   <div class="nav-right">
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">☀️</button>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle theme">☀️</button>
     <button class="cart-pill" onclick="openCart()">
       Cart
       <div class="cart-dot" id="cart-count">0</div>
@@ -796,7 +794,7 @@ input:focus,select:focus{border-color:var(--accent)}
   <div id="cart-drawer">
     <div class="drawer-head">
       <h3>Cart</h3>
-      <button class="close-btn" onclick="closeCart()">×</button>
+      <button class="close-btn" onclick="closeCart()" aria-label="Close cart">×</button>
     </div>
     <div class="drawer-items" id="cartItems">
       <div class="cart-empty-msg"><div class="cart-empty-icon">🧪</div>Your cart is empty</div>
@@ -813,7 +811,7 @@ input:focus,select:focus{border-color:var(--accent)}
   <div class="co-box">
     <div class="co-head">
       <h3>Complete your order</h3>
-      <button class="close-btn" onclick="closeCheckout()">×</button>
+      <button class="close-btn" onclick="closeCheckout()" aria-label="Close checkout">×</button>
     </div>
     <div class="co-body">
       <div class="co-section">
@@ -899,20 +897,26 @@ PRODUCTS.forEach(p => { qtys[p.id] = 1; });
 
 /* ── AGE GATE ── */
 function enterSite() {
-  document.getElementById('age-gate').style.opacity = '0';
-  document.getElementById('age-gate').style.transition = 'opacity .4s';
+  const gate = document.getElementById('age-gate');
+  gate.style.transition = 'opacity .4s';
+  gate.style.opacity = '0';
   setTimeout(() => {
-    document.getElementById('age-gate').style.display = 'none';
-    ['main-nav','hero','stats','purity','catalog','disclaimer','main-footer'].forEach(id => {
+    gate.style.display = 'none';
+    const siteIds = ['main-nav','hero','stats','purity','catalog','disclaimer','main-footer'];
+    siteIds.forEach(id => {
       const el = document.getElementById(id);
-      if(el){ el.style.display = ''; el.style.opacity='0'; el.style.transition='opacity .5s'; setTimeout(()=>el.style.opacity='1',50); }
+      if (!el) return;
+      el.style.display = '';
+      el.style.opacity = '0';
+      el.style.transition = 'opacity .5s';
+      requestAnimationFrame(() => requestAnimationFrame(() => { el.style.opacity = '1'; }));
     });
     document.body.style.paddingTop = '52px';
     initPurityBars();
     initVials();
     renderProducts('all');
   }, 400);
-  try { localStorage.setItem('rc_age_ok','1'); } catch(e) {}
+  try { localStorage.setItem('rc_age_ok', '1'); } catch(e) {}
 }
 function exitSite() {
   document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Inter,sans-serif;color:#6e6e73;font-size:14px">Access denied. Please close this tab.</div>';
@@ -954,31 +958,21 @@ function initPurityBars() {
 
 /* ── FLOATING VIALS ── */
 function makeSvgVial(color1, color2, opacity, size) {
+  const uid = Math.random().toString(36).slice(2);
   const w = size, h = size * 3.2;
   return `<svg width="${w}" height="${h}" viewBox="0 0 40 128" xmlns="http://www.w3.org/2000/svg" style="opacity:${opacity}">
     <defs>
-      <linearGradient id="vg${Math.random().toString(36).slice(2)}" x1="0" y1="0" x2="1" y2="0">
+      <linearGradient id="vg${uid}" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0%" stop-color="${color1}" stop-opacity=".9"/>
         <stop offset="100%" stop-color="${color2}" stop-opacity=".5"/>
       </linearGradient>
-      <linearGradient id="lg${Math.random().toString(36).slice(2)}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="rgba(255,255,255,.25)"/>
-        <stop offset="100%" stop-color="rgba(255,255,255,.0)"/>
-      </linearGradient>
     </defs>
-    <!-- cap -->
     <rect x="13" y="0" width="14" height="8" rx="3" fill="${color1}" opacity=".85"/>
-    <!-- neck -->
     <rect x="15" y="7" width="10" height="6" rx="1" fill="${color1}" opacity=".7"/>
-    <!-- body -->
-    <rect x="6" y="12" width="28" height="90" rx="6" fill="url(#vg${Math.random().toString(36).slice(2)})" opacity=".6"/>
-    <!-- liquid -->
+    <rect x="6" y="12" width="28" height="90" rx="6" fill="url(#vg${uid})" opacity=".6"/>
     <rect x="8" y="60" width="24" height="40" rx="4" fill="${color2}" opacity=".45"/>
-    <!-- shine -->
     <rect x="9" y="14" width="6" height="50" rx="3" fill="rgba(255,255,255,.18)"/>
-    <!-- bottom dome -->
     <ellipse cx="20" cy="102" rx="14" ry="6" fill="${color1}" opacity=".3"/>
-    <!-- label line -->
     <rect x="10" y="38" width="20" height="1.5" rx="1" fill="rgba(255,255,255,.2)"/>
     <rect x="10" y="43" width="14" height="1.5" rx="1" fill="rgba(255,255,255,.15)"/>
     <rect x="10" y="48" width="17" height="1.5" rx="1" fill="rgba(255,255,255,.15)"/>
@@ -1116,7 +1110,11 @@ function openCheckout() {
 }
 function closeCheckout() { document.getElementById('checkout-modal').classList.remove('open'); }
 function placeOrder() {
-  if(!['c1','c2','c3'].every(id => document.getElementById(id).checked)) {
+  const required = ['fname','lname','email','inst','addr','city','postal'];
+  if (required.some(id => !document.getElementById(id).value.trim())) {
+    toast('Please fill in all required fields'); return;
+  }
+  if (!['c1','c2','c3'].every(id => document.getElementById(id).checked)) {
     toast('Please complete all compliance attestations'); return;
   }
   const id = 'RC-' + Date.now().toString(36).toUpperCase();
