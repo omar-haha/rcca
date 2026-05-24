@@ -6,41 +6,8 @@ import { GlassVial } from "@/components/ui/GlassVial";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
-function Poof({ x, y }: { x: number; y: number }) {
-  const [active, setActive] = useState(true);
-
-  useEffect(() => {
-    const t = setTimeout(() => setActive(false), 400);
-    return () => clearTimeout(t);
-  }, []);
-
-  if (!active) return null;
-
-  return (
-    <div
-      className="fixed pointer-events-none z-[3000]"
-      style={{ left: x, top: y, transform: "translate(-50%, -50%)" }}
-    >
-      {[...Array(8)].map((_, i) => (
-        <div
-          key={i}
-          className="absolute rounded-full"
-          style={{
-            width: "5px",
-            height: "5px",
-            backgroundColor: "var(--accent)",
-            animation: "poof-particle 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards",
-            transformOrigin: "center",
-            transform: `rotate(${i * 45}deg) translateY(-2px)`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
-  const { cartItems, cartTotal, cartOpen, setCartOpen, removeFromCart, updateQty, poofEffect } = useCart();
+  const { cartItems, cartTotal, cartOpen, setCartOpen, removeFromCart, updateQty } = useCart();
   const items = Object.values(cartItems);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -54,11 +21,9 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
   }, [cartOpen]);
 
   const handleRemove = (id: string, e: React.MouseEvent) => {
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    const pos = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
     setRemovingId(id);
     setTimeout(() => {
-      removeFromCart(id, pos);
+      removeFromCart(id);
       setRemovingId(null);
     }, 420);
   };
@@ -72,8 +37,6 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
 
   return (
     <>
-      {poofEffect && <Poof x={poofEffect.x} y={poofEffect.y} />}
-
       <div
         className={cn(
           "fixed inset-0 z-[2000] pointer-events-none",

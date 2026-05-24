@@ -19,9 +19,8 @@ interface CartContextType {
   setCartOpen: (open: boolean) => void;
   addToCart: (p: Product, qty: number) => void;
   updateQty: (id: string, delta: number) => void;
-  removeFromCart: (id: string, pos?: { x: number; y: number }) => void;
+  removeFromCart: (id: string) => void;
   clearCart: () => void;
-  poofEffect: { x: number; y: number; id: number } | null;
   lastAdded: { name: string; unit: string } | null;
   clearLastAdded: () => void;
 }
@@ -31,7 +30,6 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<Record<string, CartItem>>({});
   const [cartOpen, setCartOpen] = useState(false);
-  const [poofEffect, setPoofEffect] = useState<{ x: number; y: number; id: number } | null>(null);
   const [lastAdded, setLastAdded] = useState<{ name: string; unit: string } | null>(null);
 
   const cartArray = Object.values(cartItems);
@@ -63,11 +61,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const removeFromCart = (id: string, pos?: { x: number; y: number }) => {
-    if (pos) {
-      setPoofEffect({ x: pos.x, y: pos.y, id: Date.now() });
-      setTimeout(() => setPoofEffect(null), 500);
-    }
+  const removeFromCart = (id: string) => {
     setCartItems((prev) => {
       const next = { ...prev };
       delete next[id];
@@ -93,7 +87,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
         updateQty,
         removeFromCart,
         clearCart,
-        poofEffect,
         lastAdded,
         clearLastAdded,
       }}
