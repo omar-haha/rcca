@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { RccaLogo } from "@/components/ui/RccaLogo";
+import { cn } from "@/lib/utils";
 
 const PROVINCES = [
   { code: "AB", name: "Alberta",                        minAge: 18 },
@@ -24,6 +25,7 @@ const FIELD =
 
 export function AgeGateModal() {
   const [visible, setVisible] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [province, setProvince] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [error, setError] = useState("");
@@ -52,9 +54,12 @@ export function AgeGateModal() {
       return;
     }
     setError("");
-    setVisible(false);
-    document.body.style.overflow = "";
-    try { localStorage.setItem("rc_age_ok", "1"); } catch {}
+    setIsClosing(true);
+    setTimeout(() => {
+      setVisible(false);
+      document.body.style.overflow = "";
+      try { localStorage.setItem("rc_age_ok", "1"); } catch {}
+    }, 300);
   };
 
   const handleDecline = () => {
@@ -67,7 +72,10 @@ export function AgeGateModal() {
   return (
     /* Backdrop */
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-5"
+      className={cn(
+        "fixed inset-0 z-[9999] flex items-center justify-center p-5 transition-opacity duration-300",
+        isClosing ? "opacity-0" : "animate-in fade-in"
+      )}
       style={{
         backdropFilter: "saturate(180%) blur(24px)",
         WebkitBackdropFilter: "saturate(180%) blur(24px)",
@@ -76,7 +84,10 @@ export function AgeGateModal() {
     >
       {/* Card */}
       <div
-        className="relative w-full max-w-[420px] rounded-[24px] overflow-hidden flex flex-col items-center text-center p-8"
+        className={cn(
+          "relative w-full max-w-[420px] rounded-[24px] overflow-hidden flex flex-col items-center text-center p-8 transition-all duration-300",
+          isClosing ? "scale-95 opacity-0" : "animate-in zoom-in-95"
+        )}
         style={{
           backgroundColor: "var(--surface)",
           border: "1px solid var(--border)",
@@ -98,7 +109,7 @@ export function AgeGateModal() {
             className="text-[26px] font-semibold tracking-tight leading-[1.2] mb-2"
             style={{ color: "var(--text)" }}
           >
-            Age Verification
+            Welcome to RCCA.
           </h1>
           <p className="text-[14px] leading-relaxed mb-7 max-w-[320px]" style={{ color: "var(--text-muted)" }}>
             Select your province to confirm you meet the minimum age requirement for your region.
