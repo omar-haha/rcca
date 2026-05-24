@@ -139,14 +139,15 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                   className={cn(
                     "relative rounded-[18px] border overflow-hidden",
                     removingId === item.id
-                      ? "opacity-0 translate-x-12"
-                      : "opacity-100 translate-x-0"
+                      ? "opacity-0 scale-90"
+                      : "opacity-100 scale-100"
                   )}
                   style={{
                     borderColor: "var(--border)",
                     backgroundColor: "var(--surface)",
+                    transformOrigin: "center center",
                     transition: removingId === item.id
-                      ? "transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease-out"
+                      ? "transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease-in"
                       : "none",
                     animation: mounted
                       ? `cart-item-in 0.4s ${idx * 60}ms cubic-bezier(0.32,0.72,0,1) both`
@@ -156,7 +157,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                   {/* Trash button — top right */}
                   <button
                     onClick={(e) => handleRemove(item.id, e)}
-                    className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full flex items-center justify-center border border-primary cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 bg-[color:var(--surface)]/80 backdrop-blur-md hover:bg-error hover:border-error hover:text-white text-secondary shadow-sm"
+                    className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full flex items-center justify-center border border-primary cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 bg-[color:var(--surface)]/80 backdrop-blur-md hover:bg-[color:var(--error)] hover:border-[color:var(--error)] hover:text-[color:var(--accent-fg)] text-secondary shadow-sm"
                     aria-label={`Remove ${item.name}`}
                   >
                     <Trash2 size={14} strokeWidth={2.5} />

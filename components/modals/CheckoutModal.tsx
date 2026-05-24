@@ -82,8 +82,14 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
     <>
       {/* Checkout Form Modal */}
       {isOpen && !successOpen && (
-        <div className="fixed inset-0 z-[3000] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6">
-          <div className="bg-primary rounded-[24px] w-full max-w-[640px] max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+        <div 
+          className="fixed inset-0 z-[3000] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+          onClick={onClose}
+        >
+          <div 
+            className="bg-primary rounded-[24px] w-full max-w-[640px] max-h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Header */}
             <div className="px-8 py-6 border-b border-primary flex items-center justify-between bg-primary shrink-0">
               <h2 className="text-[24px] font-semibold tracking-tight text-primary m-0">Checkout</h2>
