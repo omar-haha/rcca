@@ -110,7 +110,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
           </div>
 
           {/* Items */}
-          <div className="flex-1 overflow-y-auto px-6 flex flex-col gap-3 pb-4">
+          <div className="flex-1 overflow-y-auto px-6 flex flex-col gap-3 pb-4 min-h-0">
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full gap-4 mt-20">
                 <ShoppingBag size={48} strokeWidth={1} className="opacity-30" style={{ color: "var(--text-muted)" }} />
