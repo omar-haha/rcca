@@ -23,6 +23,7 @@ interface CartContextType {
   clearCart: () => void;
   poofEffect: { x: number; y: number; id: number } | null;
   lastAdded: { name: string; unit: string } | null;
+  clearLastAdded: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -78,6 +79,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCartItems({});
   };
 
+  const clearLastAdded = () => setLastAdded(null);
+
   return (
     <CartContext.Provider
       value={{
@@ -92,6 +95,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         poofEffect,
         lastAdded,
+        clearLastAdded,
       }}
     >
       {children}

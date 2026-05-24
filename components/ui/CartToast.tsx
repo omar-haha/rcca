@@ -4,7 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 import { useCart } from "@/components/providers/CartProvider";
 
 export function CartToast() {
-  const { lastAdded, setCartOpen } = useCart();
+  const { lastAdded, setCartOpen, clearLastAdded } = useCart();
 
   return (
     <div
@@ -12,7 +12,7 @@ export function CartToast() {
       aria-live="polite"
     >
       <div
-        onClick={() => setCartOpen(true)}
+        onClick={() => { setCartOpen(true); clearLastAdded(); }}
         className="flex items-center gap-3 px-4 py-3 rounded-[14px] shadow-2xl transition-all duration-300 pointer-events-auto cursor-pointer"
         style={{
           backgroundColor: "var(--surface)",
