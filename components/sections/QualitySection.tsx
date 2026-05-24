@@ -71,8 +71,8 @@ export function QualitySection() {
   return (
     <>
       {/* Quality Assurance Section */}
-      <section id="quality" className="py-[120px] bg-secondary">
-        <div className="max-w-[1024px] mx-auto px-6">
+      <section id="quality" className="py-[80px] md:py-[120px] bg-secondary">
+        <div className="max-w-[1024px] mx-auto px-4 md:px-6">
           <div className="text-center mb-20">
             <h2 className="apple-headline mb-4">Purity. Always Tested.</h2>
             <p className="apple-subheadline text-secondary max-w-[640px] mx-auto">
@@ -123,8 +123,8 @@ export function QualitySection() {
       </section>
 
       {/* Legal Disclosures Section */}
-      <section id="legal" className="py-[100px] bg-primary">
-        <div className="max-w-[1024px] mx-auto px-6">
+      <section id="legal" className="py-[70px] md:py-[100px] bg-primary">
+        <div className="max-w-[1024px] mx-auto px-4 md:px-6">
           <div className="flex items-center gap-3 mb-10">
             <AlertTriangle size={24} strokeWidth={1.5} className="text-secondary" />
             <h2 className="text-[28px] font-semibold tracking-tight text-primary">Legal Disclosures</h2>

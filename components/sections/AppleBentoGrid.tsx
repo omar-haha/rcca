@@ -25,9 +25,9 @@ export function AppleBentoGrid() {
   });
 
   return (
-    <section id="store" className="py-[120px] bg-primary">
-      <div className="max-w-[1280px] mx-auto px-6">
-        <div className="text-center mb-16">
+    <section id="store" className="py-[80px] md:py-[120px] bg-primary">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-6">
+        <div className="text-center mb-10 md:mb-16">
           <h2 className="apple-headline mb-4">Research Store.</h2>
           <p className="apple-subheadline text-secondary">
             Precision-synthesized compounds for your next breakthrough.
@@ -60,24 +60,24 @@ export function AppleBentoGrid() {
               <div
                 key={p.id}
                 className={cn(
-                  "bg-secondary rounded-[24px] overflow-hidden flex flex-col items-center pt-12 relative group",
+                  "bg-secondary rounded-[24px] overflow-hidden flex flex-col items-center pt-8 md:pt-12 relative group",
                   oos && "opacity-60 grayscale-[0.4]"
                 )}
               >
-                {/* Text Content Top Aligned */}
-                <div className="text-center px-8 z-10 w-full mb-8">
-                  <div className="text-[12px] font-semibold tracking-widest uppercase text-tertiary mb-3">
+                {/* Text Content */}
+                <div className="text-center px-5 md:px-8 z-10 w-full mb-6 md:mb-8">
+                  <div className="text-[11px] md:text-[12px] font-semibold tracking-widest uppercase text-tertiary mb-2 md:mb-3">
                     {p.cat}
                   </div>
-                  <h3 className="text-[28px] font-semibold tracking-[-0.01em] text-primary mb-2">
+                  <h3 className="text-[22px] md:text-[28px] font-semibold tracking-[-0.01em] text-primary mb-1 md:mb-2">
                     {p.name}
                   </h3>
-                  <div className="text-[15px] text-secondary font-normal mb-5">
+                  <div className="text-[14px] md:text-[15px] text-secondary font-normal mb-4 md:mb-5">
                     {p.unit} · {p.purity} Purity
                   </div>
-                  
-                  <div className="flex flex-col items-center gap-3">
-                    <span className="text-[18px] text-primary font-medium">
+
+                  <div className="flex flex-col items-center gap-2 md:gap-3">
+                    <span className="text-[17px] md:text-[18px] text-primary font-medium">
                       ${p.price.toFixed(2)}
                     </span>
                     <button
@@ -95,9 +95,9 @@ export function AppleBentoGrid() {
                   </div>
                 </div>
 
-                {/* Product Image breaking padding at the bottom */}
-                <div className="w-full h-[300px] mt-auto relative flex justify-center items-end">
-                  <div className="absolute -bottom-[40px] w-[160px] pointer-events-none group-hover:scale-[1.05] transition-transform duration-700">
+                {/* Vial */}
+                <div className="w-full h-[200px] md:h-[300px] mt-auto relative flex justify-center items-end">
+                  <div className="absolute -bottom-[30px] md:-bottom-[40px] w-[120px] md:w-[160px] pointer-events-none group-hover:scale-[1.05] transition-transform duration-700">
                     <GlassVial productName={p.name} weight={20} unit={p.unit} />
                   </div>
                 </div>

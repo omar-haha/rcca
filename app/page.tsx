@@ -30,29 +30,29 @@ export default function Home() {
           variant="secondary"
           headline="Third-Party COA."
           subheadline="Uncompromising quality assurance on every batch."
-          ctaText="View Methodology"
-          ctaLink="#quality"
-          ctaSecondaryText="See certifications"
+          ctaText="Shop Now"
+          ctaLink="#store"
+          ctaSecondaryText="View Quality"
           ctaSecondaryLink="#quality"
         >
-          <div className="w-full flex justify-center items-end px-4 -space-x-8 md:-space-x-16">
+          <div className="w-full flex justify-center items-end px-4 -space-x-5 sm:-space-x-10 md:-space-x-16">
             <GlassVial
               productName="Tirzepatide"
               weight={10}
               unit="10mg"
-              className="w-[120px] md:w-[160px] mb-[40px] md:mb-[60px] -rotate-6 z-0 opacity-90 drop-shadow-xl"
+              className="w-[70px] sm:w-[120px] md:w-[160px] mb-[25px] sm:mb-[40px] md:mb-[60px] -rotate-6 z-0 opacity-90 drop-shadow-xl"
             />
             <GlassVial
               productName="Retatrutide"
               weight={10}
               unit="10mg"
-              className="w-[160px] md:w-[220px] z-10 drop-shadow-2xl"
+              className="w-[105px] sm:w-[160px] md:w-[220px] z-10 drop-shadow-2xl"
             />
             <GlassVial
               productName="BPC-157"
               weight={5}
               unit="5mg"
-              className="w-[120px] md:w-[160px] mb-[40px] md:mb-[60px] rotate-6 z-0 opacity-90 drop-shadow-xl"
+              className="w-[70px] sm:w-[120px] md:w-[160px] mb-[25px] sm:mb-[40px] md:mb-[60px] rotate-6 z-0 opacity-90 drop-shadow-xl"
             />
           </div>
         </AppleHero>
