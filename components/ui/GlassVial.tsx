@@ -13,9 +13,7 @@ interface GlassVialProps {
   showLabel?: boolean;
 }
 
-export function GlassVial({ productName, weight, unit, className, blur = false, showLabel = true }: GlassVialProps) {
-  const maxWeight = 100;
-  const powderHeightPercent = Math.min(12 + (weight / maxWeight) * 35, 55);
+export function GlassVial({ productName, weight: _weight, unit, className, blur = false, showLabel = true }: GlassVialProps) {
   const productNameSize = `${Math.min(11, Math.max(6.5, 90 / productName.length))}cqi`;
 
   return (
@@ -27,29 +25,7 @@ export function GlassVial({ productName, weight, unit, className, blur = false, 
       )}
       style={{ perspective: "800px" }}
     >
-      <div
-        className="absolute bottom-[3%] w-[76%] left-[50%] -translate-x-1/2 overflow-hidden"
-        style={{
-          height: `${powderHeightPercent}%`,
-          background:
-            "linear-gradient(to top, #ffffff 0%, #f5f5f5 70%, #fafafa 100%)",
-          boxShadow:
-            "inset 0px -15px 20px rgba(0,0,0,0.15), inset 0px 5px 10px rgba(255,255,255,0.9), 0px 5px 15px rgba(0,0,0,0.1)",
-          borderRadius: "5% 5% 45% 45% / 5% 5% 25% 25%",
-          zIndex: 0,
-        }}
-      >
-        <div
-          className="absolute inset-0 opacity-[0.15] mix-blend-multiply"
-          style={{
-            backgroundImage:
-              "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E')",
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 w-full h-full pointer-events-none flex justify-center">
+      <div className="relative w-full h-full pointer-events-none flex justify-center">
         <Image
           src="/images/vial-rembg-cropped.png"
           alt={`${productName} vial`}

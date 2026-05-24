@@ -157,8 +157,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                   {/* Trash button — top right */}
                   <button
                     onClick={(e) => handleRemove(item.id, e)}
-                    className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full flex items-center justify-center border-none cursor-pointer transition-all hover:scale-110"
-                    style={{ backgroundColor: "var(--surface-hover)", color: "var(--text-muted)" }}
+                    className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-200 hover:scale-110 bg-[var(--surface-hover)] text-[var(--text-muted)] hover:bg-red-500/15 hover:text-red-500"
                     aria-label={`Remove ${item.name}`}
                   >
                     <Trash2 size={13} strokeWidth={2} />
@@ -202,7 +201,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                           <button
                             onClick={() => updateQty(item.id, -1)}
                             disabled={item.qty === 1}
-                            className="w-7 h-7 flex items-center justify-center border-none cursor-pointer transition-colors hover:opacity-70 disabled:opacity-25 disabled:cursor-not-allowed"
+                            className="w-7 h-7 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:opacity-70 active:scale-75 disabled:opacity-25 disabled:cursor-not-allowed"
                             style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                             aria-label="Decrease quantity"
                           >
@@ -216,7 +215,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                           </span>
                           <button
                             onClick={() => updateQty(item.id, 1)}
-                            className="w-7 h-7 flex items-center justify-center border-none cursor-pointer transition-colors hover:opacity-70"
+                            className="w-7 h-7 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:opacity-70 active:scale-75"
                             style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                             aria-label="Increase quantity"
                           >

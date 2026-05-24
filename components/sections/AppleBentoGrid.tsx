@@ -14,7 +14,14 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 export function AppleBentoGrid() {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [addedId, setAddedId] = useState<string | null>(null);
   const { addToCart } = useCart();
+
+  const handleAdd = (p: typeof products[number]) => {
+    addToCart(p, 1);
+    setAddedId(p.id);
+    setTimeout(() => setAddedId(null), 1100);
+  };
 
   const filteredProducts = (
     activeFilter === "all" ? products : products.filter((p) => p.cat === activeFilter)
@@ -82,15 +89,18 @@ export function AppleBentoGrid() {
                     </span>
                     <button
                       disabled={oos}
-                      onClick={() => addToCart(p, 1)}
+                      onClick={() => !oos && handleAdd(p)}
                       className={cn(
-                        "rounded-full px-5 py-2 text-[13px] font-medium transition-transform no-underline cursor-pointer border-none",
+                        "rounded-full px-5 py-2 text-[13px] font-medium no-underline cursor-pointer border-none",
                         oos
                           ? "bg-surface text-tertiary cursor-not-allowed"
-                          : "bg-[#0071e3] text-white hover:bg-[#0077ed] hover:scale-[1.02]"
+                          : addedId === p.id
+                          ? "bg-green-500 text-white transition-colors duration-200"
+                          : "bg-[#0071e3] text-white hover:bg-[#0077ed] hover:scale-[1.02] transition-transform"
                       )}
+                      style={addedId === p.id ? { animation: "btn-pop 0.3s ease forwards" } : undefined}
                     >
-                      {oos ? "Out of Stock" : "Add to Cart"}
+                      {oos ? "Out of Stock" : addedId === p.id ? "Added ✓" : "Add to Cart"}
                     </button>
                   </div>
                 </div>
