@@ -127,7 +127,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
               items.map((item, idx) => (
                 <div
                   key={item.id}
-                  className="transition-all duration-350 overflow-hidden"
+                  className="transition-all duration-350 overflow-hidden shrink-0"
                   style={{
                     maxHeight: removingId === item.id ? "0px" : "300px",
                     marginBottom: removingId === item.id ? "-12px" : "0px",
