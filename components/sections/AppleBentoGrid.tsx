@@ -95,10 +95,10 @@ export function AppleBentoGrid() {
                         oos
                           ? "bg-surface text-tertiary cursor-not-allowed"
                           : addedId === p.id
-                          ? "bg-green-500 text-white transition-colors duration-200"
-                          : "bg-[#0071e3] text-white hover:bg-[#0077ed] hover:scale-[1.02] transition-transform"
+                          ? "bg-success transition-all duration-200 ring-4 ring-[color:var(--success)]/30"
+                          : "bg-accent hover:bg-[color:var(--accent-hover)] hover:scale-[1.02] active:scale-[0.96] transition-all"
                       )}
-                      style={addedId === p.id ? { animation: "btn-pop 0.3s ease forwards" } : undefined}
+                      style={addedId === p.id ? { animation: "btn-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards" } : undefined}
                     >
                       {oos ? "Out of Stock" : addedId === p.id ? "Added ✓" : "Add to Cart"}
                     </button>

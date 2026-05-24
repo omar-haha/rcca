@@ -27,13 +27,32 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const [checked, setChecked] = useState([false, false, false]);
   const [successOpen, setSuccessOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
-  const toggleCheck = (i: number) =>
+  const toggleCheck = (i: number) => {
     setChecked((prev) => prev.map((v, idx) => (idx === i ? !v : v)));
+    if (attemptedSubmit) setAttemptedSubmit(false);
+  };
+
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "");
+    const formatted = val.match(/.{1,4}/g)?.join(" ") || "";
+    setCardNumber(formatted.slice(0, 19));
+  };
+
+  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value.replace(/\D/g, "");
+    if (val.length >= 2) {
+      val = val.slice(0, 2) + " / " + val.slice(2, 4);
+    }
+    setExpiry(val);
+  };
 
   const handlePlaceOrder = () => {
+    setAttemptedSubmit(true);
     if (!checked.every(Boolean)) {
-      alert("Please complete all compliance attestations to proceed.");
       return;
     }
     setOrderId("W" + Math.floor(100000000 + Math.random() * 900000000));
@@ -44,6 +63,9 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const handleCloseSuccess = () => {
     setSuccessOpen(false);
     setChecked([false, false, false]);
+    setAttemptedSubmit(false);
+    setCardNumber("");
+    setExpiry("");
     onClose();
   };
 
@@ -109,7 +131,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   {PAYMENT_OPTIONS.map((opt, i) => (
                     <label
                       key={opt.value}
-                      className="flex items-center gap-4 p-4 bg-secondary rounded-[12px] cursor-pointer border border-transparent has-[:checked]:border-[color:var(--accent)] transition-colors"
+                      className="relative flex items-center gap-4 p-4 bg-secondary rounded-[12px] cursor-pointer border border-transparent has-[:checked]:border-[color:var(--accent)] transition-all hover:scale-[1.01] active:scale-[0.99] has-[:checked]:bg-[var(--surface)]"
                     >
                       <input
                         type="radio"
@@ -139,10 +161,10 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   ))}
                 </div>
                 <div className="flex flex-col gap-4 mt-4">
-                  <input type="text" placeholder="Card Number" className={INPUT_CLASS} />
+                  <input type="text" placeholder="Card Number" value={cardNumber} onChange={handleCardNumberChange} maxLength={19} className={INPUT_CLASS} />
                   <div className="grid grid-cols-2 gap-4">
-                    <input type="text" placeholder="MM / YY" className={INPUT_CLASS} />
-                    <input type="text" placeholder="CVC" className={INPUT_CLASS} />
+                    <input type="text" placeholder="MM / YY" value={expiry} onChange={handleExpiryChange} maxLength={7} className={INPUT_CLASS} />
+                    <input type="text" placeholder="CVC" maxLength={4} className={INPUT_CLASS} />
                   </div>
                 </div>
               </div>
@@ -152,7 +174,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Compliance Attestations</h3>
                 <div className="flex flex-col gap-4">
                   {ATTESTATIONS.map((text, i) => (
-                    <label key={i} className="flex items-start gap-4 cursor-pointer group">
+                    <label key={i} className={`flex items-start gap-4 cursor-pointer group p-3 -mx-3 rounded-[12px] transition-colors border ${attemptedSubmit && !checked[i] ? "bg-[color:var(--error)]/5 border-[color:var(--error)]/20" : "border-transparent hover:bg-[color:var(--bg-alt)]/50"}`}>
                       <div className="relative flex items-center justify-center w-6 h-6 shrink-0 mt-0.5">
                         <input
                           type="checkbox"
@@ -194,7 +216,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
       {successOpen && (
         <div className="fixed inset-0 z-[4000] bg-black/40 backdrop-blur-md flex items-center justify-center p-6 animate-in fade-in duration-300">
           <div className="bg-primary rounded-[24px] p-12 text-center max-w-[440px] w-full shadow-2xl animate-in zoom-in-95 duration-500">
-            <div className="w-[72px] h-[72px] rounded-full bg-secondary flex items-center justify-center text-[#30d158] mb-6 mx-auto">
+            <div className="w-[72px] h-[72px] rounded-full bg-secondary flex items-center justify-center text-success mb-6 mx-auto">
               <CheckCircle2 size={36} strokeWidth={2} />
             </div>
             <h3 className="text-[28px] font-semibold tracking-tight mb-4 text-primary">Order Confirmed.</h3>

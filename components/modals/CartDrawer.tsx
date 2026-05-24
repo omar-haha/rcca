@@ -119,7 +119,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                 <button
                   onClick={handleBrowseStore}
                   className="mt-2 px-6 py-3 rounded-full text-[15px] font-medium cursor-pointer border-none transition-all hover:scale-[1.03]"
-                  style={{ backgroundColor: "var(--accent)", color: "#ffffff" }}
+                  style={{ backgroundColor: "var(--accent)", color: "var(--accent-fg)" }}
                 >
                   Browse Store
                 </button>
@@ -157,10 +157,10 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                   {/* Trash button — top right */}
                   <button
                     onClick={(e) => handleRemove(item.id, e)}
-                    className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-200 hover:scale-110 bg-[var(--surface-hover)] text-[var(--text-muted)] hover:bg-red-500/15 hover:text-red-500"
+                    className="absolute top-2 right-2 z-10 w-10 h-10 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 bg-transparent hover:bg-[color:var(--error)]/15 text-secondary hover:text-error"
                     aria-label={`Remove ${item.name}`}
                   >
-                    <Trash2 size={13} strokeWidth={2} />
+                    <Trash2 size={16} strokeWidth={2} />
                   </button>
 
                   <div className="flex items-stretch gap-0">
@@ -201,25 +201,25 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                           <button
                             onClick={() => updateQty(item.id, -1)}
                             disabled={item.qty === 1}
-                            className="w-7 h-7 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:opacity-70 active:scale-75 disabled:opacity-25 disabled:cursor-not-allowed"
+                            className="w-8 h-8 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:bg-[var(--surface)] active:bg-[var(--border)] active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed"
                             style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                             aria-label="Decrease quantity"
                           >
-                            <Minus size={11} strokeWidth={2.5} />
+                            <Minus size={12} strokeWidth={2.5} />
                           </button>
                           <span
-                            className="px-3 text-[13px] font-semibold tabular-nums"
+                            className="px-3 text-[14px] font-semibold tabular-nums"
                             style={{ color: "var(--text)", backgroundColor: "var(--surface)" }}
                           >
                             {item.qty}
                           </span>
                           <button
                             onClick={() => updateQty(item.id, 1)}
-                            className="w-7 h-7 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:opacity-70 active:scale-75"
+                            className="w-8 h-8 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:bg-[var(--surface)] active:bg-[var(--border)] active:scale-95"
                             style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                             aria-label="Increase quantity"
                           >
-                            <Plus size={11} strokeWidth={2.5} />
+                            <Plus size={12} strokeWidth={2.5} />
                           </button>
                         </div>
 

@@ -23,6 +23,9 @@
     --accent-hover: var(--color-accent-light-hover);
     --nav-bg: rgba(255, 255, 255, 0.8);
     --glass: rgba(0, 0, 0, 0.05);
+    --error: #ff3b30;
+    --success: #34c759;
+    --accent-fg: #ffffff;
 
     /* Monochrome brand — logo flips with theme; vial label uses .vial-label (fixed white) */
     --logo: #000000;
@@ -43,6 +46,9 @@
     --accent-hover: var(--color-accent-dark-hover);
     --nav-bg: rgba(0, 0, 0, 0.8);
     --glass: rgba(255, 255, 255, 0.05);
+    --error: #ff453a;
+    --success: #30d158;
+    --accent-fg: #ffffff;
 
     /* Monochrome brand — logo flips with theme */
     --logo: #ffffff;
@@ -82,10 +88,15 @@
   .text-primary { color: var(--text); }
   .text-secondary { color: var(--text-muted); }
   .text-tertiary { color: var(--text-legal); }
+  .text-error { color: var(--error); }
+  .text-success { color: var(--success); }
   
   .bg-primary { background-color: var(--bg); }
   .bg-secondary { background-color: var(--bg-alt); }
   .bg-surface { background-color: var(--surface); }
+  .bg-accent { background-color: var(--accent); color: var(--accent-fg); }
+  .bg-success { background-color: var(--success); color: var(--accent-fg); }
+  .bg-error { background-color: var(--error); color: var(--accent-fg); }
   
   .border-primary { border-color: var(--border); }
 

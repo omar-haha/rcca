@@ -62,7 +62,7 @@ export function AppleNav() {
             >
               <ShoppingCart size={16} strokeWidth={1.5} />
               {cartCount > 0 && (
-                <span className="absolute -bottom-1.5 -right-1.5 w-3.5 h-3.5 bg-[#0071e3] rounded-full text-[9px] font-bold text-white flex items-center justify-center">
+                <span className="absolute -bottom-1.5 -right-1.5 w-3.5 h-3.5 bg-accent rounded-full text-[9px] font-bold flex items-center justify-center">
                   {cartCount}
                 </span>
               )}

@@ -4,8 +4,6 @@ import { cn } from "@/lib/utils";
 import React from "react";
 import { ChevronRight } from "lucide-react";
 
-import { useTheme } from "../providers/ThemeProvider";
-
 interface AppleHeroProps {
   variant?: "primary" | "secondary" | "tertiary";
   headline: React.ReactNode;
@@ -29,19 +27,9 @@ export function AppleHero({
   children,
   className,
 }: AppleHeroProps) {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
-
-  let bgClass = "";
-  if (isDark) {
-    bgClass = variant === "primary" ? "bg-black text-[#f5f5f7]" :
-              variant === "secondary" ? "bg-[#111111] text-[#f5f5f7]" :
-              "bg-[#151515] text-[#f5f5f7]";
-  } else {
-    bgClass = variant === "primary" ? "bg-white text-[#1d1d1f]" :
-              variant === "secondary" ? "bg-[#f5f5f7] text-[#1d1d1f]" :
-              "bg-[#e8e8ed] text-[#1d1d1f]";
-  }
+  const bgClass = variant === "primary" ? "bg-primary text-primary" :
+                  variant === "secondary" ? "bg-secondary text-primary" :
+                  "bg-[color:var(--surface-hover)] text-primary";
 
   return (
     <section className={cn("relative w-full flex flex-col items-center pt-[72px] md:pt-[100px] overflow-hidden md:h-[85vh] md:min-h-[600px]", bgClass, className)}>
@@ -54,8 +42,7 @@ export function AppleHero({
             <a
               href={ctaLink || "#"}
               className={cn(
-                "rounded-full px-5 py-2.5 text-[15px] font-normal transition-transform hover:scale-[1.02] no-underline",
-                isDark ? "bg-[#f5f5f7] text-black" : "bg-[#0071e3] text-white"
+                "rounded-full px-5 py-2.5 text-[15px] font-normal transition-transform hover:scale-[1.02] no-underline bg-accent"
               )}
             >
               {ctaText}
@@ -64,7 +51,7 @@ export function AppleHero({
           {ctaSecondaryText && (
             <a
               href={ctaSecondaryLink || "#"}
-              className="group flex items-center gap-1 text-[15px] md:text-[17px] font-normal text-[#0071e3] hover:underline no-underline"
+              className="group flex items-center gap-1 text-[15px] md:text-[17px] font-normal text-[color:var(--accent)] hover:underline no-underline"
             >
               {ctaSecondaryText}
               <ChevronRight size={16} strokeWidth={2} className="transition-transform group-hover:translate-x-1" />

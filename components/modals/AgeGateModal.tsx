@@ -151,10 +151,10 @@ export function AgeGateModal() {
                   type="checkbox"
                   checked={confirmed}
                   onChange={(e) => { setConfirmed(e.target.checked); setError(""); }}
-                  className="sr-only"
+                  className="sr-only peer"
                 />
                 <div
-                  className="flex-shrink-0 w-5 h-5 rounded-[5px] flex items-center justify-center transition-all duration-200"
+                  className="flex-shrink-0 w-5 h-5 rounded-[5px] flex items-center justify-center transition-all duration-200 peer-focus-visible:ring-2 peer-focus-visible:ring-[color:var(--accent)] peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[color:var(--bg)]"
                   style={{
                     backgroundColor: confirmed ? "var(--accent)" : "transparent",
                     border: `1.5px solid ${confirmed ? "var(--accent)" : "var(--border)"}`,
@@ -178,8 +178,8 @@ export function AgeGateModal() {
 
           {/* Error */}
           <div
-            className="text-[13px] mb-4 min-h-[18px] transition-opacity duration-200"
-            style={{ color: "#ff453a", opacity: error ? 1 : 0 }}
+            className="text-[13px] mb-4 min-h-[18px] transition-opacity duration-200 text-error"
+            style={{ opacity: error ? 1 : 0 }}
           >
             {error || " "}
           </div>
@@ -188,7 +188,8 @@ export function AgeGateModal() {
           <div className="w-full flex flex-col gap-2">
             <button
               onClick={handleEnter}
-              className="w-full text-white border-none py-[14px] rounded-full text-[15px] font-medium cursor-pointer transition-transform hover:scale-[1.02] tracking-tight"
+              disabled={!province || !confirmed}
+              className="w-full text-white border-none py-[14px] rounded-full text-[15px] font-medium transition-all hover:scale-[1.02] active:scale-[0.98] tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100 cursor-pointer"
               style={{ backgroundColor: "var(--accent)" }}
             >
               Confirm &amp; Enter
