@@ -132,21 +132,21 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                     maxHeight: removingId === item.id ? "0px" : "300px",
                     marginBottom: removingId === item.id ? "-12px" : "0px",
                     opacity: removingId === item.id ? 0 : 1,
+                    transition: removingId === item.id ? "max-height 0.4s cubic-bezier(0.32,0.72,0,1) 0.1s, margin-bottom 0.4s cubic-bezier(0.32,0.72,0,1) 0.1s, opacity 0.3s 0.2s" : "none",
                   }}
                 >
                 <div
                   className={cn(
                     "relative rounded-[18px] border overflow-hidden",
                     removingId === item.id
-                      ? "opacity-0 scale-0"
-                      : "opacity-100 scale-100"
+                      ? "opacity-0 translate-x-12"
+                      : "opacity-100 translate-x-0"
                   )}
                   style={{
                     borderColor: "var(--border)",
                     backgroundColor: "var(--surface)",
-                    transformOrigin: "center center",
                     transition: removingId === item.id
-                      ? "transform 0.35s cubic-bezier(0.55, 0, 1, 0.45), opacity 0.25s ease-in"
+                      ? "transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease-out"
                       : "none",
                     animation: mounted
                       ? `cart-item-in 0.4s ${idx * 60}ms cubic-bezier(0.32,0.72,0,1) both`
@@ -156,10 +156,10 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                   {/* Trash button — top right */}
                   <button
                     onClick={(e) => handleRemove(item.id, e)}
-                    className="absolute top-2 right-2 z-10 w-10 h-10 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 bg-transparent hover:bg-[color:var(--error)]/15 text-secondary hover:text-error"
+                    className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full flex items-center justify-center border border-primary cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 bg-[color:var(--surface)]/80 backdrop-blur-md hover:bg-error hover:border-error hover:text-white text-secondary shadow-sm"
                     aria-label={`Remove ${item.name}`}
                   >
-                    <Trash2 size={16} strokeWidth={2} />
+                    <Trash2 size={14} strokeWidth={2.5} />
                   </button>
 
                   <div className="flex items-stretch gap-0">

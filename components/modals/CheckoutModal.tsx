@@ -3,6 +3,8 @@
 import { X, CheckCircle2 } from "lucide-react";
 import { useCart } from "../providers/CartProvider";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Spinner } from "../ui/Spinner";
 
 const INPUT_CLASS =
   "w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[color:var(--accent)] focus:bg-primary";
@@ -30,6 +32,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleCheck = (i: number) => {
     setChecked((prev) => prev.map((v, idx) => (idx === i ? !v : v)));
@@ -55,9 +58,13 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
     if (!checked.every(Boolean)) {
       return;
     }
-    setOrderId("W" + Math.floor(100000000 + Math.random() * 900000000));
-    clearCart();
-    setSuccessOpen(true);
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setOrderId("W" + Math.floor(100000000 + Math.random() * 900000000));
+      clearCart();
+      setIsSubmitting(false);
+      setSuccessOpen(true);
+    }, 2000);
   };
 
   const handleCloseSuccess = () => {
@@ -89,7 +96,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
             </div>
 
             {/* Scrollable Form Body */}
-            <div className="p-8 overflow-y-auto">
+            <div className={cn("p-8 overflow-y-auto transition-opacity duration-300", isSubmitting && "opacity-50 pointer-events-none")}>
               {/* Researcher Information */}
               <div className="mb-10">
                 <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Researcher Information</h3>
@@ -201,10 +208,11 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 </div>
                 <button
                   onClick={handlePlaceOrder}
-                  className="w-full text-white border-none py-4 rounded-[12px] text-[17px] font-normal transition-all hover:scale-[1.01] hover:opacity-90 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="w-full text-white border-none py-4 rounded-[12px] text-[17px] font-normal transition-all hover:scale-[1.01] hover:opacity-90 cursor-pointer disabled:opacity-100 flex items-center justify-center min-h-[56px]"
                   style={{ backgroundColor: "var(--accent)" }}
                 >
-                  Place Order
+                  {isSubmitting ? <Spinner size={24} /> : "Place Order"}
                 </button>
               </div>
             </div>

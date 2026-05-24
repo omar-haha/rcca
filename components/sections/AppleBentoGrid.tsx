@@ -95,10 +95,9 @@ export function AppleBentoGrid() {
                         oos
                           ? "bg-surface text-tertiary cursor-not-allowed"
                           : addedId === p.id
-                          ? "bg-success transition-all duration-200 ring-4 ring-[color:var(--success)]/30"
+                          ? "bg-success transition-all duration-200 animate-btn-pop"
                           : "bg-accent hover:bg-[color:var(--accent-hover)] hover:scale-[1.02] active:scale-[0.96] transition-all"
                       )}
-                      style={addedId === p.id ? { animation: "btn-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards" } : undefined}
                     >
                       {oos ? "Out of Stock" : addedId === p.id ? "Added ✓" : "Add to Bag"}
                     </button>
