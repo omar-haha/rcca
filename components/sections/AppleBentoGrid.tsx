@@ -6,7 +6,20 @@ import { GlassVial } from "@/components/ui/GlassVial";
 import { ProductPickerModal } from "@/components/modals/ProductPickerModal";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import type { ProductFamily, BenefitTag } from "@/lib/products";
+import type { TranslationKey } from "@/lib/i18n";
+
+const TAG_KEY: Record<BenefitTag, TranslationKey> = {
+  'Weight Loss':   'tag_weight',
+  'Muscle Growth': 'tag_muscle',
+  'Recovery':      'tag_recovery',
+  'Anti-Aging':    'tag_anti_age',
+  'Cognitive':     'tag_cognitive',
+  'Tanning':       'tag_tanning',
+  'Libido':        'tag_libido',
+  'Ancillary':     'tag_ancillary',
+};
 
 const TAG_STYLES: Record<BenefitTag, { bg: string; color: string }> = {
   'Weight Loss':   { bg: 'rgba(59,130,246,0.12)',  color: '#3b82f6' },
@@ -31,13 +44,9 @@ function seedReviewCount(name: string): number {
   return 18 + ((h >>> 0) % 83);
 }
 
-const FILTERS = [
-  { key: "bestseller", label: "Best Sellers" },
-  { key: "instock",    label: "In Stock"     },
-  { key: "all",        label: "All"          },
-] as const;
+const FILTER_KEYS = ["bestseller", "instock", "all"] as const;
 
-type FilterKey = typeof FILTERS[number]["key"];
+type FilterKey = typeof FILTER_KEYS[number];
 
 const containerVariants = {
   hidden: {},
@@ -67,7 +76,14 @@ function getFiltered(key: FilterKey): ProductFamily[] {
 }
 
 export function AppleBentoGrid() {
+  const { t } = useLanguage();
   const [activeFilter, setActiveFilter] = useState<FilterKey>("bestseller");
+
+  const FILTERS: { key: FilterKey; label: string }[] = [
+    { key: "bestseller", label: t("filter_bestseller") },
+    { key: "instock",    label: t("filter_instock") },
+    { key: "all",        label: t("filter_all") },
+  ];
   const [pickerFamily, setPickerFamily] = useState<ProductFamily | null>(null);
   const [revealed, setRevealed] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -97,10 +113,8 @@ export function AppleBentoGrid() {
           transition={{ duration: 0.6 }}
           className="text-center mb-10 md:mb-16"
         >
-          <h2 className="apple-headline mb-4">Research Store.</h2>
-          <p className="apple-subheadline text-secondary">
-            Precision-synthesized compounds for your next breakthrough.
-          </p>
+          <h2 className="apple-headline mb-4">{t("store_headline")}</h2>
+          <p className="apple-subheadline text-secondary">{t("store_sub")}</p>
         </motion.div>
 
         {/* Filter Pills */}
@@ -165,7 +179,7 @@ export function AppleBentoGrid() {
                             color: TAG_STYLES[family.tag].color,
                           }}
                         >
-                          {family.tag}
+                          {t(TAG_KEY[family.tag])}
                         </span>
                       </div>
 
@@ -182,13 +196,13 @@ export function AppleBentoGrid() {
 
                       <div className="text-[14px] md:text-[15px] text-secondary font-normal mb-4 md:mb-5">
                         {multi
-                          ? `${family.variants.length} options available`
-                          : `${firstVariant.unit} · ${firstVariant.purity} Purity`}
+                          ? `${family.variants.length} ${t("card_options")}`
+                          : `${firstVariant.unit} · ${firstVariant.purity} ${t("card_purity")}`}
                       </div>
 
                       <div className="flex flex-col items-center gap-2 md:gap-3">
                         <span className="text-[17px] md:text-[18px] text-primary font-medium">
-                          {multi ? `from $${family.minPrice}` : `$${firstVariant.price.toFixed(2)}`}
+                          {multi ? `${t("card_from")} $${family.minPrice}` : `$${firstVariant.price.toFixed(2)}`}
                         </span>
                         <button
                           type="button"
@@ -202,7 +216,7 @@ export function AppleBentoGrid() {
                           )}
                         >
                           <span style={{ pointerEvents: "none" }}>
-                            {allOos ? "Out of Stock" : multi ? "Select Options" : "Add to Bag"}
+                            {allOos ? t("card_oos") : multi ? t("card_select") : t("card_add")}
                           </span>
                         </button>
                       </div>

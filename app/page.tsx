@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { GlassVial } from "@/components/ui/GlassVial";
 import { AppleNav } from "@/components/ui/AppleNav";
 import { AppleHero } from "@/components/sections/AppleHero";
@@ -14,6 +15,7 @@ import { CartToast } from "@/components/ui/CartToast";
 
 export default function Home() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <>
@@ -28,11 +30,11 @@ export default function Home() {
         {/* Hero: COA Ribbon */}
         <AppleHero
           variant="secondary"
-          headline="Pure Precision."
-          subheadline="Sourced from purity-verified suppliers. High-grade compounds, every order."
-          ctaText="Shop Now"
+          headline={t("hero_headline")}
+          subheadline={t("hero_sub")}
+          ctaText={t("hero_cta")}
           ctaLink="#store"
-          ctaSecondaryText="View Quality"
+          ctaSecondaryText={t("hero_cta2")}
           ctaSecondaryLink="#quality"
         >
           <div className="w-full flex justify-center items-end px-4 -space-x-5 sm:-space-x-10 md:-space-x-16">

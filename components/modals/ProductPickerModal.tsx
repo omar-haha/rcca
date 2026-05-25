@@ -5,12 +5,14 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus } from "lucide-react";
 import { useCart } from "@/components/providers/CartProvider";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { GlassVial } from "@/components/ui/GlassVial";
 import { cn } from "@/lib/utils";
 import type { ProductFamily } from "@/lib/products";
 
 function PickerContent({ family, onClose }: { family: ProductFamily; onClose: () => void }) {
   const { addToCart } = useCart();
+  const { t } = useLanguage();
   const [selectedId, setSelectedId] = useState<string>(family.variants[0].id);
   const [qty, setQty] = useState(1);
   const [clicked, setClicked] = useState(false);
@@ -67,7 +69,7 @@ function PickerContent({ family, onClose }: { family: ProductFamily; onClose: ()
             {family.name}
           </h2>
           <p className="text-[13px] mb-5" style={{ color: "var(--text-muted)" }}>
-            {selected.purity} Purity
+            {selected.purity} {t("picker_purity")}
             {selected.cas !== "N/A" && <> · CAS {selected.cas}</>}
           </p>
 
@@ -75,7 +77,7 @@ function PickerContent({ family, onClose }: { family: ProductFamily; onClose: ()
           {family.variants.length > 1 && (
             <div className="mb-5">
               <p className="text-[11px] font-semibold tracking-widest uppercase mb-2.5" style={{ color: "var(--text-legal)" }}>
-                Select Dose
+                {t("picker_dose")}
               </p>
               <div className="flex flex-wrap gap-2">
                 {family.variants.map((v) => {
@@ -157,7 +159,7 @@ function PickerContent({ family, onClose }: { family: ProductFamily; onClose: ()
               style={oos ? { backgroundColor: "var(--surface)", color: "var(--text-legal)" } : {}}
             >
               <span className={clicked ? "animate-text-warp" : undefined} style={{ pointerEvents: "none" }}>
-                {oos ? "Out of Stock" : "Add to Bag"}
+                {oos ? t("picker_oos") : t("picker_add")}
               </span>
             </button>
           </div>
@@ -170,7 +172,7 @@ function PickerContent({ family, onClose }: { family: ProductFamily; onClose: ()
             onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text)")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-muted)")}
           >
-            View product page →
+            {t("picker_view")}
           </Link>
         </div>
       </div>

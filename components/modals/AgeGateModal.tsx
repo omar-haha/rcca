@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { RccaLogo } from "@/components/ui/RccaLogo";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { cn } from "@/lib/utils";
 
 const PROVINCES = [
@@ -24,6 +25,7 @@ const FIELD =
   "w-full rounded-[12px] p-[14px] text-[15px] outline-none transition-all appearance-none cursor-pointer";
 
 export function AgeGateModal() {
+  const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [province, setProvince] = useState("");
@@ -46,11 +48,11 @@ export function AgeGateModal() {
 
   const handleEnter = () => {
     if (!province) {
-      setError("Please select your province or territory.");
+      setError(t("age_err_province"));
       return;
     }
     if (!confirmed) {
-      setError(`Please confirm you are ${minAge} or older.`);
+      setError(`${t("age_err_confirm")} ${minAge} ${t("age_err_older")}`);
       return;
     }
     setError("");
@@ -109,10 +111,10 @@ export function AgeGateModal() {
             className="text-[26px] font-semibold tracking-tight leading-[1.2] mb-2"
             style={{ color: "var(--text)" }}
           >
-            Welcome to RCCA.
+            {t("age_headline")}
           </h1>
           <p className="text-[14px] leading-relaxed mb-7 max-w-[320px]" style={{ color: "var(--text-muted)" }}>
-            Select your province to confirm you meet the minimum age requirement for your region.
+            {t("age_sub")}
           </p>
 
           {/* Province selector */}
@@ -130,7 +132,7 @@ export function AgeGateModal() {
                 onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent)")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
               >
-                <option value="" disabled>Province / Territory</option>
+                <option value="" disabled>{t("age_province")}</option>
                 {PROVINCES.map((p) => (
                   <option key={p.code} value={p.code}>{p.name}</option>
                 ))}
@@ -178,9 +180,9 @@ export function AgeGateModal() {
                   )}
                 </div>
                 <span className="text-[14px]" style={{ color: "var(--text-muted)" }}>
-                  I am{" "}
+                  {t("age_confirm_pre")}{" "}
                   <span className="font-semibold" style={{ color: "var(--text)" }}>
-                    {minAge} or older
+                    {minAge} {t("age_confirm_suf")}
                   </span>
                 </span>
               </label>
@@ -203,14 +205,14 @@ export function AgeGateModal() {
               className="w-full text-white border-none py-[14px] rounded-full text-[15px] font-medium tracking-tight disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer btn-physical btn-physical-accent"
               style={{ backgroundColor: "var(--accent)" }}
             >
-              Confirm &amp; Enter
+              {t("age_enter")}
             </button>
             <button
               onClick={handleDecline}
               className="w-full border py-[14px] rounded-full text-[15px] font-normal cursor-pointer hover:opacity-70 tracking-tight bg-transparent btn-physical"
               style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
             >
-              I do not qualify
+              {t("age_decline")}
             </button>
           </div>
 
@@ -219,7 +221,7 @@ export function AgeGateModal() {
             className="text-[11px] mt-6 leading-[1.7] max-w-[340px]"
             style={{ color: "var(--text-muted)", opacity: 0.6 }}
           >
-            By entering, you confirm you meet the minimum age requirement for your province or territory.
+            {t("age_fine")}
           </p>
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 import { X, CheckCircle2, Copy, Check } from "lucide-react";
 import { useCart } from "../providers/CartProvider";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Spinner } from "../ui/Spinner";
@@ -22,6 +23,7 @@ const CRYPTO_ADDRESSES: Record<CryptoCoin, string> = {
 
 export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { cartItems, cartTotal, clearCart } = useCart();
+  const { t, lang } = useLanguage();
   const items = Object.values(cartItems);
 
   const [successOpen, setSuccessOpen] = useState(false);
@@ -89,7 +91,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
           >
             {/* Header */}
             <div className="px-7 py-5 border-b border-primary flex items-center justify-between shrink-0">
-              <h2 className="text-[20px] font-semibold tracking-tight text-primary m-0">Checkout</h2>
+              <h2 className="text-[20px] font-semibold tracking-tight text-primary m-0">{t("checkout_title")}</h2>
               <button
                 onClick={onClose}
                 className="w-8 h-8 rounded-full border-none flex items-center justify-center cursor-pointer transition-colors"
@@ -106,7 +108,11 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: '#16a34a' }} />
               </span>
               <span className="text-[12px]" style={{ color: "var(--text-muted)" }}>
-                <span className="font-semibold text-primary">{liveCount} people</span> are checking out right now
+                {lang === "fr" ? (
+                  <><span className="font-semibold text-primary">{liveCount}</span> {t("checkout_live_pre")}</>
+                ) : (
+                  <><span className="font-semibold text-primary">{liveCount} {t("checkout_people")}</span> {t("checkout_live_pre")}</>
+                )}
               </span>
             </div>
 
@@ -120,22 +126,22 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
               {/* Contact */}
               <section>
                 <p className="text-[11px] font-semibold tracking-widest uppercase mb-3.5" style={{ color: "var(--text-legal)" }}>
-                  Contact
+                  {t("checkout_contact")}
                 </p>
                 <div className="flex flex-col gap-3">
                   <div className="grid grid-cols-2 gap-3">
-                    <input type="text" placeholder="First Name" className={INPUT_CLASS} />
-                    <input type="text" placeholder="Last Name" className={INPUT_CLASS} />
+                    <input type="text" placeholder={t("checkout_first")} className={INPUT_CLASS} />
+                    <input type="text" placeholder={t("checkout_last")} className={INPUT_CLASS} />
                   </div>
-                  <input type="email" placeholder="Email Address" className={INPUT_CLASS} />
+                  <input type="email" placeholder={t("checkout_email")} className={INPUT_CLASS} />
                   <select className={cn(INPUT_CLASS, "appearance-none cursor-pointer")}>
-                    <option value="">Industry</option>
-                    <option>Analytical / Scientific Research</option>
-                    <option>Biotech / Pharmaceutical R&amp;D</option>
-                    <option>Industrial / Manufacturing</option>
-                    <option>Chemical / Material Sciences</option>
-                    <option>Academic / University Research</option>
-                    <option>Private / Independent Laboratory Research</option>
+                    <option value="">{t("checkout_industry")}</option>
+                    <option>{t("checkout_ind_analytical")}</option>
+                    <option>{t("checkout_ind_biotech")}</option>
+                    <option>{t("checkout_ind_industrial")}</option>
+                    <option>{t("checkout_ind_chemical")}</option>
+                    <option>{t("checkout_ind_academic")}</option>
+                    <option>{t("checkout_ind_private")}</option>
                   </select>
                 </div>
               </section>
@@ -143,22 +149,22 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
               {/* Shipping */}
               <section>
                 <p className="text-[11px] font-semibold tracking-widest uppercase mb-3.5" style={{ color: "var(--text-legal)" }}>
-                  Shipping
+                  {t("checkout_shipping")}
                 </p>
                 <div className="flex flex-col gap-3">
-                  <input type="text" placeholder="Street Address" className={INPUT_CLASS} />
+                  <input type="text" placeholder={t("checkout_street")} className={INPUT_CLASS} />
                   <div className="grid grid-cols-2 gap-3">
-                    <input type="text" placeholder="City" className={INPUT_CLASS} />
-                    <input type="text" placeholder="Postal Code" className={INPUT_CLASS} />
+                    <input type="text" placeholder={t("checkout_city")} className={INPUT_CLASS} />
+                    <input type="text" placeholder={t("checkout_postal")} className={INPUT_CLASS} />
                   </div>
                   <select className={cn(INPUT_CLASS, "appearance-none cursor-pointer")}>
-                    <option>Canada</option>
-                    <option>United States</option>
-                    <option>United Kingdom</option>
-                    <option>Germany</option>
-                    <option>Australia</option>
-                    <option>Netherlands</option>
-                    <option>Sweden</option>
+                    <option>{t("checkout_country_ca")}</option>
+                    <option>{t("checkout_country_us")}</option>
+                    <option>{t("checkout_country_uk")}</option>
+                    <option>{t("checkout_country_de")}</option>
+                    <option>{t("checkout_country_au")}</option>
+                    <option>{t("checkout_country_nl")}</option>
+                    <option>{t("checkout_country_se")}</option>
                   </select>
                 </div>
               </section>
@@ -166,7 +172,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
               {/* Payment */}
               <section>
                 <p className="text-[11px] font-semibold tracking-widest uppercase mb-3.5" style={{ color: "var(--text-legal)" }}>
-                  Payment Method
+                  {t("checkout_payment")}
                 </p>
 
                 {/* Toggle cards */}
@@ -185,10 +191,10 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                         }}
                       >
                         <div className="text-[14px] font-semibold text-primary mb-0.5 leading-tight">
-                          {method === "etransfer" ? "Interac e-Transfer" : "Cryptocurrency"}
+                          {method === "etransfer" ? t("checkout_etransfer") : t("checkout_crypto")}
                         </div>
                         <div className="text-[12px]" style={{ color: "var(--text-muted)" }}>
-                          {method === "etransfer" ? "Canadian banks" : "BTC · ETH · USDT"}
+                          {method === "etransfer" ? t("checkout_etransfer_sub") : t("checkout_crypto_sub")}
                         </div>
                       </button>
                     );
@@ -200,7 +206,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   <div className="rounded-[14px] p-5 flex flex-col gap-4" style={{ backgroundColor: "var(--bg-alt)" }}>
                     <div>
                       <p className="text-[11px] font-semibold tracking-widest uppercase mb-2" style={{ color: "var(--text-legal)" }}>
-                        Send To
+                        {t("checkout_send_to")}
                       </p>
                       <div className="flex items-center gap-3">
                         <span className="text-[15px] font-mono font-medium text-primary flex-1">
@@ -213,14 +219,13 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                           style={{ backgroundColor: "var(--surface-hover)", color: "var(--text-muted)" }}
                         >
                           {copied === "email" ? <Check size={12} /> : <Copy size={12} />}
-                          {copied === "email" ? "Copied" : "Copy"}
+                          {copied === "email" ? t("checkout_copied") : t("checkout_copy")}
                         </button>
                       </div>
                     </div>
                     <div className="h-px" style={{ backgroundColor: "var(--border)" }} />
                     <p className="text-[13px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
-                      Add your <span className="font-semibold text-primary">order number</span> to the memo field.
-                      Orders ship within 1–2 business days after payment clears.
+                      {t("checkout_etransfer_note")}
                     </p>
                   </div>
                 )}
@@ -249,7 +254,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
                     <div>
                       <p className="text-[11px] font-semibold tracking-widest uppercase mb-2" style={{ color: "var(--text-legal)" }}>
-                        Wallet Address
+                        {t("checkout_wallet")}
                       </p>
                       <div className="flex items-start gap-3">
                         <span className="text-[12px] font-mono text-primary break-all leading-relaxed flex-1">
@@ -262,14 +267,14 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                           style={{ backgroundColor: "var(--surface-hover)", color: "var(--text-muted)" }}
                         >
                           {copied === "wallet" ? <Check size={12} /> : <Copy size={12} />}
-                          {copied === "wallet" ? "Copied" : "Copy"}
+                          {copied === "wallet" ? t("checkout_copied") : t("checkout_copy")}
                         </button>
                       </div>
                     </div>
                     <div className="h-px" style={{ backgroundColor: "var(--border)" }} />
                     <p className="text-[13px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
-                      Send the exact amount in <span className="font-semibold text-primary">{cryptoCoin}</span>.
-                      Orders ship after 1 network confirmation.
+                      {t("checkout_crypto_note_pre")} <span className="font-semibold text-primary">{cryptoCoin}</span>.{" "}
+                      {t("checkout_crypto_note_suf")}
                     </p>
                   </div>
                 )}
@@ -279,7 +284,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
               <div>
                 <div className="flex justify-between items-baseline mb-5">
                   <span className="text-[14px]" style={{ color: "var(--text-muted)" }}>
-                    {items.length} item{items.length !== 1 && "s"}
+                    {items.length} {t("checkout_item")}{items.length !== 1 && "s"}
                   </span>
                   <span className="text-[26px] font-semibold tracking-tight text-primary">
                     ${cartTotal.toFixed(2)}
@@ -291,7 +296,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   className="w-full text-white border-none py-[15px] rounded-full text-[16px] font-medium cursor-pointer flex items-center justify-center min-h-[52px] btn-physical btn-physical-accent"
                   style={{ backgroundColor: "var(--accent)" }}
                 >
-                  {isSubmitting ? <Spinner size={22} /> : "Place Order"}
+                  {isSubmitting ? <Spinner size={22} /> : t("checkout_place")}
                 </button>
               </div>
             </div>
@@ -314,15 +319,15 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
               <CheckCircle2 size={28} strokeWidth={2} />
             </div>
 
-            <h3 className="text-[24px] font-semibold tracking-tight mb-2 text-primary">Order Placed.</h3>
+            <h3 className="text-[24px] font-semibold tracking-tight mb-2 text-primary">{t("checkout_success_title")}</h3>
             <p className="text-[14px] mb-6" style={{ color: "var(--text-muted)" }}>
-              Complete your payment to confirm shipment.
+              {t("checkout_success_sub")}
             </p>
 
             {/* Order number */}
             <div className="rounded-[12px] p-4 mb-4" style={{ backgroundColor: "var(--bg-alt)" }}>
               <div className="text-[11px] font-semibold tracking-widest uppercase mb-1" style={{ color: "var(--text-legal)" }}>
-                Order Number
+                {t("checkout_order_no")}
               </div>
               <div className="text-[19px] font-mono text-primary">{orderId}</div>
             </div>
@@ -332,21 +337,21 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
               {payMethod === "etransfer" ? (
                 <>
                   <div className="text-[11px] font-semibold tracking-widest uppercase mb-2" style={{ color: "var(--text-legal)" }}>
-                    Interac e-Transfer To
+                    {t("checkout_etransfer_to")}
                   </div>
                   <div className="text-[14px] font-mono font-medium text-primary mb-1">{ETRANSFER_EMAIL}</div>
                   <div className="text-[12px]" style={{ color: "var(--text-muted)" }}>
-                    Memo: <span className="font-semibold text-primary">{orderId}</span>
+                    {t("checkout_memo")}: <span className="font-semibold text-primary">{orderId}</span>
                   </div>
                 </>
               ) : (
                 <>
                   <div className="text-[11px] font-semibold tracking-widest uppercase mb-2" style={{ color: "var(--text-legal)" }}>
-                    Send {cryptoCoin}
+                    {t("checkout_send_coin")} {cryptoCoin}
                   </div>
                   <div className="text-[11px] font-mono text-primary break-all mb-1">{CRYPTO_ADDRESSES[cryptoCoin]}</div>
                   <div className="text-[12px]" style={{ color: "var(--text-muted)" }}>
-                    Amount: <span className="font-semibold text-primary">${savedTotal.toFixed(2)} USD</span>
+                    {t("checkout_amount")}: <span className="font-semibold text-primary">${savedTotal.toFixed(2)} USD</span>
                   </div>
                 </>
               )}
@@ -363,7 +368,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--bg-alt)")}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
-              Return to Store
+              {t("checkout_return")}
             </button>
           </div>
         </div>

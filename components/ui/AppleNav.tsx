@@ -3,20 +3,22 @@
 import { useState } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useCart } from "@/components/providers/CartProvider";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { Moon, Sun, ShoppingBag, Menu, X } from "lucide-react";
 import { RccaLogo } from "./RccaLogo";
-
-const NAV_LINKS = [
-  { label: "Store",    href: "/#store" },
-  { label: "Reviews",  href: "/reviews" },
-  { label: "FAQ",      href: "/faq" },
-  { label: "Contact",  href: "/contact" },
-];
 
 export function AppleNav() {
   const { theme, toggleTheme } = useTheme();
   const { cartCount, setCartOpen } = useCart();
+  const { lang, toggle: toggleLang, t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const NAV_LINKS = [
+    { label: t("nav_store"),   href: "/#store" },
+    { label: t("nav_reviews"), href: "/reviews" },
+    { label: t("nav_faq"),     href: "/faq" },
+    { label: t("nav_contact"), href: "/contact" },
+  ];
 
   return (
     <>
@@ -47,6 +49,15 @@ export function AppleNav() {
 
           {/* Right actions */}
           <div className="flex-1 flex items-center justify-end gap-4">
+            {/* Language toggle */}
+            <button
+              onClick={toggleLang}
+              className="text-primary opacity-70 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none flex items-center justify-center p-0 text-[11px] font-semibold tracking-widest"
+              aria-label="Toggle language"
+            >
+              {lang === "en" ? "FR" : "EN"}
+            </button>
+
             <button
               onClick={toggleTheme}
               className="text-primary opacity-80 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none flex items-center justify-center p-0"

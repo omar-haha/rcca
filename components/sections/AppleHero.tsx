@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import React, { useRef } from "react";
 import { ChevronRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 interface AppleHeroProps {
   variant?: "primary" | "secondary" | "tertiary";
@@ -41,6 +42,7 @@ export function AppleHero({
   children,
   className,
 }: AppleHeroProps) {
+  const { t } = useLanguage();
   const bgClass = variant === "primary" ? "bg-primary text-primary" :
                   variant === "secondary" ? "bg-secondary text-primary" :
                   "bg-[color:var(--surface-hover)] text-primary";
@@ -96,7 +98,7 @@ export function AppleHero({
 
         {/* Category nav pills */}
         <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center gap-2 mt-5">
-          {(["Weight Loss", "Muscle Growth", "Recovery"] as const).map((label) => (
+          {([t("hero_cat_weight"), t("hero_cat_muscle"), t("hero_cat_recovery")] as const).map((label) => (
             <a
               key={label}
               href="#store"

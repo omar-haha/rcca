@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { CartProvider } from '@/components/providers/CartProvider'
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider'
 import { PageTransitionProvider } from '@/components/providers/PageTransitionProvider'
+import { LanguageProvider } from '@/components/providers/LanguageProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron' })
@@ -36,13 +37,15 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} ${orbitron.variable} antialiased min-h-screen flex flex-col`}>
         <ThemeProvider>
-          <CartProvider>
-            <SmoothScrollProvider>
-              <PageTransitionProvider>
-                {children}
-              </PageTransitionProvider>
-            </SmoothScrollProvider>
-          </CartProvider>
+          <LanguageProvider>
+            <CartProvider>
+              <SmoothScrollProvider>
+                <PageTransitionProvider>
+                  {children}
+                </PageTransitionProvider>
+              </SmoothScrollProvider>
+            </CartProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

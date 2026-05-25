@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 interface Review {
   name: string;
@@ -91,6 +92,7 @@ function StarRow({ rating }: { rating: number }) {
 }
 
 export function ReviewsSection() {
+  const { t } = useLanguage();
   return (
     <section id="reviews" className="py-[80px] md:py-[100px] bg-secondary overflow-hidden">
       <div className="max-w-[1024px] mx-auto px-4 md:px-6">
@@ -102,7 +104,7 @@ export function ReviewsSection() {
           className="text-center mb-12"
         >
           <h2 className="text-[28px] md:text-[34px] font-semibold tracking-tight text-primary mb-3">
-            Trusted by Researchers.
+            {t("reviews_headline")}
           </h2>
           <div className="flex items-center justify-center gap-2">
             <div className="flex gap-0.5">
@@ -110,7 +112,7 @@ export function ReviewsSection() {
                 <span key={i} className="text-[16px]" style={{ color: '#f59e0b' }}>★</span>
               ))}
             </div>
-            <span className="text-[14px] text-secondary">4.9 average · 200+ verified orders</span>
+            <span className="text-[14px] text-secondary">{t("reviews_sub")}</span>
           </div>
         </motion.div>
 
@@ -137,7 +139,7 @@ export function ReviewsSection() {
                       className="flex items-center gap-1 text-[11px] font-semibold rounded-full px-2 py-0.5"
                       style={{ backgroundColor: 'rgba(34,197,94,0.12)', color: '#16a34a' }}
                     >
-                      ✓ Verified Buyer
+                      ✓ {t("reviews_badge")}
                     </span>
                   </div>
                   <p className="text-[12px] text-tertiary">{review.location}</p>

@@ -2,12 +2,14 @@
 
 import { Trash2, ShoppingBag, Plus, Minus } from "lucide-react";
 import { useCart } from "../providers/CartProvider";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { GlassVial } from "@/components/ui/GlassVial";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
   const { cartItems, cartTotal, cartOpen, setCartOpen, removeFromCart, updateQty } = useCart();
+  const { t } = useLanguage();
   const items = Object.values(cartItems);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -76,7 +78,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
 
           {/* Header */}
           <div className="pt-12 pb-6 px-6 shrink-0">
-            <h2 className="text-[28px] font-semibold tracking-tight m-0" style={{ color: "var(--text)" }}>Bag</h2>
+            <h2 className="text-[28px] font-semibold tracking-tight m-0" style={{ color: "var(--text)" }}>{t("cart_title")}</h2>
           </div>
 
           {/* Items */}
@@ -84,13 +86,13 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full gap-4 mt-20">
                 <ShoppingBag size={48} strokeWidth={1} className="opacity-30" style={{ color: "var(--text-muted)" }} />
-                <p className="text-[17px] tracking-tight" style={{ color: "var(--text-muted)" }}>Your bag is empty.</p>
+                <p className="text-[17px] tracking-tight" style={{ color: "var(--text-muted)" }}>{t("cart_empty")}</p>
                 <button
                   onClick={handleBrowseStore}
                   className="mt-2 px-6 py-3 rounded-full text-[15px] font-medium cursor-pointer border-none btn-physical btn-physical-accent"
                   style={{ backgroundColor: "var(--accent)", color: "var(--accent-fg)" }}
                 >
-                  Browse Store
+                  {t("cart_browse")}
                 </button>
               </div>
             ) : (
@@ -213,7 +215,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                 className="flex justify-between text-[17px] font-semibold mb-5 tracking-tight pt-4"
                 style={{ color: "var(--text)", borderTop: "1px solid var(--border)" }}
               >
-                <span>Total</span>
+                <span>{t("cart_total")}</span>
                 <span>${cartTotal.toFixed(2)}</span>
               </div>
               <button
@@ -224,7 +226,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                 className="w-full text-white border-none py-4 rounded-full text-[17px] font-normal cursor-pointer btn-physical btn-physical-accent"
                 style={{ backgroundColor: "var(--accent)" }}
               >
-                Check Out
+                {t("cart_checkout")}
               </button>
             </div>
           )}

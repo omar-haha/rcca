@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { Mail, ChevronUp, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 const INPUT =
   "w-full bg-[var(--bg-alt)] border border-[var(--border)] rounded-[10px] px-3.5 py-2.5 text-[13px] text-primary placeholder:text-[var(--text-muted)] outline-none transition-all focus:border-[color:var(--accent)]";
 
 export function AppleFooter() {
+  const { t } = useLanguage();
   const [contactOpen, setContactOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -35,14 +37,14 @@ export function AppleFooter() {
 
             {/* Left — Explore */}
             <div className="text-left">
-              <h3 className="text-primary font-semibold mb-2 text-[12px]">Explore</h3>
+              <h3 className="text-primary font-semibold mb-2 text-[12px]">{t("footer_explore")}</h3>
               <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
-                <li><a href="/#store"   className="text-tertiary hover:text-primary transition-colors no-underline">Shop</a></li>
-                <li><a href="/#quality" className="text-tertiary hover:text-primary transition-colors no-underline">Quality</a></li>
-                <li><a href="/reviews"  className="text-tertiary hover:text-primary transition-colors no-underline">Reviews</a></li>
-                <li><a href="/faq"      className="text-tertiary hover:text-primary transition-colors no-underline">FAQ</a></li>
-                <li><a href="/coa"      className="text-tertiary hover:text-primary transition-colors no-underline">COA</a></li>
-                <li><a href="/contact"  className="text-tertiary hover:text-primary transition-colors no-underline">Contact</a></li>
+                <li><a href="/#store"   className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_shop")}</a></li>
+                <li><a href="/#quality" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_quality")}</a></li>
+                <li><a href="/reviews"  className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_reviews")}</a></li>
+                <li><a href="/faq"      className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_faq")}</a></li>
+                <li><a href="/coa"      className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_coa")}</a></li>
+                <li><a href="/contact"  className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_contact")}</a></li>
               </ul>
             </div>
 
@@ -74,19 +76,19 @@ export function AppleFooter() {
                           >
                             <CheckCircle2 size={18} strokeWidth={2} />
                           </div>
-                          <p className="text-[13px] font-semibold text-primary">Message received.</p>
-                          <p className="text-[12px] text-secondary">We&apos;ll get back to you shortly.</p>
+                          <p className="text-[13px] font-semibold text-primary">{t("footer_msg_sent")}</p>
+                          <p className="text-[12px] text-secondary">{t("footer_msg_sub")}</p>
                         </div>
                       ) : (
                         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                           <div className="grid grid-cols-2 gap-2">
-                            <input type="text" placeholder="First Name" required className={INPUT} />
-                            <input type="text" placeholder="Last Name" required className={INPUT} />
+                            <input type="text" placeholder={t("footer_first")} required className={INPUT} />
+                            <input type="text" placeholder={t("footer_last")} required className={INPUT} />
                           </div>
-                          <input type="email" placeholder="Email" required className={INPUT} />
-                          <input type="tel" placeholder="Phone" className={INPUT} />
+                          <input type="email" placeholder={t("footer_email")} required className={INPUT} />
+                          <input type="tel" placeholder={t("footer_phone")} className={INPUT} />
                           <textarea
-                            placeholder="Message..."
+                            placeholder={t("footer_message")}
                             rows={3}
                             required
                             className={INPUT}
@@ -97,7 +99,7 @@ export function AppleFooter() {
                             className="w-full py-[9px] rounded-full text-[13px] font-medium text-white border-none cursor-pointer btn-physical btn-physical-accent"
                             style={{ backgroundColor: "var(--accent)" }}
                           >
-                            <span style={{ pointerEvents: "none" }}>Submit</span>
+                            <span style={{ pointerEvents: "none" }}>{t("footer_submit")}</span>
                           </button>
                         </form>
                       )}
@@ -123,9 +125,9 @@ export function AppleFooter() {
                     <Mail size={15} strokeWidth={1.5} style={{ color: "var(--text-muted)" }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-primary leading-snug">Contact Us</p>
+                    <p className="text-[13px] font-semibold text-primary leading-snug">{t("footer_contact_label")}</p>
                     <p className="text-[11px] leading-snug truncate" style={{ color: "var(--text-muted)" }}>
-                      Questions or order inquiries
+                      {t("footer_contact_sub")}
                     </p>
                   </div>
                   <motion.div
@@ -142,12 +144,12 @@ export function AppleFooter() {
 
             {/* Right — Legal */}
             <div className="text-right">
-              <h3 className="text-primary font-semibold mb-2 text-[12px]">Legal</h3>
+              <h3 className="text-primary font-semibold mb-2 text-[12px]">{t("footer_legal")}</h3>
               <ul className="list-none p-0 m-0 flex flex-col gap-1.5 items-end">
-                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">Disclaimers</a></li>
-                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">Privacy Policy</a></li>
-                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">Terms of Use</a></li>
-                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">Refund Policy</a></li>
+                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_disclaimers")}</a></li>
+                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_privacy")}</a></li>
+                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_terms")}</a></li>
+                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_refund")}</a></li>
               </ul>
             </div>
           </div>

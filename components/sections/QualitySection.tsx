@@ -1,13 +1,15 @@
 import { ShieldCheck, Microscope, Truck } from "lucide-react";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
-const QUALITY_FEATURES = [
-  { icon: ShieldCheck, label: "Verified Suppliers" },
-  { icon: Microscope,  label: "Research Grade"     },
-  { icon: Truck,       label: "Fast Delivery"      },
-];
 
 
 export function QualitySection() {
+  const { t } = useLanguage();
+  const QUALITY_FEATURES = [
+    { icon: ShieldCheck, label: t("quality_suppliers") },
+    { icon: Microscope,  label: t("quality_grade")     },
+    { icon: Truck,       label: t("quality_delivery")  },
+  ];
   return (
     <section id="quality" className="relative py-[60px] md:py-[80px] bg-secondary overflow-hidden">
 
@@ -38,11 +40,10 @@ export function QualitySection() {
 
       <div className="relative max-w-[620px] mx-auto px-4 md:px-6 text-center">
         <h2 className="text-[28px] md:text-[34px] font-semibold tracking-tight text-primary mb-4">
-          High Purity. Every Order.
+          {t("quality_headline")}
         </h2>
         <p className="text-[15px] md:text-[16px] text-secondary leading-relaxed mb-10">
-          All compounds are batch-tested and suitable for research applications.
-          COAs available on request.
+          {t("quality_sub")}
         </p>
 
         <div className="flex justify-center gap-10 md:gap-16 mb-10">
@@ -60,9 +61,9 @@ export function QualitySection() {
         </div>
 
         <div className="flex items-center justify-center gap-6 text-[12px]" style={{ color: "var(--text-muted)" }}>
-          <a href="/coa" className="hover:text-primary transition-colors no-underline">Certificate of Analysis →</a>
+          <a href="/coa" className="hover:text-primary transition-colors no-underline">{t("quality_coa_link")}</a>
           <span style={{ color: "var(--border)" }}>|</span>
-          <a href="/legal" className="hover:text-primary transition-colors no-underline">Legal Disclosures →</a>
+          <a href="/legal" className="hover:text-primary transition-colors no-underline">{t("quality_legal_link")}</a>
         </div>
       </div>
     </section>
