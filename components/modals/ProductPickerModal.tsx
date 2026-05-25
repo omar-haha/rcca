@@ -68,10 +68,11 @@ function PickerContent({ family, onClose }: { family: ProductFamily; onClose: ()
           <h2 className="text-[26px] font-semibold tracking-[-0.02em] mb-1" style={{ color: "var(--text)" }}>
             {family.name}
           </h2>
-          <p className="text-[13px] mb-5" style={{ color: "var(--text-muted)" }}>
-            {selected.purity} {t("picker_purity")}
-            {selected.cas !== "N/A" && <> · CAS {selected.cas}</>}
-          </p>
+          {selected.cas !== "N/A" && (
+            <p className="text-[13px] mb-5" style={{ color: "var(--text-muted)" }}>
+              CAS {selected.cas}
+            </p>
+          )}
 
           {/* Variant selector — only if more than one */}
           {family.variants.length > 1 && (

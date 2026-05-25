@@ -197,7 +197,7 @@ export function AppleBentoGrid() {
                       <div className="text-[14px] md:text-[15px] text-secondary font-normal mb-4 md:mb-5">
                         {multi
                           ? `${family.variants.length} ${t("card_options")}`
-                          : `${firstVariant.unit} · ${firstVariant.purity} ${t("card_purity")}`}
+                          : firstVariant.unit}
                       </div>
 
                       <div className="flex flex-col items-center gap-2 md:gap-3">
