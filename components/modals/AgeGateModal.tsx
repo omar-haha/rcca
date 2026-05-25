@@ -219,7 +219,7 @@ export function AgeGateModal() {
             className="text-[11px] mt-6 leading-[1.7] max-w-[340px]"
             style={{ color: "var(--text-muted)", opacity: 0.6 }}
           >
-            By entering, you confirm you meet the minimum age requirement for your province, hold appropriate research credentials, and agree to use all products strictly for in vitro scientific research.
+            By entering, you confirm you meet the minimum age requirement for your province or territory.
           </p>
         </div>
       </div>

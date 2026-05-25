@@ -9,12 +9,6 @@ import { Spinner } from "../ui/Spinner";
 const INPUT_CLASS =
   "w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[color:var(--accent)] focus:bg-primary";
 
-const ATTESTATIONS = [
-  "I confirm all compounds are for <strong>in vitro research only</strong> and will not be used on or in any human or animal.",
-  "I am a licensed researcher or authorized representative of a registered research institution.",
-  "I have read and agree to the Legal Disclosures and Research Use Policy.",
-];
-
 const PAYMENT_OPTIONS = [
   { value: "card", label: "Credit / Debit Card", sub: "Visa, Mastercard, Amex", badges: [{ bg: "#1A1F71", text: "VISA" }, { bg: "#EB001B", text: "MC" }] },
   { value: "paypal", label: "PayPal", sub: "Pay with your PayPal account", badges: [{ bg: "#003087", text: "Pay" }, { bg: "#009CDE", text: "Pal" }] },
@@ -26,12 +20,10 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const { cartItems, cartTotal, clearCart } = useCart();
   const items = Object.values(cartItems);
 
-  const [checked, setChecked] = useState([false, false, false]);
   const [successOpen, setSuccessOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
-  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -42,11 +34,6 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
     }
     return () => { document.body.style.overflow = ""; };
   }, [isOpen, successOpen]);
-
-  const toggleCheck = (i: number) => {
-    setChecked((prev) => prev.map((v, idx) => (idx === i ? !v : v)));
-    if (attemptedSubmit) setAttemptedSubmit(false);
-  };
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, "");
@@ -63,10 +50,6 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   };
 
   const handlePlaceOrder = () => {
-    setAttemptedSubmit(true);
-    if (!checked.every(Boolean)) {
-      return;
-    }
     setIsSubmitting(true);
     setTimeout(() => {
       setOrderId("W" + Math.floor(100000000 + Math.random() * 900000000));
@@ -78,8 +61,6 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
   const handleCloseSuccess = () => {
     setSuccessOpen(false);
-    setChecked([false, false, false]);
-    setAttemptedSubmit(false);
     setCardNumber("");
     setExpiry("");
     onClose();
@@ -91,12 +72,12 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
     <>
       {/* Checkout Form Modal */}
       {isOpen && !successOpen && (
-        <div 
+        <div
           data-lenis-prevent="true"
           className="fixed inset-0 z-[3000] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
           onClick={onClose}
         >
-          <div 
+          <div
             className="bg-primary rounded-[24px] w-full max-w-[640px] max-h-[90vh] flex flex-col overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
@@ -113,16 +94,15 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
             {/* Scrollable Form Body */}
             <div className={cn("p-8 overflow-y-auto transition-opacity duration-300", isSubmitting && "opacity-50 pointer-events-none")}>
-              {/* Researcher Information */}
+              {/* Contact Information */}
               <div className="mb-10">
-                <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Researcher Information</h3>
+                <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Contact Information</h3>
                 <div className="flex flex-col gap-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <input type="text" placeholder="First Name" className={INPUT_CLASS} />
                     <input type="text" placeholder="Last Name" className={INPUT_CLASS} />
                   </div>
-                  <input type="email" placeholder="Institutional Email Address" className={INPUT_CLASS} />
-                  <input type="text" placeholder="Research Institution / Lab Name" className={INPUT_CLASS} />
+                  <input type="email" placeholder="Email Address" className={INPUT_CLASS} />
                 </div>
               </div>
 
@@ -192,30 +172,6 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 </div>
               </div>
 
-              {/* Compliance Attestations */}
-              <div className="mb-10">
-                <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Compliance Attestations</h3>
-                <div className="flex flex-col gap-4">
-                  {ATTESTATIONS.map((text, i) => (
-                    <label key={i} className={`flex items-start gap-4 cursor-pointer group p-3 -mx-3 rounded-[12px] transition-colors border ${attemptedSubmit && !checked[i] ? "bg-[color:var(--error)]/5 border-[color:var(--error)]/20" : "border-transparent hover:bg-[color:var(--bg-alt)]/50"}`}>
-                      <div className="relative flex items-center justify-center w-6 h-6 shrink-0 mt-0.5">
-                        <input
-                          type="checkbox"
-                          checked={checked[i]}
-                          onChange={() => toggleCheck(i)}
-                          className="peer appearance-none w-6 h-6 border-2 border-secondary rounded-[6px] checked:bg-[color:var(--accent)] checked:border-[color:var(--accent)] transition-colors cursor-pointer"
-                        />
-                        <CheckCircle2 size={16} strokeWidth={3} className="absolute text-white pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" />
-                      </div>
-                      <span
-                        className="text-[15px] text-primary leading-snug pt-0.5"
-                        dangerouslySetInnerHTML={{ __html: text }}
-                      />
-                    </label>
-                  ))}
-                </div>
-              </div>
-
               {/* Order Summary & CTA */}
               <div className="pt-6 border-t border-primary">
                 <div className="flex justify-between items-end mb-6">
@@ -245,7 +201,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
             </div>
             <h3 className="text-[28px] font-semibold tracking-tight mb-4 text-primary">Order Confirmed.</h3>
             <p className="text-[17px] text-secondary leading-relaxed mb-8">
-              Your research order has been successfully placed. A confirmation email and COA documentation will be dispatched to your institutional address shortly.
+              Your order has been successfully placed. A confirmation email will be sent to you shortly.
             </p>
             <div className="bg-secondary rounded-[12px] p-4 mb-8">
               <div className="text-[13px] text-tertiary uppercase tracking-widest font-semibold mb-1">Order Number</div>
