@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageShell } from "@/components/PageShell";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { cn } from "@/lib/utils";
@@ -79,9 +79,21 @@ const CONTENT_FR = {
 
 type TabId = "disclaimers" | "privacy" | "terms" | "refund";
 
+const VALID_TABS: TabId[] = ["disclaimers", "privacy", "terms", "refund"];
+
 export default function LegalPage() {
   const [tab, setTab] = useState<TabId>("disclaimers");
   const { t } = useLanguage();
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1) as TabId;
+    if (VALID_TABS.includes(hash)) setTab(hash);
+  }, []);
+
+  const switchTab = (id: TabId) => {
+    setTab(id);
+    history.replaceState(null, "", `/legal#${id}`);
+  };
 
   const TABS: { id: TabId; label: string }[] = [
     { id: "disclaimers", label: t("page_legal_tab_disc") },
@@ -110,7 +122,7 @@ export default function LegalPage() {
             <button
               key={id}
               type="button"
-              onClick={() => setTab(id)}
+              onClick={() => switchTab(id)}
               className={cn(
                 "rounded-[10px] px-4 py-2 text-[13px] font-medium cursor-pointer border-none transition-all duration-200",
                 tab === id ? "text-primary shadow-sm" : "text-secondary hover:text-primary"

@@ -144,12 +144,14 @@ export function AppleFooter() {
 
             {/* Right — Legal */}
             <div className="text-right">
-              <h3 className="text-primary font-semibold mb-2 text-[12px]">{t("footer_legal")}</h3>
+              <h3 className="text-primary font-semibold mb-2 text-[12px]">
+                <a href="/legal" className="text-primary no-underline hover:underline">{t("footer_legal")}</a>
+              </h3>
               <ul className="list-none p-0 m-0 flex flex-col gap-1.5 items-end">
-                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_disclaimers")}</a></li>
-                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_privacy")}</a></li>
-                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_terms")}</a></li>
-                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_refund")}</a></li>
+                <li><a href="/legal#disclaimers" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_disclaimers")}</a></li>
+                <li><a href="/legal#privacy"      className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_privacy")}</a></li>
+                <li><a href="/legal#terms"        className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_terms")}</a></li>
+                <li><a href="/legal#refund"       className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_refund")}</a></li>
               </ul>
             </div>
           </div>
