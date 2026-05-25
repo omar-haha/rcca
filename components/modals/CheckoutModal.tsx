@@ -2,7 +2,7 @@
 
 import { X, CheckCircle2 } from "lucide-react";
 import { useCart } from "../providers/CartProvider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Spinner } from "../ui/Spinner";
 
@@ -33,6 +33,15 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const [expiry, setExpiry] = useState("");
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isOpen || successOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [isOpen, successOpen]);
 
   const toggleCheck = (i: number) => {
     setChecked((prev) => prev.map((v, idx) => (idx === i ? !v : v)));
@@ -83,6 +92,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
       {/* Checkout Form Modal */}
       {isOpen && !successOpen && (
         <div 
+          data-lenis-prevent="true"
           className="fixed inset-0 z-[3000] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
           onClick={onClose}
         >
@@ -228,7 +238,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
       {/* Success Modal */}
       {successOpen && (
-        <div className="fixed inset-0 z-[4000] bg-black/40 backdrop-blur-md flex items-center justify-center p-6 animate-in fade-in duration-300">
+        <div data-lenis-prevent="true" className="fixed inset-0 z-[4000] bg-black/40 backdrop-blur-md flex items-center justify-center p-6 animate-in fade-in duration-300">
           <div className="bg-primary rounded-[24px] p-12 text-center max-w-[440px] w-full shadow-2xl animate-in zoom-in-95 duration-500">
             <div className="w-[72px] h-[72px] rounded-full bg-secondary flex items-center justify-center text-success mb-6 mx-auto">
               <CheckCircle2 size={36} strokeWidth={2} />
