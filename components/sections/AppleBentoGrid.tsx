@@ -145,11 +145,9 @@ export function AppleBentoGrid() {
                           ${p.price.toFixed(2)}
                         </span>
                         <button
+                          type="button"
                           disabled={oos}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!oos) handleAdd(p);
-                          }}
+                          onClick={() => { if (!oos) handleAdd(p); }}
                           className={cn(
                             "rounded-full px-5 py-2 text-[13px] font-medium text-white cursor-pointer border-none z-20 relative",
                             oos
@@ -159,7 +157,10 @@ export function AppleBentoGrid() {
                               : "bg-accent hover:bg-[color:var(--accent-hover)] btn-physical btn-physical-accent"
                           )}
                         >
-                          <span className={clickedId === p.id ? "animate-text-warp" : undefined}>
+                          <span
+                            className={clickedId === p.id ? "animate-text-warp" : undefined}
+                            style={{ pointerEvents: "none" }}
+                          >
                             Add to Bag
                           </span>
                         </button>

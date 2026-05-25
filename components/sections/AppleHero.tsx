@@ -69,6 +69,13 @@ export function AppleHero({
           {ctaText && (
             <a
               href={ctaLink || "#"}
+              onClick={(e) => {
+                const link = ctaLink || "";
+                if (link.startsWith("#")) {
+                  e.preventDefault();
+                  document.getElementById(link.slice(1))?.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
               className={cn(
                 "rounded-full px-5 py-2.5 text-[15px] font-normal no-underline bg-accent btn-physical btn-physical-accent"
               )}
