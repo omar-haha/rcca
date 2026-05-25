@@ -200,14 +200,14 @@ export function AgeGateModal() {
             <button
               onClick={handleEnter}
               disabled={!province || !confirmed}
-              className="w-full text-white border-none py-[14px] rounded-full text-[15px] font-medium transition-all hover:scale-[1.02] active:scale-[0.98] tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100 cursor-pointer"
+              className="w-full text-white border-none py-[14px] rounded-full text-[15px] font-medium tracking-tight disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer btn-physical btn-physical-accent"
               style={{ backgroundColor: "var(--accent)" }}
             >
               Confirm &amp; Enter
             </button>
             <button
               onClick={handleDecline}
-              className="w-full border py-[14px] rounded-full text-[15px] font-normal cursor-pointer transition-opacity hover:opacity-70 tracking-tight bg-transparent"
+              className="w-full border py-[14px] rounded-full text-[15px] font-normal cursor-pointer hover:opacity-70 tracking-tight bg-transparent btn-physical"
               style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
             >
               I do not qualify

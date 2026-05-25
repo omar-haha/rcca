@@ -70,7 +70,7 @@ export function AppleHero({
             <a
               href={ctaLink || "#"}
               className={cn(
-                "rounded-full px-5 py-2.5 text-[15px] font-normal transition-transform hover:scale-[1.02] no-underline bg-accent"
+                "rounded-full px-5 py-2.5 text-[15px] font-normal no-underline bg-accent btn-physical btn-physical-accent"
               )}
             >
               {ctaText}

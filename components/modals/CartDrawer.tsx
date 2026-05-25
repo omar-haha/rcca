@@ -87,7 +87,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                 <p className="text-[17px] tracking-tight" style={{ color: "var(--text-muted)" }}>Your bag is empty.</p>
                 <button
                   onClick={handleBrowseStore}
-                  className="mt-2 px-6 py-3 rounded-full text-[15px] font-medium cursor-pointer border-none transition-all hover:scale-[1.03]"
+                  className="mt-2 px-6 py-3 rounded-full text-[15px] font-medium cursor-pointer border-none btn-physical btn-physical-accent"
                   style={{ backgroundColor: "var(--accent)", color: "var(--accent-fg)" }}
                 >
                   Browse Store
@@ -171,7 +171,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                           <button
                             onClick={() => updateQty(item.id, -1)}
                             disabled={item.qty === 1}
-                            className="w-8 h-8 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:bg-[var(--surface)] active:bg-[var(--border)] active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed"
+                            className="w-8 h-8 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:bg-[var(--surface)] active:bg-[var(--border)] active:translate-y-px disabled:opacity-25 disabled:cursor-not-allowed"
                             style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                             aria-label="Decrease quantity"
                           >
@@ -185,7 +185,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                           </span>
                           <button
                             onClick={() => updateQty(item.id, 1)}
-                            className="w-8 h-8 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:bg-[var(--surface)] active:bg-[var(--border)] active:scale-95"
+                            className="w-8 h-8 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:bg-[var(--surface)] active:bg-[var(--border)] active:translate-y-px"
                             style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                             aria-label="Increase quantity"
                           >
@@ -221,7 +221,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                   setCartOpen(false);
                   onCheckout();
                 }}
-                className="w-full text-white border-none py-4 rounded-full text-[17px] font-normal transition-transform hover:scale-[1.02] cursor-pointer"
+                className="w-full text-white border-none py-4 rounded-full text-[17px] font-normal cursor-pointer btn-physical btn-physical-accent"
                 style={{ backgroundColor: "var(--accent)" }}
               >
                 Check Out
