@@ -3,13 +3,11 @@
 import { useState } from "react";
 import { Mail, ChevronUp, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LegalModal, type LegalPage } from "@/components/modals/LegalModal";
 
 const INPUT =
   "w-full bg-[var(--bg-alt)] border border-[var(--border)] rounded-[10px] px-3.5 py-2.5 text-[13px] text-primary placeholder:text-[var(--text-muted)] outline-none transition-all focus:border-[color:var(--accent)]";
 
 export function AppleFooter() {
-  const [legalPage, setLegalPage] = useState<LegalPage>(null);
   const [contactOpen, setContactOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -20,7 +18,6 @@ export function AppleFooter() {
 
   return (
     <>
-      <LegalModal page={legalPage} onClose={() => setLegalPage(null)} />
 
       {/* Click-outside backdrop */}
       {contactOpen && (
@@ -40,8 +37,12 @@ export function AppleFooter() {
             <div className="text-left">
               <h3 className="text-primary font-semibold mb-2 text-[12px]">Explore</h3>
               <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
-                <li><a href="/#store" className="text-tertiary hover:text-primary transition-colors no-underline">Shop</a></li>
-                <li><a href="/#quality" className="text-tertiary hover:text-primary transition-colors no-underline">Quality &amp; Sourcing</a></li>
+                <li><a href="/#store"   className="text-tertiary hover:text-primary transition-colors no-underline">Shop</a></li>
+                <li><a href="/#quality" className="text-tertiary hover:text-primary transition-colors no-underline">Quality</a></li>
+                <li><a href="/reviews"  className="text-tertiary hover:text-primary transition-colors no-underline">Reviews</a></li>
+                <li><a href="/faq"      className="text-tertiary hover:text-primary transition-colors no-underline">FAQ</a></li>
+                <li><a href="/coa"      className="text-tertiary hover:text-primary transition-colors no-underline">COA</a></li>
+                <li><a href="/contact"  className="text-tertiary hover:text-primary transition-colors no-underline">Contact</a></li>
               </ul>
             </div>
 
@@ -143,21 +144,10 @@ export function AppleFooter() {
             <div className="text-right">
               <h3 className="text-primary font-semibold mb-2 text-[12px]">Legal</h3>
               <ul className="list-none p-0 m-0 flex flex-col gap-1.5 items-end">
-                <li>
-                  <button onClick={() => setLegalPage("privacy")} className="text-tertiary hover:text-primary transition-colors bg-transparent border-none cursor-pointer p-0 text-[12px] font-normal">
-                    Privacy Policy
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => setLegalPage("terms")} className="text-tertiary hover:text-primary transition-colors bg-transparent border-none cursor-pointer p-0 text-[12px] font-normal">
-                    Terms of Use
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => setLegalPage("refund")} className="text-tertiary hover:text-primary transition-colors bg-transparent border-none cursor-pointer p-0 text-[12px] font-normal">
-                    Refund Policy
-                  </button>
-                </li>
+                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">Disclaimers</a></li>
+                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">Privacy Policy</a></li>
+                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">Terms of Use</a></li>
+                <li><a href="/legal" className="text-tertiary hover:text-primary transition-colors no-underline">Refund Policy</a></li>
               </ul>
             </div>
           </div>

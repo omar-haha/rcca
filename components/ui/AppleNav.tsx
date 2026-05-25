@@ -7,10 +7,10 @@ import { Moon, Sun, ShoppingBag, Menu, X } from "lucide-react";
 import { RccaLogo } from "./RccaLogo";
 
 const NAV_LINKS = [
-  { label: "Store",   href: "/#store" },
-  { label: "Quality", href: "/#quality" },
-  { label: "Legal",   href: "/#legal" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Store",    href: "/#store" },
+  { label: "Reviews",  href: "/reviews" },
+  { label: "FAQ",      href: "/faq" },
+  { label: "Contact",  href: "/contact" },
 ];
 
 export function AppleNav() {
