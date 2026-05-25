@@ -86,8 +86,13 @@ export default function LegalPage() {
   const { t } = useLanguage();
 
   useEffect(() => {
-    const hash = window.location.hash.slice(1) as TabId;
-    if (VALID_TABS.includes(hash)) setTab(hash);
+    const readHash = () => {
+      const hash = window.location.hash.slice(1) as TabId;
+      if (VALID_TABS.includes(hash)) setTab(hash);
+    };
+    readHash();
+    window.addEventListener("hashchange", readHash);
+    return () => window.removeEventListener("hashchange", readHash);
   }, []);
 
   const switchTab = (id: TabId) => {
