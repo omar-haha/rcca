@@ -1,12 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#0071e3"/>
-  <!-- R lettermark: left stem + top bar + bowl + diagonal leg -->
-  <path
-    d="M 8 26 V 6 H 20 V 16 H 8 M 20 16 L 26 26"
-    stroke="white"
-    stroke-width="2.5"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    fill="none"
-  />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 -112 320 320">
+  <!-- 320×320 square canvas centred on the RCCA lettermark -->
+  <rect x="8" y="-112" width="320" height="320" rx="68" fill="#000000"/>
+  <!-- RCCA paths from RccaLogo, stroke thickened for small-size legibility -->
+  <g stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- R -->
+    <path d="M 18 18 H 66 M 18 46 H 58 M 66 18 V 78"/>
+    <!-- C -->
+    <path d="M 102 18 V 78 M 102 18 H 150 M 102 78 H 150"/>
+    <!-- C -->
+    <path d="M 186 18 V 78 M 186 18 H 234 M 186 78 H 234"/>
+    <!-- A -->
+    <path d="M 270 78 V 18 M 270 18 H 318 M 318 78 V 18 M 270 50 H 318"/>
+  </g>
 </svg>
