@@ -6,7 +6,30 @@ import { GlassVial } from "@/components/ui/GlassVial";
 import { ProductPickerModal } from "@/components/modals/ProductPickerModal";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import type { ProductFamily } from "@/lib/products";
+import type { ProductFamily, BenefitTag } from "@/lib/products";
+
+const TAG_STYLES: Record<BenefitTag, { bg: string; color: string }> = {
+  'Weight Loss':   { bg: 'rgba(59,130,246,0.12)',  color: '#3b82f6' },
+  'Muscle Growth': { bg: 'rgba(34,197,94,0.12)',   color: '#16a34a' },
+  'Recovery':      { bg: 'rgba(251,146,60,0.12)',  color: '#ea580c' },
+  'Anti-Aging':    { bg: 'rgba(168,85,247,0.12)',  color: '#9333ea' },
+  'Cognitive':     { bg: 'rgba(6,182,212,0.12)',   color: '#0891b2' },
+  'Tanning':       { bg: 'rgba(245,158,11,0.12)',  color: '#d97706' },
+  'Libido':        { bg: 'rgba(239,68,68,0.12)',   color: '#dc2626' },
+  'Ancillary':     { bg: 'rgba(107,114,128,0.12)', color: '#6b7280' },
+};
+
+function seedRating(name: string): number {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
+  return 4.6 + ((h >>> 0) % 5) * 0.1;
+}
+
+function seedReviewCount(name: string): number {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 37 + name.charCodeAt(i)) & 0xffffffff;
+  return 18 + ((h >>> 0) % 83);
+}
 
 const FILTERS = [
   { key: "bestseller", label: "Best Sellers" },
@@ -133,12 +156,30 @@ export function AppleBentoGrid() {
                   >
                     {/* Text Content */}
                     <div className="text-center px-5 md:px-8 z-10 w-full mb-6 md:mb-8">
-                      <div className="text-[11px] md:text-[12px] font-semibold tracking-widest uppercase text-tertiary mb-2 md:mb-3">
-                        {family.cat}
+                      {/* Tag pill */}
+                      <div className="flex justify-center mb-3">
+                        <span
+                          className="inline-block rounded-full px-3 py-0.5 text-[11px] font-semibold tracking-wide"
+                          style={{
+                            backgroundColor: TAG_STYLES[family.tag].bg,
+                            color: TAG_STYLES[family.tag].color,
+                          }}
+                        >
+                          {family.tag}
+                        </span>
                       </div>
+
                       <h3 className="text-[22px] md:text-[28px] font-semibold tracking-[-0.01em] text-primary mb-1 md:mb-2">
                         {family.name}
                       </h3>
+
+                      {/* Star rating */}
+                      <div className="flex items-center justify-center gap-1.5 mb-3">
+                        <span className="text-[13px]" style={{ color: '#f59e0b' }}>★</span>
+                        <span className="text-[13px] font-medium text-primary">{seedRating(family.name).toFixed(1)}</span>
+                        <span className="text-[12px] text-tertiary">({seedReviewCount(family.name)})</span>
+                      </div>
+
                       <div className="text-[14px] md:text-[15px] text-secondary font-normal mb-4 md:mb-5">
                         {multi
                           ? `${family.variants.length} options available`

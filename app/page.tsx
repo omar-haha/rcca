@@ -7,6 +7,7 @@ import { AppleHero } from "@/components/sections/AppleHero";
 import { AppleBentoGrid } from "@/components/sections/AppleBentoGrid";
 import { AppleFooter } from "@/components/sections/AppleFooter";
 import { QualitySection } from "@/components/sections/QualitySection";
+import { ReviewsSection } from "@/components/sections/ReviewsSection";
 import { CartDrawer } from "@/components/modals/CartDrawer";
 import { CheckoutModal } from "@/components/modals/CheckoutModal";
 import { AgeGateModal } from "@/components/modals/AgeGateModal";
@@ -59,6 +60,9 @@ export default function Home() {
 
         {/* Catalog: Bento Grid */}
         <AppleBentoGrid />
+
+        {/* Reviews */}
+        <ReviewsSection />
 
         {/* Quality Assurance & Legal Disclosures */}
         <QualitySection />

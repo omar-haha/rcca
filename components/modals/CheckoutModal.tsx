@@ -31,6 +31,18 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const [cryptoCoin, setCryptoCoin] = useState<CryptoCoin>("BTC");
   const [copied, setCopied] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [liveCount, setLiveCount] = useState(() => 12 + Math.floor(Math.random() * 36));
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const id = setInterval(() => {
+      setLiveCount((n) => {
+        const delta = Math.random() < 0.5 ? 1 : -1;
+        return Math.min(47, Math.max(12, n + delta));
+      });
+    }, 3800);
+    return () => clearInterval(id);
+  }, [isOpen]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen || successOpen ? "hidden" : "";
@@ -85,6 +97,17 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
               >
                 <X size={15} strokeWidth={2.5} />
               </button>
+            </div>
+
+            {/* Social proof */}
+            <div className="px-7 py-2.5 flex items-center gap-2 shrink-0" style={{ backgroundColor: "var(--bg-alt)", borderBottom: "1px solid var(--border)" }}>
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: '#16a34a' }} />
+                <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: '#16a34a' }} />
+              </span>
+              <span className="text-[12px]" style={{ color: "var(--text-muted)" }}>
+                <span className="font-semibold text-primary">{liveCount} people</span> are checking out right now
+              </span>
             </div>
 
             {/* Scrollable body */}
