@@ -3,6 +3,8 @@ import { Inter, Orbitron } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { CartProvider } from '@/components/providers/CartProvider'
+import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider'
+import { PageTransitionProvider } from '@/components/providers/PageTransitionProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron' })
@@ -35,7 +37,11 @@ export default function RootLayout({
       <body className={`${inter.className} ${orbitron.variable} antialiased min-h-screen flex flex-col`}>
         <ThemeProvider>
           <CartProvider>
-            {children}
+            <SmoothScrollProvider>
+              <PageTransitionProvider>
+                {children}
+              </PageTransitionProvider>
+            </SmoothScrollProvider>
           </CartProvider>
         </ThemeProvider>
       </body>

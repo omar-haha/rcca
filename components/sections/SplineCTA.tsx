@@ -115,16 +115,15 @@ export function SplineCTA() {
         </div>
 
         <h2 className="text-[clamp(32px,5vw,56px)] font-bold tracking-[-0.04em] leading-[1.05] mb-5">
-          Precision Compounds.{" "}
-          <span className="text-gradient">Ready to Ship.</span>
+          Advance Your Research.{" "}
+          <span className="text-gradient">In Three Dimensions.</span>
         </h2>
 
         <p
           className="text-[16px] md:text-[19px] leading-relaxed mb-10 max-w-[560px] mx-auto"
           style={{ color: "var(--text-muted)" }}
         >
-          All peptides synthesized to ≥98% purity, HPLC-MS verified, and dispatched
-          in cold-chain packaging within 24 hours of order confirmation.
+          Discover the building blocks of tomorrow's breakthroughs. Synthesized to absolute purity, HPLC-MS verified, and ready for your laboratory.
         </p>
 
         <div className="flex flex-wrap gap-4 justify-center">

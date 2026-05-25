@@ -148,23 +148,21 @@ export function Spline3DShowcase() {
                 color: "var(--accent)",
               }}
             >
-              Peptide Showcase
+              Structural Analysis
             </div>
 
             <h2
               className="text-[clamp(28px,4vw,48px)] font-bold tracking-[-0.03em] leading-[1.1] mb-5"
             >
-              Peptide Precision.{" "}
-              <span className="text-gradient-static">Visualized.</span>
+              Molecular Precision.{" "}
+              <span className="text-gradient-static">Brought to Life.</span>
             </h2>
 
             <p
               className="text-[16px] md:text-[18px] leading-relaxed mb-8"
               style={{ color: "var(--text-muted)" }}
             >
-              From Retatrutide&apos;s triple-receptor mechanism to BPC-157&apos;s
-              regenerative cascade — explore RCCA&apos;s research-grade peptides in
-              real-time 3D. Every structure rendered with precision.
+              Dive into the intricate world of synthetic biology. Analyze the folding patterns and binding domains of our high-purity peptides with unprecedented 3D clarity.
             </p>
 
             {/* Featured compound tags */}

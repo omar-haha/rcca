@@ -41,6 +41,7 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
   return (
     <>
       <div
+        data-lenis-prevent="true"
         className={cn(
           "fixed inset-0 z-[2000] pointer-events-none",
           cartOpen && "pointer-events-auto"

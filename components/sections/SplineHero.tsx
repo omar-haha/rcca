@@ -136,16 +136,16 @@ export function SplineHero() {
               opacity: 0,
             }}
           >
-            Research Peptide Platform
+            Molecular Architecture
           </div>
 
           <h1
             className="text-[clamp(36px,7vw,80px)] font-bold tracking-[-0.04em] leading-[1.02] mb-6"
             style={{ perspective: "600px" }}
           >
-            <RevealText text="Precision" className="text-gradient block" delay={0.2} />
-            <RevealText text="Peptides." className="block" delay={0.5} />
-            <RevealText text="In 3D." className="block" delay={0.8} />
+            <RevealText text="Fascinating." className="text-gradient block" delay={0.2} />
+            <RevealText text="Precise." className="block" delay={0.5} />
+            <RevealText text="Peptides." className="block" delay={0.8} />
           </h1>
 
           <p
@@ -156,8 +156,7 @@ export function SplineHero() {
               opacity: 0,
             }}
           >
-            Explore Retatrutide, BPC-157, Tirzepatide and the full RCCA catalog through
-            an immersive 3D interface. Research-grade compounds, visualized.
+            Step into the molecular realm. Explore the complex tertiary structures of Retatrutide, BPC-157, and our full catalog in a fully immersive 3D environment.
           </p>
 
           <div

@@ -9,7 +9,7 @@ import { RccaLogo } from "./RccaLogo";
 const NAV_LINKS = [
   { label: "Store",   href: "#store" },
   { label: "Quality", href: "#quality" },
-  { label: "3D Lab",  href: "/3d" },
+  { label: "Legal",   href: "#legal" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -24,7 +24,7 @@ export function AppleNav() {
         className="fixed top-0 left-0 right-0 z-[1000] h-[44px] nav-blur transition-colors duration-300"
         style={{ backgroundColor: "var(--nav-bg)", borderBottom: "1px solid var(--border)" }}
       >
-        <div className="max-w-[1024px] mx-auto h-full px-4 flex items-center justify-between">
+        <div className="w-full h-full px-5 md:px-8 flex items-center justify-between">
           {/* Logo */}
           <div className="flex-1 flex justify-start">
             <a href="#" className="hover:opacity-80 transition-opacity no-underline flex items-center">
@@ -82,9 +82,9 @@ export function AppleNav() {
 
       {/* Mobile dropdown */}
       <div
-        className="fixed top-[44px] left-0 right-0 z-[999] md:hidden nav-blur overflow-hidden transition-all duration-300"
+        className="fixed top-[44px] left-0 right-0 z-[999] md:hidden overflow-hidden transition-all duration-300"
         style={{
-          backgroundColor: "var(--nav-bg)",
+          backgroundColor: "var(--bg)",
           borderBottom: mobileOpen ? "1px solid var(--border)" : "none",
           maxHeight: mobileOpen ? "220px" : "0px",
           opacity: mobileOpen ? 1 : 0,

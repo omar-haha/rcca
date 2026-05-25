@@ -255,18 +255,17 @@ export function SplineFeatureGrid() {
               color: "var(--accent)",
             }}
           >
-            Research Catalog
+            Molecular Catalog
           </div>
           <h2 className="text-[clamp(28px,4vw,48px)] font-bold tracking-[-0.03em] leading-[1.1] mb-4">
-            Featured{" "}
-            <span className="text-gradient">Peptides</span>
+            Fascinating{" "}
+            <span className="text-gradient">Structures</span>
           </h2>
           <p
             className="text-[16px] md:text-[18px] leading-relaxed max-w-[560px] mx-auto"
             style={{ color: "var(--text-muted)" }}
           >
-            Six of RCCA&apos;s research-grade compounds — each synthesized to ≥98% purity,
-            HPLC-MS verified, and ready to ship.
+            Explore our curated selection of research-grade molecular compounds — synthesized to ≥98% purity, HPLC-MS verified, and ready to advance your lab's capabilities.
           </p>
         </div>
 
