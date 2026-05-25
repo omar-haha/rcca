@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { products } from "@/lib/products";
 import { useCart } from "@/components/providers/CartProvider";
 import { GlassVial } from "@/components/ui/GlassVial";
@@ -45,6 +46,7 @@ export function AppleBentoGrid() {
   const [revealed, setRevealed] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const { addToCart } = useCart();
+  const router = useRouter();
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -123,6 +125,7 @@ export function AppleBentoGrid() {
                     variants={itemVariants}
                     key={p.id}
                     whileHover={{ scale: 1.01 }}
+                    onClick={() => router.push(`/products/${p.id}`)}
                     className={cn(
                       "bg-secondary rounded-[24px] overflow-hidden flex flex-col items-center pt-8 md:pt-12 relative group cursor-pointer shadow-sm hover:shadow-md transition-shadow",
                       oos && "opacity-60 grayscale-[0.4]"
@@ -147,7 +150,7 @@ export function AppleBentoGrid() {
                         <button
                           type="button"
                           disabled={oos}
-                          onClick={() => { if (!oos) handleAdd(p); }}
+                          onClick={(e) => { e.stopPropagation(); if (!oos) handleAdd(p); }}
                           className={cn(
                             "rounded-full px-5 py-2 text-[13px] font-medium text-white cursor-pointer border-none z-20 relative",
                             oos
