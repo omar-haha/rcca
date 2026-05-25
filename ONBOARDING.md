@@ -74,10 +74,14 @@ border-primary → var(--border)
 
 ```
 app/
-  layout.tsx          Root layout — fonts, providers, anti-flash script
-  page.tsx            Single page: AgeGateModal, AppleNav, AppleHero, AppleBentoGrid, QualitySection, AppleFooter
-  globals.css         Theme variables, utility aliases, button utilities, keyframe animations
-  loading.tsx         Global suspense loading shell with centered Spinner
+  layout.tsx               Root layout — fonts, providers, anti-flash script
+  page.tsx                 Single page: AgeGateModal, AppleNav, AppleHero, AppleBentoGrid, QualitySection, AppleFooter
+  globals.css              Theme variables, utility aliases, button utilities, keyframe animations
+  loading.tsx              Global suspense loading shell with centered Spinner
+  icon.svg                 Favicon — black rounded square with RCCA wordmark centred (auto-discovered by Next.js App Router)
+  products/
+    [id]/
+      page.tsx             Async server component; resolves params, finds product by id, passes to ProductDetail; generateStaticParams pre-renders all 9 product pages; generateMetadata sets per-product title/description
 
 components/
   providers/
@@ -95,14 +99,15 @@ components/
 
   sections/
     AppleHero.tsx       Full-viewport hero section (variant: primary/secondary/tertiary); CTA uses scrollIntoView to avoid URL hash side-effects
-    AppleBentoGrid.tsx  Product catalog grid with semantic filter pills (Best Sellers / In Stock / All); AnimatePresence handles filter transitions; IntersectionObserver controls initial reveal
+    AppleBentoGrid.tsx  Product catalog grid with semantic filter pills (Best Sellers / In Stock / All); cards navigate to /products/[id] on click; Add to Bag stopPropagation prevents card navigation; AnimatePresence handles filter transitions; IntersectionObserver controls initial reveal
+    ProductDetail.tsx   "use client" full product page: AppleNav + AgeGateModal + cart stack included; two-column layout (vial image with zoom overlay, product info); qty stepper; Add to Bag with press + text-warp animations; specs table (CAS, unit, purity, category); Best Seller + stock badges
     QualitySection.tsx  Quality assurance cards + legal disclosures
-    AppleFooter.tsx     Footer with disclaimer, Explore/Contact/Legal columns, #contact anchor
+    AppleFooter.tsx     Footer with 2-line disclaimer, Explore/Contact/Legal columns, #contact anchor
 
   modals/
-    AgeGateModal.tsx    Blurred popup age gate; province selector sets minimum age automatically; persists rc_age_ok to localStorage
+    AgeGateModal.tsx    Blurred popup age gate; province selector sets minimum age automatically; persists rc_age_ok to localStorage; age confirmation only (no research credentials)
     CartDrawer.tsx      Slide-in "Bag" panel; body scroll locked while open; deletion collapses item with animation; qty steppers
-    CheckoutModal.tsx   Checkout form: Contact Information (name + email), Shipping Address, Payment Method; no research attestations
+    CheckoutModal.tsx   Checkout form: Contact Information (name + email), Shipping Address, Payment Method; no compliance attestations
 ```
 
 ---
@@ -117,7 +122,33 @@ Defined in [lib/products.ts](lib/products.ts). Each product has:
 
 - `stock: 'out'` cards are greyed out and sorted to the end of the grid automatically.
 - `bestSeller: true` marks a product for the "Best Sellers" filter tab.
-- To add a product: append an entry to the `products` array — it automatically appears in the grid.
+- To add a product: append an entry to the `products` array — it automatically appears in the grid and gets a statically pre-rendered product page.
+
+---
+
+## Product pages
+
+Route: `/products/[id]` — one page per product, all pre-rendered at build time via `generateStaticParams`.
+
+**`app/products/[id]/page.tsx`** is a server component. It resolves `params` (a Promise in Next.js 15), finds the product by id, returns 404 if missing, and renders `<ProductDetail product={p} />`.
+
+**`components/sections/ProductDetail.tsx`** is the full client page. It includes its own `AppleNav`, `AgeGateModal`, `CartDrawer`, `CartToast`, and `CheckoutModal` (same stack as `page.tsx`) so the bag works on every product page without changes to the root layout.
+
+Key features:
+- **Vial image panel** — hover lifts vial; click opens a framer-motion zoom overlay (blurred backdrop, spring scale animation, click-outside to close)
+- **Qty stepper** — defaults to 1, disabled when out of stock
+- **Add to Bag** — same `btn-physical` + `animate-btn-pop` + `animate-text-warp` as the grid; adds `qty` units
+- **Specs table** — CAS number, unit size, purity, category in alternating-row style
+- **Badges** — category pill, "Best Seller" accent pill (if `bestSeller: true`), stock status pill with colour coding
+- **Back link** — `← All Products` navigates to `/#store`
+
+---
+
+## Favicon
+
+`app/icon.svg` — Next.js App Router auto-discovers this file and injects `<link rel="icon">`. The SVG uses a 320×320 square `viewBox` centred on the RCCA lettermark paths (same geometry as `RccaLogo.tsx`) with a black rounded-rect background and white strokes thickened to `stroke-width="14"` for legibility at tab icon size.
+
+To change the icon: edit `app/icon.svg`. No layout changes needed.
 
 ---
 
