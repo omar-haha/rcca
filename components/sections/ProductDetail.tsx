@@ -13,6 +13,7 @@ import { CartToast } from "@/components/ui/CartToast";
 import { CheckoutModal } from "@/components/modals/CheckoutModal";
 import { AgeGateModal } from "@/components/modals/AgeGateModal";
 import { cn } from "@/lib/utils";
+import { products } from "@/lib/products";
 import type { Product } from "@/lib/products";
 
 const STOCK_CONFIG = {
@@ -21,13 +22,16 @@ const STOCK_CONFIG = {
   out: { label: "Out of Stock", color: "var(--error)" },
 } as const;
 
-export function ProductDetail({ product: p }: { product: Product }) {
+export function ProductDetail({ product: initial }: { product: Product }) {
+  const variants = products.filter((p) => p.name === initial.name);
   const { addToCart } = useCart();
+  const [selected, setSelected] = useState<Product>(initial);
   const [qty, setQty] = useState(1);
   const [clicked, setClicked] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
+  const p = selected;
   const oos = p.stock === "out";
   const stock = STOCK_CONFIG[p.stock];
 
@@ -158,9 +162,41 @@ export function ProductDetail({ product: p }: { product: Product }) {
                 {p.name}
               </h1>
 
-              <p className="text-[16px] text-secondary mb-7">
+              <p className="text-[16px] text-secondary mb-5">
                 {p.unit} · {p.purity} Purity
               </p>
+
+              {/* Variant selector */}
+              {variants.length > 1 && (
+                <div className="mb-6">
+                  <p className="text-[11px] font-semibold tracking-widest uppercase mb-2.5" style={{ color: "var(--text-legal)" }}>
+                    Select Dose
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {variants.map((v) => {
+                      const isActive = v.id === p.id;
+                      const vOos = v.stock === "out";
+                      const doseLabel = v.unit.split(" ×")[0];
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          disabled={vOos}
+                          onClick={() => { setSelected(v); setQty(1); setClicked(false); }}
+                          className="rounded-full px-4 py-1.5 text-[13px] font-medium border cursor-pointer transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+                          style={
+                            isActive
+                              ? { backgroundColor: "var(--accent)", borderColor: "var(--accent)", color: "#fff" }
+                              : { backgroundColor: "transparent", borderColor: "var(--border)", color: "var(--text-muted)" }
+                          }
+                        >
+                          {doseLabel} · ${v.price}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               <div className="text-[34px] font-semibold tracking-tight text-primary mb-8">
                 ${p.price.toFixed(2)}

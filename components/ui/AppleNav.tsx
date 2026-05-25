@@ -7,10 +7,10 @@ import { Moon, Sun, ShoppingBag, Menu, X } from "lucide-react";
 import { RccaLogo } from "./RccaLogo";
 
 const NAV_LINKS = [
-  { label: "Store",   href: "#store" },
-  { label: "Quality", href: "#quality" },
-  { label: "Legal",   href: "#legal" },
-  { label: "Contact", href: "#contact" },
+  { label: "Store",   href: "/#store" },
+  { label: "Quality", href: "/#quality" },
+  { label: "Legal",   href: "/#legal" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export function AppleNav() {
@@ -27,7 +27,7 @@ export function AppleNav() {
         <div className="w-full h-full px-5 md:px-8 flex items-center justify-between">
           {/* Logo */}
           <div className="flex-1 flex justify-start">
-            <a href="#" className="hover:opacity-80 transition-opacity no-underline flex items-center">
+            <a href="/" className="hover:opacity-80 transition-opacity no-underline flex items-center">
               <RccaLogo className="h-[16px] w-auto text-logo" />
             </a>
           </div>

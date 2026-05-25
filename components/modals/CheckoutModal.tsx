@@ -1,6 +1,6 @@
 "use client";
 
-import { X, CheckCircle2 } from "lucide-react";
+import { X, CheckCircle2, Copy, Check } from "lucide-react";
 import { useCart } from "../providers/CartProvider";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -9,12 +9,16 @@ import { Spinner } from "../ui/Spinner";
 const INPUT_CLASS =
   "w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[color:var(--accent)] focus:bg-primary";
 
-const PAYMENT_OPTIONS = [
-  { value: "card", label: "Credit / Debit Card", sub: "Visa, Mastercard, Amex", badges: [{ bg: "#1A1F71", text: "VISA" }, { bg: "#EB001B", text: "MC" }] },
-  { value: "paypal", label: "PayPal", sub: "Pay with your PayPal account", badges: [{ bg: "#003087", text: "Pay" }, { bg: "#009CDE", text: "Pal" }] },
-  { value: "etransfer", label: "Interac e-Transfer", sub: "Canadian bank transfer", badges: [] },
-  { value: "crypto", label: "Cryptocurrency", sub: "BTC, ETH, USDT", badges: [] },
-];
+type PayMethod = "etransfer" | "crypto";
+type CryptoCoin = "BTC" | "ETH" | "USDT";
+
+const ETRANSFER_EMAIL = "pay@rcca.ca";
+
+const CRYPTO_ADDRESSES: Record<CryptoCoin, string> = {
+  BTC:  "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+  ETH:  "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
+  USDT: "TRx7NaFCGZXv6pHerB2vB3PsVKuGxjCqGZ",
+};
 
 export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { cartItems, cartTotal, clearCart } = useCart();
@@ -22,47 +26,36 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
   const [successOpen, setSuccessOpen] = useState(false);
   const [orderId, setOrderId] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiry, setExpiry] = useState("");
+  const [savedTotal, setSavedTotal] = useState(0);
+  const [payMethod, setPayMethod] = useState<PayMethod>("etransfer");
+  const [cryptoCoin, setCryptoCoin] = useState<CryptoCoin>("BTC");
+  const [copied, setCopied] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isOpen || successOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = isOpen || successOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [isOpen, successOpen]);
 
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, "");
-    const formatted = val.match(/.{1,4}/g)?.join(" ") || "";
-    setCardNumber(formatted.slice(0, 19));
-  };
-
-  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, "");
-    if (val.length >= 2) {
-      val = val.slice(0, 2) + " / " + val.slice(2, 4);
-    }
-    setExpiry(val);
+  const handleCopy = (text: string, key: string) => {
+    navigator.clipboard.writeText(text).catch(() => {});
+    setCopied(key);
+    setTimeout(() => setCopied(null), 2200);
   };
 
   const handlePlaceOrder = () => {
     setIsSubmitting(true);
+    setSavedTotal(cartTotal);
     setTimeout(() => {
       setOrderId("W" + Math.floor(100000000 + Math.random() * 900000000));
       clearCart();
       setIsSubmitting(false);
       setSuccessOpen(true);
-    }, 2000);
+    }, 1600);
   };
 
   const handleCloseSuccess = () => {
     setSuccessOpen(false);
-    setCardNumber("");
-    setExpiry("");
     onClose();
   };
 
@@ -70,52 +63,63 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
   return (
     <>
-      {/* Checkout Form Modal */}
+      {/* ── Checkout form ── */}
       {isOpen && !successOpen && (
         <div
           data-lenis-prevent="true"
-          className="fixed inset-0 z-[3000] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-[3000] flex items-center justify-center p-4 sm:p-6"
+          style={{ backdropFilter: "blur(20px) saturate(160%)", backgroundColor: "rgba(0,0,0,0.58)" }}
           onClick={onClose}
         >
           <div
-            className="bg-primary rounded-[24px] w-full max-w-[640px] max-h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+            className="bg-primary rounded-[24px] w-full max-w-[580px] max-h-[90vh] flex flex-col overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="px-8 py-6 border-b border-primary flex items-center justify-between bg-primary shrink-0">
-              <h2 className="text-[24px] font-semibold tracking-tight text-primary m-0">Checkout</h2>
+            <div className="px-7 py-5 border-b border-primary flex items-center justify-between shrink-0">
+              <h2 className="text-[20px] font-semibold tracking-tight text-primary m-0">Checkout</h2>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-full bg-secondary text-primary border-none flex items-center justify-center cursor-pointer hover:bg-surface-hover transition-colors"
+                className="w-8 h-8 rounded-full border-none flex items-center justify-center cursor-pointer transition-colors"
+                style={{ backgroundColor: "var(--surface-hover)", color: "var(--text-muted)" }}
               >
-                <X size={18} strokeWidth={2} />
+                <X size={15} strokeWidth={2.5} />
               </button>
             </div>
 
-            {/* Scrollable Form Body */}
-            <div className={cn("p-8 overflow-y-auto transition-opacity duration-300", isSubmitting && "opacity-50 pointer-events-none")}>
-              {/* Contact Information */}
-              <div className="mb-10">
-                <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Contact Information</h3>
-                <div className="flex flex-col gap-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Scrollable body */}
+            <div
+              className={cn(
+                "px-7 py-7 overflow-y-auto flex flex-col gap-8 transition-opacity duration-300",
+                isSubmitting && "opacity-40 pointer-events-none"
+              )}
+            >
+              {/* Contact */}
+              <section>
+                <p className="text-[11px] font-semibold tracking-widest uppercase mb-3.5" style={{ color: "var(--text-legal)" }}>
+                  Contact
+                </p>
+                <div className="flex flex-col gap-3">
+                  <div className="grid grid-cols-2 gap-3">
                     <input type="text" placeholder="First Name" className={INPUT_CLASS} />
                     <input type="text" placeholder="Last Name" className={INPUT_CLASS} />
                   </div>
                   <input type="email" placeholder="Email Address" className={INPUT_CLASS} />
                 </div>
-              </div>
+              </section>
 
-              {/* Shipping Address */}
-              <div className="mb-10">
-                <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Shipping Address</h3>
-                <div className="flex flex-col gap-4">
+              {/* Shipping */}
+              <section>
+                <p className="text-[11px] font-semibold tracking-widest uppercase mb-3.5" style={{ color: "var(--text-legal)" }}>
+                  Shipping
+                </p>
+                <div className="flex flex-col gap-3">
                   <input type="text" placeholder="Street Address" className={INPUT_CLASS} />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <input type="text" placeholder="City" className={INPUT_CLASS} />
                     <input type="text" placeholder="Postal Code" className={INPUT_CLASS} />
                   </div>
-                  <select className={INPUT_CLASS + " appearance-none cursor-pointer"}>
+                  <select className={cn(INPUT_CLASS, "appearance-none cursor-pointer")}>
                     <option>Canada</option>
                     <option>United States</option>
                     <option>United Kingdom</option>
@@ -125,66 +129,137 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                     <option>Sweden</option>
                   </select>
                 </div>
-              </div>
+              </section>
 
-              {/* Payment Method */}
-              <div className="mb-10">
-                <h3 className="text-[17px] font-semibold tracking-tight text-primary mb-4">Payment Method</h3>
-                <div className="flex flex-col gap-3">
-                  {PAYMENT_OPTIONS.map((opt, i) => (
-                    <label
-                      key={opt.value}
-                      className="relative flex items-center gap-4 p-4 bg-secondary rounded-[12px] cursor-pointer border border-transparent has-[:checked]:border-[color:var(--accent)] transition-all hover:scale-[1.01] active:scale-[0.99] has-[:checked]:bg-[var(--surface)]"
-                    >
-                      <input
-                        type="radio"
-                        name="payment"
-                        value={opt.value}
-                        defaultChecked={i === 0}
-                        className="w-5 h-5 accent-[color:var(--accent)]"
-                      />
-                      <div className="flex-1">
-                        <div className="text-[15px] font-medium text-primary">{opt.label}</div>
-                        <div className="text-[13px] text-secondary mt-0.5">{opt.sub}</div>
-                      </div>
-                      {opt.badges.length > 0 && (
-                        <div className="flex gap-1.5 items-center">
-                          {opt.badges.map((b) => (
-                            <div
-                              key={b.text}
-                              className="w-8 h-5 rounded-[3px] flex items-center justify-center text-white text-[7px] font-bold"
-                              style={{ backgroundColor: b.bg }}
-                            >
-                              {b.text}
-                            </div>
-                          ))}
+              {/* Payment */}
+              <section>
+                <p className="text-[11px] font-semibold tracking-widest uppercase mb-3.5" style={{ color: "var(--text-legal)" }}>
+                  Payment Method
+                </p>
+
+                {/* Toggle cards */}
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  {(["etransfer", "crypto"] as PayMethod[]).map((method) => {
+                    const active = payMethod === method;
+                    return (
+                      <button
+                        key={method}
+                        type="button"
+                        onClick={() => setPayMethod(method)}
+                        className="rounded-[14px] p-4 text-left border-none cursor-pointer transition-all duration-200"
+                        style={{
+                          backgroundColor: active ? "var(--surface)" : "var(--bg-alt)",
+                          outline: active ? "2px solid var(--accent)" : "2px solid transparent",
+                        }}
+                      >
+                        <div className="text-[14px] font-semibold text-primary mb-0.5 leading-tight">
+                          {method === "etransfer" ? "Interac e-Transfer" : "Cryptocurrency"}
                         </div>
-                      )}
-                    </label>
-                  ))}
+                        <div className="text-[12px]" style={{ color: "var(--text-muted)" }}>
+                          {method === "etransfer" ? "Canadian banks" : "BTC · ETH · USDT"}
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
-                <div className="flex flex-col gap-4 mt-4">
-                  <input type="text" placeholder="Card Number" value={cardNumber} onChange={handleCardNumberChange} maxLength={19} className={INPUT_CLASS} />
-                  <div className="grid grid-cols-2 gap-4">
-                    <input type="text" placeholder="MM / YY" value={expiry} onChange={handleExpiryChange} maxLength={7} className={INPUT_CLASS} />
-                    <input type="text" placeholder="CVC" maxLength={4} className={INPUT_CLASS} />
-                  </div>
-                </div>
-              </div>
 
-              {/* Order Summary & CTA */}
-              <div className="pt-6 border-t border-primary">
-                <div className="flex justify-between items-end mb-6">
-                  <div className="text-[15px] text-secondary">{items.length} item{items.length !== 1 && "s"}</div>
-                  <div className="text-[24px] font-semibold tracking-tight text-primary">${cartTotal.toFixed(2)}</div>
+                {/* Interac panel */}
+                {payMethod === "etransfer" && (
+                  <div className="rounded-[14px] p-5 flex flex-col gap-4" style={{ backgroundColor: "var(--bg-alt)" }}>
+                    <div>
+                      <p className="text-[11px] font-semibold tracking-widest uppercase mb-2" style={{ color: "var(--text-legal)" }}>
+                        Send To
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[15px] font-mono font-medium text-primary flex-1">
+                          {ETRANSFER_EMAIL}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(ETRANSFER_EMAIL, "email")}
+                          className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full border-none cursor-pointer text-[12px] font-medium transition-colors"
+                          style={{ backgroundColor: "var(--surface-hover)", color: "var(--text-muted)" }}
+                        >
+                          {copied === "email" ? <Check size={12} /> : <Copy size={12} />}
+                          {copied === "email" ? "Copied" : "Copy"}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="h-px" style={{ backgroundColor: "var(--border)" }} />
+                    <p className="text-[13px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                      Add your <span className="font-semibold text-primary">order number</span> to the memo field.
+                      Orders ship within 1–2 business days after payment clears.
+                    </p>
+                  </div>
+                )}
+
+                {/* Crypto panel */}
+                {payMethod === "crypto" && (
+                  <div className="rounded-[14px] p-5 flex flex-col gap-4" style={{ backgroundColor: "var(--bg-alt)" }}>
+                    {/* Coin tabs */}
+                    <div className="flex gap-2">
+                      {(["BTC", "ETH", "USDT"] as CryptoCoin[]).map((coin) => (
+                        <button
+                          key={coin}
+                          type="button"
+                          onClick={() => { setCryptoCoin(coin); setCopied(null); }}
+                          className="px-4 py-1.5 rounded-full text-[12px] font-semibold border-none cursor-pointer transition-all"
+                          style={
+                            cryptoCoin === coin
+                              ? { backgroundColor: "var(--accent)", color: "#fff" }
+                              : { backgroundColor: "var(--surface-hover)", color: "var(--text-muted)" }
+                          }
+                        >
+                          {coin}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div>
+                      <p className="text-[11px] font-semibold tracking-widest uppercase mb-2" style={{ color: "var(--text-legal)" }}>
+                        Wallet Address
+                      </p>
+                      <div className="flex items-start gap-3">
+                        <span className="text-[12px] font-mono text-primary break-all leading-relaxed flex-1">
+                          {CRYPTO_ADDRESSES[cryptoCoin]}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(CRYPTO_ADDRESSES[cryptoCoin], "wallet")}
+                          className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full border-none cursor-pointer text-[12px] font-medium transition-colors mt-0.5"
+                          style={{ backgroundColor: "var(--surface-hover)", color: "var(--text-muted)" }}
+                        >
+                          {copied === "wallet" ? <Check size={12} /> : <Copy size={12} />}
+                          {copied === "wallet" ? "Copied" : "Copy"}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="h-px" style={{ backgroundColor: "var(--border)" }} />
+                    <p className="text-[13px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                      Send the exact amount in <span className="font-semibold text-primary">{cryptoCoin}</span>.
+                      Orders ship after 1 network confirmation.
+                    </p>
+                  </div>
+                )}
+              </section>
+
+              {/* Order total + CTA */}
+              <div>
+                <div className="flex justify-between items-baseline mb-5">
+                  <span className="text-[14px]" style={{ color: "var(--text-muted)" }}>
+                    {items.length} item{items.length !== 1 && "s"}
+                  </span>
+                  <span className="text-[26px] font-semibold tracking-tight text-primary">
+                    ${cartTotal.toFixed(2)}
+                  </span>
                 </div>
                 <button
                   onClick={handlePlaceOrder}
                   disabled={isSubmitting}
-                  className="w-full text-white border-none py-4 rounded-[12px] text-[17px] font-normal transition-all hover:scale-[1.01] hover:opacity-90 cursor-pointer disabled:opacity-100 flex items-center justify-center min-h-[56px]"
+                  className="w-full text-white border-none py-[15px] rounded-full text-[16px] font-medium cursor-pointer flex items-center justify-center min-h-[52px] btn-physical btn-physical-accent"
                   style={{ backgroundColor: "var(--accent)" }}
                 >
-                  {isSubmitting ? <Spinner size={24} /> : "Place Order"}
+                  {isSubmitting ? <Spinner size={22} /> : "Place Order"}
                 </button>
               </div>
             </div>
@@ -192,24 +267,69 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
         </div>
       )}
 
-      {/* Success Modal */}
+      {/* ── Success ── */}
       {successOpen && (
-        <div data-lenis-prevent="true" className="fixed inset-0 z-[4000] bg-black/40 backdrop-blur-md flex items-center justify-center p-6 animate-in fade-in duration-300">
-          <div className="bg-primary rounded-[24px] p-12 text-center max-w-[440px] w-full shadow-2xl animate-in zoom-in-95 duration-500">
-            <div className="w-[72px] h-[72px] rounded-full bg-secondary flex items-center justify-center text-success mb-6 mx-auto">
-              <CheckCircle2 size={36} strokeWidth={2} />
+        <div
+          data-lenis-prevent="true"
+          className="fixed inset-0 z-[4000] flex items-center justify-center p-6"
+          style={{ backdropFilter: "blur(20px) saturate(160%)", backgroundColor: "rgba(0,0,0,0.45)" }}
+        >
+          <div className="bg-primary rounded-[28px] p-9 text-center max-w-[400px] w-full shadow-2xl">
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center mb-5 mx-auto"
+              style={{ backgroundColor: "var(--success)1a", color: "var(--success)" }}
+            >
+              <CheckCircle2 size={28} strokeWidth={2} />
             </div>
-            <h3 className="text-[28px] font-semibold tracking-tight mb-4 text-primary">Order Confirmed.</h3>
-            <p className="text-[17px] text-secondary leading-relaxed mb-8">
-              Your order has been successfully placed. A confirmation email will be sent to you shortly.
+
+            <h3 className="text-[24px] font-semibold tracking-tight mb-2 text-primary">Order Placed.</h3>
+            <p className="text-[14px] mb-6" style={{ color: "var(--text-muted)" }}>
+              Complete your payment to confirm shipment.
             </p>
-            <div className="bg-secondary rounded-[12px] p-4 mb-8">
-              <div className="text-[13px] text-tertiary uppercase tracking-widest font-semibold mb-1">Order Number</div>
-              <div className="text-[20px] font-mono text-primary">{orderId}</div>
+
+            {/* Order number */}
+            <div className="rounded-[12px] p-4 mb-4" style={{ backgroundColor: "var(--bg-alt)" }}>
+              <div className="text-[11px] font-semibold tracking-widest uppercase mb-1" style={{ color: "var(--text-legal)" }}>
+                Order Number
+              </div>
+              <div className="text-[19px] font-mono text-primary">{orderId}</div>
             </div>
+
+            {/* Payment reminder */}
+            <div className="rounded-[12px] p-4 mb-7 text-left" style={{ backgroundColor: "var(--bg-alt)" }}>
+              {payMethod === "etransfer" ? (
+                <>
+                  <div className="text-[11px] font-semibold tracking-widest uppercase mb-2" style={{ color: "var(--text-legal)" }}>
+                    Interac e-Transfer To
+                  </div>
+                  <div className="text-[14px] font-mono font-medium text-primary mb-1">{ETRANSFER_EMAIL}</div>
+                  <div className="text-[12px]" style={{ color: "var(--text-muted)" }}>
+                    Memo: <span className="font-semibold text-primary">{orderId}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-[11px] font-semibold tracking-widest uppercase mb-2" style={{ color: "var(--text-legal)" }}>
+                    Send {cryptoCoin}
+                  </div>
+                  <div className="text-[11px] font-mono text-primary break-all mb-1">{CRYPTO_ADDRESSES[cryptoCoin]}</div>
+                  <div className="text-[12px]" style={{ color: "var(--text-muted)" }}>
+                    Amount: <span className="font-semibold text-primary">${savedTotal.toFixed(2)} USD</span>
+                  </div>
+                </>
+              )}
+            </div>
+
             <button
               onClick={handleCloseSuccess}
-              className="w-full bg-surface hover:bg-surface-hover border border-primary text-primary py-4 rounded-full text-[17px] font-normal cursor-pointer transition-colors"
+              className="w-full py-3.5 rounded-full text-[15px] font-medium cursor-pointer transition-colors border"
+              style={{
+                backgroundColor: "transparent",
+                borderColor: "var(--border)",
+                color: "var(--text)",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--bg-alt)")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
               Return to Store
             </button>
