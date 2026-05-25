@@ -76,7 +76,7 @@ border-primary → var(--border)
 app/
   layout.tsx          Root layout — fonts, providers, anti-flash script
   page.tsx            Single page: AgeGateModal, AppleNav, AppleHero, AppleBentoGrid, QualitySection, AppleFooter
-  globals.css         Theme variables, utility aliases, keyframe animations
+  globals.css         Theme variables, utility aliases, button utilities, keyframe animations
   loading.tsx         Global suspense loading shell with centered Spinner
 
 components/
@@ -94,15 +94,15 @@ components/
     Spinner.tsx         Smooth Apple-style SVG spinner for loading states
 
   sections/
-    AppleHero.tsx       Full-viewport hero section (variant: primary/secondary/tertiary)
-    AppleBentoGrid.tsx  Product catalog grid with filter pills + "Added ✓" button animation
+    AppleHero.tsx       Full-viewport hero section (variant: primary/secondary/tertiary); CTA uses scrollIntoView to avoid URL hash side-effects
+    AppleBentoGrid.tsx  Product catalog grid with semantic filter pills (Best Sellers / In Stock / All); AnimatePresence handles filter transitions; IntersectionObserver controls initial reveal
     QualitySection.tsx  Quality assurance cards + legal disclosures
-    AppleFooter.tsx     Footer with #contact anchor
+    AppleFooter.tsx     Footer with disclaimer, Explore/Contact/Legal columns, #contact anchor
 
   modals/
     AgeGateModal.tsx    Blurred popup age gate; province selector sets minimum age automatically; persists rc_age_ok to localStorage
     CartDrawer.tsx      Slide-in "Bag" panel; body scroll locked while open; deletion collapses item with animation; qty steppers
-    CheckoutModal.tsx   Multi-step checkout form with simulated isSubmitting spinner state
+    CheckoutModal.tsx   Checkout form: Contact Information (name + email), Shipping Address, Payment Method; no research attestations
 ```
 
 ---
@@ -112,11 +112,12 @@ components/
 Defined in [lib/products.ts](lib/products.ts). Each product has:
 
 ```ts
-{ id, name, cas, cat: 'peptide' | 'misc', price, unit, purity, stock: 'in' | 'low' | 'out' }
+{ id, name, cas, cat: 'peptide' | 'misc', price, unit, purity, stock: 'in' | 'low' | 'out', bestSeller?: boolean }
 ```
 
-- `stock: 'out'` cards are greyed out and sorted to the end of the grid.
-- To add a product: append an entry to the `products` array — it automatically appears in the bento grid.
+- `stock: 'out'` cards are greyed out and sorted to the end of the grid automatically.
+- `bestSeller: true` marks a product for the "Best Sellers" filter tab.
+- To add a product: append an entry to the `products` array — it automatically appears in the grid.
 
 ---
 
@@ -149,8 +150,21 @@ Defined in [lib/products.ts](lib/products.ts). Each product has:
 
 - Shows once per browser session via `localStorage.rc_age_ok`
 - User selects a Canadian province → minimum age auto-populates (no manual age input)
-- Confirmation checkbox required
+- Confirmation checkbox required; no research credentials or attestations asked
 - Renders as a blurred-backdrop popup card with fluid enter/exit animations, themed via CSS variables
+
+---
+
+## Button system
+
+All primary CTA buttons use two CSS utility classes defined in `globals.css`:
+
+- **`.btn-physical`** — raised `box-shadow: 0 4px 0 0` bottom edge that collapses to `1px` on `:active` with a `translateY(3px)` press, creating a physical push-down feel. Release transition is slower (150ms) than press (50ms) for a snappy feel.
+- **`.btn-physical-accent`** — companion class that sets the shadow colour to match the accent button colour. Dark-mode variant included.
+
+The "Add to Bag" button also applies:
+- **`.animate-btn-pop`** — plays `btn-press-confirm` keyframe (programmatic press-down + spring-back, 0.4s) when `clickedId` matches the product. Triggered via React state so it plays on fast clicks regardless of how long the pointer is held.
+- **`.animate-text-warp`** on the inner `<span>` — plays `text-warp-confirm` (blur + squish out, hold, return, 0.42s) simultaneously with the press animation for extra visual confirmation.
 
 ---
 
@@ -159,12 +173,12 @@ Defined in [lib/products.ts](lib/products.ts). Each product has:
 | Name | Used by |
 |---|---|
 | `cart-item-in` | CartDrawer — staggered slide-in for bag items on open |
-| `btn-pop` | `.animate-btn-pop` — haptic scale depression (0.96) for Add to Bag button |
-| `ring-pulse` | `.animate-btn-pop` — expanding green ring for "Added ✓" confirmation |
+| `btn-press-confirm` | `.animate-btn-pop` — programmatic press-down + spring-back for Add to Bag |
+| `text-warp-confirm` | `.animate-text-warp` — button text blurs and squishes out then snaps back on click |
 
 framer-motion handles all other entry/scroll animations (spring variants in AppleHero, AppleBentoGrid, PageTransitionProvider).
 
-**framer-motion v12 gotcha:** `type: "spring"` in variant objects must be typed as `"spring" as const` — plain string is not assignable to `AnimationGeneratorType`.
+**framer-motion v12 gotcha:** `type: "spring"` in variant objects must be typed as `"spring" as const` — plain string is not assignable to `AnimationGeneratorType`. Same applies to `staggerDirection: -1 as const`.
 
 ---
 
@@ -175,8 +189,10 @@ framer-motion handles all other entry/scroll animations (spring variants in Appl
 - **`h-full` inside auto-height flex containers** resolves to auto in most browsers — used intentionally in GlassVial so the image sizes naturally.
 - **CartDrawer `shrink-0`:** Each cart item wrapper needs `shrink-0` to prevent flexbox from squashing cards and hiding qty steppers.
 - **`perspective: 800px`** on the GlassVial outer div is required for the label's `rotateX(2deg)` to render with depth. Do not remove it.
-- The white powder gradient that was previously inside GlassVial was removed — it showed through the semi-transparent PNG and looked like a background artifact.
-- **Body scroll lock:** CartDrawer sets `document.body.style.overflow = "hidden"` while open and restores it on close/unmount — this is intentional so only the drawer panel scrolls.
+- **Body scroll lock:** CartDrawer and AgeGateModal both set `document.body.style.overflow = "hidden"` while open and restore it on close/unmount — intentional so only their panels scroll.
+- **Shop Now scroll:** The CTA `<a>` intercepts hash link clicks with `e.preventDefault()` and calls `scrollIntoView` so the URL never changes to `#store`. Without this, re-clicking after scroll does nothing.
+- **Add to Bag inner `<span>`** has `pointer-events: none` so all clicks in the button's padding area route to the button element, not the span. Removing this causes missed clicks at the button's edges.
+- **AnimatePresence + IntersectionObserver in AppleBentoGrid:** `whileInView` with `once: true` only fires on first scroll — it won't re-trigger when the filter changes. The grid uses `IntersectionObserver` for the initial reveal state, then `AnimatePresence mode="wait"` with `key={activeFilter}` to animate items out and in on filter change.
 
 ---
 
