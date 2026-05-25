@@ -105,6 +105,15 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                     <input type="text" placeholder="Last Name" className={INPUT_CLASS} />
                   </div>
                   <input type="email" placeholder="Email Address" className={INPUT_CLASS} />
+                  <select className={cn(INPUT_CLASS, "appearance-none cursor-pointer")}>
+                    <option value="">Industry</option>
+                    <option>Analytical / Scientific Research</option>
+                    <option>Biotech / Pharmaceutical R&amp;D</option>
+                    <option>Industrial / Manufacturing</option>
+                    <option>Chemical / Material Sciences</option>
+                    <option>Academic / University Research</option>
+                    <option>Private / Independent Laboratory Research</option>
+                  </select>
                 </div>
               </section>
 

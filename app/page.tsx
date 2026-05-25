@@ -29,7 +29,7 @@ export default function Home() {
         <AppleHero
           variant="secondary"
           headline="Pure Precision."
-          subheadline="Third-party tested. 99%+ purity guaranteed on every batch."
+          subheadline="Sourced from purity-verified suppliers. High-grade compounds, every order."
           ctaText="Shop Now"
           ctaLink="#store"
           ctaSecondaryText="View Quality"
@@ -62,6 +62,7 @@ export default function Home() {
 
         {/* Quality Assurance & Legal Disclosures */}
         <QualitySection />
+
       </main>
 
       <AppleFooter />

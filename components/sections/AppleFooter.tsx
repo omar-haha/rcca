@@ -1,50 +1,169 @@
+"use client";
+
+import { useState } from "react";
+import { Mail, ChevronUp, CheckCircle2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { LegalModal, type LegalPage } from "@/components/modals/LegalModal";
+
+const INPUT =
+  "w-full bg-[var(--bg-alt)] border border-[var(--border)] rounded-[10px] px-3.5 py-2.5 text-[13px] text-primary placeholder:text-[var(--text-muted)] outline-none transition-all focus:border-[color:var(--accent)]";
+
 export function AppleFooter() {
+  const [legalPage, setLegalPage] = useState<LegalPage>(null);
+  const [contactOpen, setContactOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
   return (
-    <footer id="contact" className="bg-secondary pt-6 pb-12 px-4 border-t border-primary text-[12px] text-tertiary font-normal">
-      <div className="max-w-[1024px] mx-auto">
+    <>
+      <LegalModal page={legalPage} onClose={() => setLegalPage(null)} />
 
-        {/* Disclaimer */}
-        <div className="border-b border-primary pb-5 mb-5 leading-relaxed space-y-1.5">
-          <p>All products are for in vitro research purposes only. Not intended for human or animal use. Not evaluated by FDA, Health Canada, or equivalent regulatory bodies.</p>
-          <p>Purchasers must be of legal age in their province or territory and are solely responsible for compliance with all applicable local regulations. RCCA Inc. reserves the right to refuse or cancel any order.</p>
+      {/* Click-outside backdrop */}
+      {contactOpen && (
+        <div
+          className="fixed inset-0 z-[40]"
+          onClick={() => setContactOpen(false)}
+        />
+      )}
+
+      <footer className="bg-secondary pt-6 pb-12 px-4 border-t border-primary text-[12px] text-tertiary font-normal">
+        <div className="max-w-[1024px] mx-auto px-4 md:px-8">
+
+          {/* 3-column directory */}
+          <div className="flex items-start justify-between gap-8 pt-2 pb-2">
+
+            {/* Left — Explore */}
+            <div className="text-left">
+              <h3 className="text-primary font-semibold mb-2 text-[12px]">Explore</h3>
+              <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
+                <li><a href="/#store" className="text-tertiary hover:text-primary transition-colors no-underline">Shop</a></li>
+                <li><a href="/#quality" className="text-tertiary hover:text-primary transition-colors no-underline">Quality &amp; Sourcing</a></li>
+              </ul>
+            </div>
+
+            {/* Middle — Contact popup anchor */}
+            <div className="flex-1 flex justify-center">
+              <div className="relative z-[50] w-full">
+
+                {/* Popup — opens upward */}
+                <AnimatePresence>
+                  {contactOpen && (
+                    <motion.div
+                      key="contact-popup"
+                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                      transition={{ type: "spring" as const, stiffness: 380, damping: 30 }}
+                      className="absolute bottom-[calc(100%+8px)] left-0 right-0 rounded-[16px] px-4 py-4"
+                      style={{
+                        backgroundColor: "var(--surface)",
+                        border: "1px solid var(--border)",
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {submitted ? (
+                        <div className="flex flex-col items-center gap-2.5 py-2 text-center">
+                          <div
+                            className="w-9 h-9 rounded-full flex items-center justify-center"
+                            style={{ backgroundColor: "var(--success)1a", color: "var(--success)" }}
+                          >
+                            <CheckCircle2 size={18} strokeWidth={2} />
+                          </div>
+                          <p className="text-[13px] font-semibold text-primary">Message received.</p>
+                          <p className="text-[12px] text-secondary">We&apos;ll get back to you shortly.</p>
+                        </div>
+                      ) : (
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+                          <div className="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="First Name" required className={INPUT} />
+                            <input type="text" placeholder="Last Name" required className={INPUT} />
+                          </div>
+                          <input type="email" placeholder="Email" required className={INPUT} />
+                          <input type="tel" placeholder="Phone" className={INPUT} />
+                          <textarea
+                            placeholder="Message..."
+                            rows={3}
+                            required
+                            className={INPUT}
+                            style={{ resize: "none" }}
+                          />
+                          <button
+                            type="submit"
+                            className="w-full py-[9px] rounded-full text-[13px] font-medium text-white border-none cursor-pointer btn-physical btn-physical-accent"
+                            style={{ backgroundColor: "var(--accent)" }}
+                          >
+                            <span style={{ pointerEvents: "none" }}>Submit</span>
+                          </button>
+                        </form>
+                      )}
+
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Trigger bubble */}
+                <button
+                  type="button"
+                  onClick={() => setContactOpen((v) => !v)}
+                  className="flex items-center gap-3 rounded-[16px] px-4 py-3.5 border cursor-pointer transition-colors text-left w-full"
+                  style={{
+                    backgroundColor: contactOpen ? "var(--surface-hover)" : "var(--surface)",
+                    borderColor: contactOpen ? "var(--accent)" : "var(--border)",
+                  }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "var(--bg-alt)" }}
+                  >
+                    <Mail size={15} strokeWidth={1.5} style={{ color: "var(--text-muted)" }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-semibold text-primary leading-snug">Contact Us</p>
+                    <p className="text-[11px] leading-snug truncate" style={{ color: "var(--text-muted)" }}>
+                      Questions or order inquiries
+                    </p>
+                  </div>
+                  <motion.div
+                    animate={{ rotate: contactOpen ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="shrink-0"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    <ChevronUp size={14} strokeWidth={2} />
+                  </motion.div>
+                </button>
+              </div>
+            </div>
+
+            {/* Right — Legal */}
+            <div className="text-right">
+              <h3 className="text-primary font-semibold mb-2 text-[12px]">Legal</h3>
+              <ul className="list-none p-0 m-0 flex flex-col gap-1.5 items-end">
+                <li>
+                  <button onClick={() => setLegalPage("privacy")} className="text-tertiary hover:text-primary transition-colors bg-transparent border-none cursor-pointer p-0 text-[12px] font-normal">
+                    Privacy Policy
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setLegalPage("terms")} className="text-tertiary hover:text-primary transition-colors bg-transparent border-none cursor-pointer p-0 text-[12px] font-normal">
+                    Terms of Use
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setLegalPage("refund")} className="text-tertiary hover:text-primary transition-colors bg-transparent border-none cursor-pointer p-0 text-[12px] font-normal">
+                    Refund Policy
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
         </div>
-
-        {/* Directory */}
-        <div className="flex flex-wrap gap-x-12 gap-y-6 pt-2 pb-6">
-          <div>
-            <h3 className="text-primary font-semibold mb-2 text-[12px]">Explore</h3>
-            <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
-              <li><a href="#store" className="text-tertiary hover:text-primary transition-colors no-underline">Shop</a></li>
-              <li><a href="#quality" className="text-tertiary hover:text-primary transition-colors no-underline">Quality &amp; Testing</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-primary font-semibold mb-2 text-[12px]">Contact</h3>
-            <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
-              <li><a href="mailto:support@researchchemicals.ca" className="text-tertiary hover:text-primary transition-colors no-underline">support@researchchemicals.ca</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-primary font-semibold mb-2 text-[12px]">Legal</h3>
-            <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
-              <li><a href="#" className="text-tertiary hover:text-primary transition-colors no-underline">Privacy Policy</a></li>
-              <li><a href="#" className="text-tertiary hover:text-primary transition-colors no-underline">Terms of Use</a></li>
-              <li><a href="#" className="text-tertiary hover:text-primary transition-colors no-underline">Refund Policy</a></li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Bottom */}
-        <div className="pt-4 border-t border-primary flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <span>Copyright © 2026 RCCA Inc. All rights reserved.</span>
-          <div className="flex gap-x-4 flex-wrap gap-y-1">
-            <a href="#" className="text-tertiary hover:text-primary transition-colors no-underline">Privacy Policy</a>
-            <a href="#" className="text-tertiary hover:text-primary transition-colors no-underline">Terms of Use</a>
-            <a href="#" className="text-tertiary hover:text-primary transition-colors no-underline">Refund Policy</a>
-          </div>
-        </div>
-
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }
