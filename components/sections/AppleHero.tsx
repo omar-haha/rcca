@@ -57,7 +57,7 @@ export function AppleHero({
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.5]);
 
   return (
-    <section ref={ref} className={cn("relative w-full flex flex-col items-center pt-[72px] md:pt-[100px] overflow-hidden md:h-[85vh] md:min-h-[600px]", bgClass, className)}>
+    <section ref={ref} className={cn("relative w-full flex flex-col items-center pt-[72px] md:pt-[100px] overflow-hidden md:h-[85vh] md:min-h-[600px] md:max-h-[1000px]", bgClass, className)}>
       <motion.div
         variants={containerVariants}
         initial="hidden"

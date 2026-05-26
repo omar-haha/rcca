@@ -12,7 +12,7 @@ export function AppleFooter() {
   return (
     <>
 
-      <footer className="bg-secondary pt-6 pb-12 px-4 border-t border-primary text-[12px] text-tertiary font-normal">
+      <footer className="bg-secondary pt-6 pb-6 px-4 border-t border-primary text-[12px] text-tertiary font-normal">
         <div className="max-w-[1024px] mx-auto px-4 md:px-8">
 
           {/* 3-column directory */}

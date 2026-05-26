@@ -41,27 +41,59 @@ export function AppleNav() {
   };
 
   const handleLangToggle = () => {
-    const overlay = document.createElement("div");
-    overlay.style.cssText = "position:fixed;inset:0;z-index:9998;pointer-events:none;background-color:var(--bg)";
-    document.body.appendChild(overlay);
+    const DURATION = 1100;
+    const HALF = DURATION / 2;
+    const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*<>?";
+    const rand = () => CHARS[Math.floor(Math.random() * CHARS.length)];
+    const scramble = (s: string, reveal: number) =>
+      [...s].map(c => c === " " ? " " : Math.random() < reveal ? c : rand()).join("");
 
-    const timing = { duration: 300, easing: "cubic-bezier(0.4,0,0.2,1)" } as const;
+    const getNodes = (): [Text, string][] => {
+      const out: [Text, string][] = [];
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      let n: Node | null;
+      while ((n = walker.nextNode())) {
+        const t = n as Text;
+        const v = t.nodeValue ?? "";
+        if (!v.trim()) continue;
+        const p = t.parentElement;
+        if (!p) continue;
+        const r = p.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) continue;
+        const st = getComputedStyle(p);
+        if (st.display === "none" || st.visibility === "hidden") continue;
+        out.push([t, v]);
+      }
+      return out;
+    };
 
-    // Slide in from left, covering page
-    overlay.animate(
-      [{ transform: "translateX(-100%)" }, { transform: "translateX(0)" }],
-      { ...timing, fill: "forwards" }
-    ).finished.then(() => {
-      toggleLang();
-      // Two rAFs ensure React flushes its re-render before uncovering
-      return new Promise<void>(r => requestAnimationFrame(() => requestAnimationFrame(() => r())));
-    }).then(() => {
-      // Slide out to right, revealing new language
-      overlay.animate(
-        [{ transform: "translateX(0)" }, { transform: "translateX(100%)" }],
-        timing
-      ).finished.then(() => overlay.remove());
-    });
+    let nodes = getNodes();
+    const start = Date.now();
+
+    const phaseIn = (phase2Start: number) => {
+      const e = Date.now() - phase2Start;
+      const reveal = Math.min(1, e / HALF);
+      nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = scramble(orig, reveal); });
+      if (e < HALF) requestAnimationFrame(() => phaseIn(phase2Start));
+    };
+
+    const phaseOut = () => {
+      const elapsed = Date.now() - start;
+      const reveal = Math.max(0, 1 - elapsed / HALF);
+      nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = scramble(orig, reveal); });
+      if (elapsed < HALF) {
+        requestAnimationFrame(phaseOut);
+      } else {
+        toggleLang();
+        // Let React re-render, then collect new-language nodes and unscramble
+        setTimeout(() => requestAnimationFrame(() => {
+          nodes = getNodes();
+          phaseIn(Date.now());
+        }), 0);
+      }
+    };
+
+    requestAnimationFrame(phaseOut);
   };
 
   const NAV_LINKS = [
