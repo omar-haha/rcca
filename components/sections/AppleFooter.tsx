@@ -15,6 +15,21 @@ export function AppleFooter() {
       <footer className="bg-secondary pt-6 pb-6 px-4 border-t border-primary text-[12px] text-tertiary font-normal">
         <div className="max-w-[1024px] mx-auto px-4 md:px-8">
 
+          {/* Mobile: contact card on top, Explore + Legal side-by-side below */}
+          <a
+            href="/contact"
+            className="md:hidden flex items-center gap-3 rounded-[16px] px-4 py-3.5 border no-underline transition-colors text-left w-full hover:border-[color:var(--accent)] mb-5 mt-2"
+            style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
+          >
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "var(--bg-alt)" }}>
+              <Mail size={15} strokeWidth={1.5} style={{ color: "var(--text-muted)" }} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] font-semibold text-primary leading-snug">{t("footer_contact_label")}</p>
+              <p className="text-[11px] leading-snug truncate" style={{ color: "var(--text-muted)" }}>{t("footer_contact_sub")}</p>
+            </div>
+          </a>
+
           {/* 3-column directory */}
           <div className="flex items-start justify-between gap-8 pt-2 pb-2">
 
@@ -29,8 +44,8 @@ export function AppleFooter() {
               </ul>
             </div>
 
-            {/* Middle — Contact link */}
-            <div className="flex-1 flex justify-center">
+            {/* Middle — Contact link (desktop only) */}
+            <div className="hidden md:flex flex-1 justify-center">
               <a
                 href="/contact"
                 className="flex items-center gap-3 rounded-[16px] px-4 py-3.5 border no-underline transition-colors text-left w-full hover:border-[color:var(--accent)]"

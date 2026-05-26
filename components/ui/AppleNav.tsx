@@ -42,7 +42,7 @@ export function AppleNav() {
   };
 
   const handleLangToggle = () => {
-    const DURATION = 1100;
+    const DURATION = 700;
     const HALF = DURATION / 2;
     const TICK = 50; // ms between character refreshes — prevents vibration
     const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

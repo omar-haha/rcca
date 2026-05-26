@@ -124,14 +124,14 @@ export function AppleBentoGrid() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex justify-center gap-2 flex-wrap mb-12"
+          className="flex gap-2 mb-8 md:mb-12 overflow-x-auto md:overflow-x-visible flex-nowrap md:flex-wrap md:justify-center px-1"
         >
           {FILTERS.map(({ key, label }) => (
             <button
               key={key}
               onClick={() => setActiveFilter(key)}
               className={cn(
-                "rounded-full px-5 py-2 text-[14px] font-medium transition-colors duration-300 border-none cursor-pointer",
+                "rounded-full px-5 py-2 text-[14px] font-medium transition-colors duration-300 border-none cursor-pointer flex-shrink-0",
                 activeFilter === key
                   ? "bg-primary text-secondary border border-primary shadow-[0_0_0_1px_var(--text)]"
                   : "bg-surface text-secondary hover:text-primary hover:bg-surface-hover"
