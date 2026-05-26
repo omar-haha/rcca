@@ -100,8 +100,11 @@ export function AppleNav() {
       if (elapsed < HALF) {
         requestAnimationFrame(phaseOut);
       } else {
-        // flushSync forces React to render new language before we collect nodes —
-        // without this, getNodes() can capture scrambled values as the "originals"
+        // Restore every phase-1 node to its real text before React reconciles.
+        // Without this, nodes whose EN/FR text is identical are never updated by
+        // React, so getNodes() would capture scrambled values as the "originals"
+        // and the hard-restore in phaseIn would write gibberish back.
+        nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = orig; });
         flushSync(() => toggleLang());
         requestAnimationFrame(() => {
           nodes = getNodes();
