@@ -43,10 +43,11 @@ export function AppleNav() {
   const handleLangToggle = () => {
     const DURATION = 1100;
     const HALF = DURATION / 2;
-    const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*<>?";
+    const TICK = 80; // ms between character refreshes — prevents vibration
+    const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     const rand = () => CHARS[Math.floor(Math.random() * CHARS.length)];
     const scramble = (s: string, reveal: number) =>
-      [...s].map(c => c === " " ? " " : Math.random() < reveal ? c : rand()).join("");
+      [...s].map(c => (c === " " || c === "$" || /\d/.test(c)) ? c : Math.random() < reveal ? c : rand()).join("");
 
     const getNodes = (): [Text, string][] => {
       const out: [Text, string][] = [];
@@ -69,25 +70,34 @@ export function AppleNav() {
 
     let nodes = getNodes();
     const start = Date.now();
+    let lastTick = 0;
 
     const phaseIn = (phase2Start: number) => {
       const e = Date.now() - phase2Start;
-      const reveal = Math.min(1, e / HALF);
-      nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = scramble(orig, reveal); });
+      const now = Date.now();
+      if (now - lastTick >= TICK) {
+        lastTick = now;
+        const reveal = Math.min(1, e / HALF);
+        nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = scramble(orig, reveal); });
+      }
       if (e < HALF) requestAnimationFrame(() => phaseIn(phase2Start));
     };
 
     const phaseOut = () => {
       const elapsed = Date.now() - start;
-      const reveal = Math.max(0, 1 - elapsed / HALF);
-      nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = scramble(orig, reveal); });
+      const now = Date.now();
+      if (now - lastTick >= TICK) {
+        lastTick = now;
+        const reveal = Math.max(0, 1 - elapsed / HALF);
+        nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = scramble(orig, reveal); });
+      }
       if (elapsed < HALF) {
         requestAnimationFrame(phaseOut);
       } else {
         toggleLang();
-        // Let React re-render, then collect new-language nodes and unscramble
         setTimeout(() => requestAnimationFrame(() => {
           nodes = getNodes();
+          lastTick = 0;
           phaseIn(Date.now());
         }), 0);
       }
