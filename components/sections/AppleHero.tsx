@@ -96,36 +96,6 @@ export function AppleHero({
           )}
         </motion.div>
 
-        {/* Category nav pills */}
-        <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center gap-2 mt-5">
-          {([t("hero_cat_weight"), t("hero_cat_muscle"), t("hero_cat_recovery")] as const).map((label) => (
-            <a
-              key={label}
-              href="#store"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById("store")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="group flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-medium no-underline transition-all duration-200"
-              style={{
-                backgroundColor: "var(--surface)",
-                border: "1px solid var(--border)",
-                color: "var(--text-muted)",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.backgroundColor = "var(--surface-hover)";
-                (e.currentTarget as HTMLElement).style.color = "var(--text)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.backgroundColor = "var(--surface)";
-                (e.currentTarget as HTMLElement).style.color = "var(--text-muted)";
-              }}
-            >
-              {label}
-              <ChevronRight size={12} strokeWidth={2} className="transition-transform group-hover:translate-x-0.5" />
-            </a>
-          ))}
-        </motion.div>
       </motion.div>
 
       <motion.div

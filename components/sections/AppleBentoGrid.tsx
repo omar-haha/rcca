@@ -44,9 +44,7 @@ function seedReviewCount(name: string): number {
   return 18 + ((h >>> 0) % 83);
 }
 
-const FILTER_KEYS = ["bestseller", "instock", "all"] as const;
-
-type FilterKey = typeof FILTER_KEYS[number];
+type FilterKey = "all" | BenefitTag;
 
 const containerVariants = {
   hidden: {},
@@ -62,10 +60,7 @@ const itemVariants = {
 
 function getFiltered(key: FilterKey): ProductFamily[] {
   const all = getProductFamilies();
-  const base =
-    key === "bestseller" ? all.filter((f) => f.bestSeller) :
-    key === "instock"    ? all.filter((f) => f.variants.some((v) => v.stock !== "out")) :
-    all;
+  const base = key === "all" ? all : all.filter((f) => f.tag === key);
   return base.slice().sort((a, b) => {
     const aOos = a.variants.every((v) => v.stock === "out");
     const bOos = b.variants.every((v) => v.stock === "out");
@@ -77,12 +72,18 @@ function getFiltered(key: FilterKey): ProductFamily[] {
 
 export function AppleBentoGrid() {
   const { t } = useLanguage();
-  const [activeFilter, setActiveFilter] = useState<FilterKey>("bestseller");
+  const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
 
   const FILTERS: { key: FilterKey; label: string }[] = [
-    { key: "bestseller", label: t("filter_bestseller") },
-    { key: "instock",    label: t("filter_instock") },
-    { key: "all",        label: t("filter_all") },
+    { key: "all",           label: t("filter_all") },
+    { key: "Weight Loss",   label: t("tag_weight") },
+    { key: "Muscle Growth", label: t("tag_muscle") },
+    { key: "Recovery",      label: t("tag_recovery") },
+    { key: "Anti-Aging",    label: t("tag_anti_age") },
+    { key: "Cognitive",     label: t("tag_cognitive") },
+    { key: "Tanning",       label: t("tag_tanning") },
+    { key: "Libido",        label: t("tag_libido") },
+    { key: "Ancillary",     label: t("tag_ancillary") },
   ];
   const [pickerFamily, setPickerFamily] = useState<ProductFamily | null>(null);
   const [revealed, setRevealed] = useState(false);

@@ -7,7 +7,6 @@ import { AppleNav } from "@/components/ui/AppleNav";
 import { AppleHero } from "@/components/sections/AppleHero";
 import { AppleBentoGrid } from "@/components/sections/AppleBentoGrid";
 import { AppleFooter } from "@/components/sections/AppleFooter";
-import { QualitySection } from "@/components/sections/QualitySection";
 import { CartDrawer } from "@/components/modals/CartDrawer";
 import { CheckoutModal } from "@/components/modals/CheckoutModal";
 import { AgeGateModal } from "@/components/modals/AgeGateModal";
@@ -35,7 +34,7 @@ export default function Home() {
           ctaText={t("hero_cta")}
           ctaLink="#store"
           ctaSecondaryText={t("hero_cta2")}
-          ctaSecondaryLink="#quality"
+          ctaSecondaryLink="/coa"
         >
           <div className="w-full flex justify-center items-end px-4 -space-x-5 sm:-space-x-10 md:-space-x-16">
             <GlassVial
@@ -62,8 +61,6 @@ export default function Home() {
         {/* Catalog: Bento Grid */}
         <AppleBentoGrid />
 
-        {/* Quality Assurance */}
-        <QualitySection />
 
       </main>
 

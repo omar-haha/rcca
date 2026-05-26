@@ -24,7 +24,8 @@ export function AppleNav() {
 
     root.style.setProperty("--vt-x", `${x}px`);
     root.style.setProperty("--vt-y", `${y}px`);
-    root.setAttribute("data-vt", "theme");
+    root.style.setProperty("--vt-anim", "vt-ripple");
+    root.style.setProperty("--vt-dur",  "800ms");
     const nextTheme = theme === "dark" ? "light" : "dark";
 
     (document as any).startViewTransition(() => {
@@ -32,17 +33,25 @@ export function AppleNav() {
         root.setAttribute("data-theme", nextTheme);
         toggleTheme();
       });
-    }).finished.finally(() => root.removeAttribute("data-vt"));
+    }).finished.finally(() => {
+      root.style.removeProperty("--vt-anim");
+      root.style.removeProperty("--vt-dur");
+    });
   };
 
   const handleLangToggle = () => {
     const root = document.documentElement;
     if (!("startViewTransition" in document)) { toggleLang(); return; }
 
-    root.setAttribute("data-vt", "lang");
+    root.style.setProperty("--vt-anim", "vt-sweep");
+    root.style.setProperty("--vt-dur",  "420ms");
+
     (document as any).startViewTransition(() => {
       flushSync(toggleLang);
-    }).finished.finally(() => root.removeAttribute("data-vt"));
+    }).finished.finally(() => {
+      root.style.removeProperty("--vt-anim");
+      root.style.removeProperty("--vt-dur");
+    });
   };
 
   const NAV_LINKS = [
