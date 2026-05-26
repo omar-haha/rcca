@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { flushSync } from "react-dom";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
@@ -43,7 +44,7 @@ export function AppleNav() {
   const handleLangToggle = () => {
     const DURATION = 1100;
     const HALF = DURATION / 2;
-    const TICK = 80; // ms between character refreshes — prevents vibration
+    const TICK = 50; // ms between character refreshes — prevents vibration
     const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     const rand = () => CHARS[Math.floor(Math.random() * CHARS.length)];
     const scramble = (s: string, reveal: number) =>
@@ -80,7 +81,12 @@ export function AppleNav() {
         const reveal = Math.min(1, e / HALF);
         nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = scramble(orig, reveal); });
       }
-      if (e < HALF) requestAnimationFrame(() => phaseIn(phase2Start));
+      if (e < HALF) {
+        requestAnimationFrame(() => phaseIn(phase2Start));
+      } else {
+        // Hard restore — guarantees no node stays scrambled regardless of tick alignment
+        nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = orig; });
+      }
     };
 
     const phaseOut = () => {
@@ -94,12 +100,14 @@ export function AppleNav() {
       if (elapsed < HALF) {
         requestAnimationFrame(phaseOut);
       } else {
-        toggleLang();
-        setTimeout(() => requestAnimationFrame(() => {
+        // flushSync forces React to render new language before we collect nodes —
+        // without this, getNodes() can capture scrambled values as the "originals"
+        flushSync(() => toggleLang());
+        requestAnimationFrame(() => {
           nodes = getNodes();
           lastTick = 0;
           phaseIn(Date.now());
-        }), 0);
+        });
       }
     };
 
