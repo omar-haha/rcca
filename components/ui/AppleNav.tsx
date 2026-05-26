@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { flushSync } from "react-dom";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
@@ -20,37 +19,48 @@ export function AppleNav() {
     const y = Math.round(rect.top + rect.height / 2);
     const root = document.documentElement;
 
-    if (!("startViewTransition" in document)) { toggleTheme(); return; }
+    // Capture old bg before switching so overlay matches outgoing theme
+    const oldBg = getComputedStyle(root).getPropertyValue("--bg").trim() || (theme === "dark" ? "#0a0a0a" : "#ffffff");
 
-    root.style.setProperty("--vt-x", `${x}px`);
-    root.style.setProperty("--vt-y", `${y}px`);
-    root.style.setProperty("--vt-anim", "vt-ripple");
-    root.style.setProperty("--vt-dur",  "800ms");
     const nextTheme = theme === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", nextTheme);
+    toggleTheme();
 
-    (document as any).startViewTransition(() => {
-      flushSync(() => {
-        root.setAttribute("data-theme", nextTheme);
-        toggleTheme();
-      });
-    }).finished.finally(() => {
-      root.style.removeProperty("--vt-anim");
-      root.style.removeProperty("--vt-dur");
-    });
+    // Old-theme overlay shrinks into the button — reveals new theme underneath
+    const overlay = document.createElement("div");
+    overlay.style.cssText = `position:fixed;inset:0;z-index:9998;pointer-events:none;background-color:${oldBg}`;
+    document.body.appendChild(overlay);
+
+    overlay.animate(
+      [
+        { clipPath: `circle(200vmax at ${x}px ${y}px)` },
+        { clipPath: `circle(0px at ${x}px ${y}px)` },
+      ],
+      { duration: 1100, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }
+    ).finished.then(() => overlay.remove());
   };
 
   const handleLangToggle = () => {
-    const root = document.documentElement;
-    if (!("startViewTransition" in document)) { toggleLang(); return; }
+    const overlay = document.createElement("div");
+    overlay.style.cssText = "position:fixed;inset:0;z-index:9998;pointer-events:none;background-color:var(--bg)";
+    document.body.appendChild(overlay);
 
-    root.style.setProperty("--vt-anim", "vt-sweep");
-    root.style.setProperty("--vt-dur",  "420ms");
+    const timing = { duration: 300, easing: "cubic-bezier(0.4,0,0.2,1)" } as const;
 
-    (document as any).startViewTransition(() => {
-      flushSync(toggleLang);
-    }).finished.finally(() => {
-      root.style.removeProperty("--vt-anim");
-      root.style.removeProperty("--vt-dur");
+    // Slide in from left, covering page
+    overlay.animate(
+      [{ transform: "translateX(-100%)" }, { transform: "translateX(0)" }],
+      { ...timing, fill: "forwards" }
+    ).finished.then(() => {
+      toggleLang();
+      // Two rAFs ensure React flushes its re-render before uncovering
+      return new Promise<void>(r => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+    }).then(() => {
+      // Slide out to right, revealing new language
+      overlay.animate(
+        [{ transform: "translateX(0)" }, { transform: "translateX(100%)" }],
+        timing
+      ).finished.then(() => overlay.remove());
     });
   };
 

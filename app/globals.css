@@ -196,27 +196,4 @@
   100% { box-shadow: none; }
 }
 
-/* ---- View Transitions ---- */
-::view-transition-old(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-::view-transition-new(root) {
-  /* --vt-anim / --vt-dur are set by JS before startViewTransition */
-  animation: var(--vt-anim, none) var(--vt-dur, 0s) cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  mix-blend-mode: normal;
-}
-
-@keyframes vt-ripple {
-  from { clip-path: circle(0 at var(--vt-x, 50%) var(--vt-y, 50%)); }
-  to   { clip-path: circle(200vmax at var(--vt-x, 50%) var(--vt-y, 50%)); }
-}
-@keyframes vt-sweep {
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(0 0% 0 0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-new(root) { animation: none; }
-}
 
