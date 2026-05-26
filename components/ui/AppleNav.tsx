@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { flushSync } from "react-dom";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
@@ -12,6 +13,37 @@ export function AppleNav() {
   const { cartCount, setCartOpen } = useCart();
   const { lang, toggle: toggleLang, t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleThemeToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = Math.round(rect.left + rect.width / 2);
+    const y = Math.round(rect.top + rect.height / 2);
+    const root = document.documentElement;
+
+    if (!("startViewTransition" in document)) { toggleTheme(); return; }
+
+    root.style.setProperty("--vt-x", `${x}px`);
+    root.style.setProperty("--vt-y", `${y}px`);
+    root.setAttribute("data-vt", "theme");
+    const nextTheme = theme === "dark" ? "light" : "dark";
+
+    (document as any).startViewTransition(() => {
+      flushSync(() => {
+        root.setAttribute("data-theme", nextTheme);
+        toggleTheme();
+      });
+    }).finished.finally(() => root.removeAttribute("data-vt"));
+  };
+
+  const handleLangToggle = () => {
+    const root = document.documentElement;
+    if (!("startViewTransition" in document)) { toggleLang(); return; }
+
+    root.setAttribute("data-vt", "lang");
+    (document as any).startViewTransition(() => {
+      flushSync(toggleLang);
+    }).finished.finally(() => root.removeAttribute("data-vt"));
+  };
 
   const NAV_LINKS = [
     { label: t("nav_store"),   href: "/#store" },
@@ -51,7 +83,7 @@ export function AppleNav() {
           <div className="flex-1 flex items-center justify-end gap-4">
             {/* Language toggle */}
             <button
-              onClick={toggleLang}
+              onClick={handleLangToggle}
               className="text-primary opacity-70 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none flex items-center justify-center p-0 text-[11px] font-semibold tracking-widest"
               aria-label="Toggle language"
             >
@@ -59,7 +91,7 @@ export function AppleNav() {
             </button>
 
             <button
-              onClick={toggleTheme}
+              onClick={handleThemeToggle}
               className="text-primary opacity-80 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none flex items-center justify-center p-0"
               aria-label="Toggle Theme"
             >
