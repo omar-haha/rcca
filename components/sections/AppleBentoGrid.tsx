@@ -86,7 +86,7 @@ export function AppleBentoGrid() {
     { key: "Ancillary",     label: t("tag_ancillary") },
   ];
   const [pickerFamily, setPickerFamily] = useState<ProductFamily | null>(null);
-  const [revealed, setRevealed] = useState(false);
+  const [revealed, setRevealed] = useState(true);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -124,7 +124,7 @@ export function AppleBentoGrid() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex gap-2 mb-8 md:mb-12 overflow-x-auto md:overflow-x-visible flex-nowrap md:flex-wrap md:justify-center px-1"
+          className="flex gap-2 mb-8 md:mb-12 overflow-x-auto md:overflow-x-visible flex-nowrap md:flex-wrap md:justify-center px-1 py-1.5"
         >
           {FILTERS.map(({ key, label }) => (
             <button
@@ -165,12 +165,12 @@ export function AppleBentoGrid() {
                     whileHover={{ scale: 1.01 }}
                     onClick={() => setPickerFamily(family)}
                     className={cn(
-                      "bg-secondary rounded-[24px] overflow-hidden flex flex-row relative group cursor-pointer shadow-sm hover:shadow-md transition-shadow min-h-[164px]",
+                      "bg-secondary rounded-[24px] overflow-hidden flex flex-row relative group cursor-pointer shadow-sm hover:shadow-md transition-shadow min-h-[188px]",
                       allOos && "opacity-60 grayscale-[0.4]"
                     )}
                   >
                     {/* Left — Text */}
-                    <div className="flex-1 flex flex-col px-5 py-5 md:px-6 md:py-6 z-10">
+                    <div className="flex-1 flex flex-col px-5 py-6 md:px-6 md:py-7 z-10">
                       <span
                         className="self-start rounded-full px-3 py-0.5 text-[11px] font-semibold tracking-wide mb-2.5"
                         style={{ backgroundColor: TAG_STYLES[family.tag].bg, color: TAG_STYLES[family.tag].color }}

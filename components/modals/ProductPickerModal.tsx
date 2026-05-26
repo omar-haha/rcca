@@ -55,7 +55,7 @@ function PickerContent({ family, onClose }: { family: ProductFamily; onClose: ()
       <div className="flex flex-col sm:flex-row items-stretch">
         {/* Vial panel */}
         <div
-          className="sm:w-[200px] shrink-0 flex items-end justify-center px-7 sm:pl-7 sm:pr-0 pb-0 pt-4"
+          className="sm:w-[200px] shrink-0 flex items-center justify-center px-7 sm:pl-7 sm:pr-0 pb-0 pt-4"
           style={{ minHeight: "210px" }}
         >
           <div className="w-[110px]">
