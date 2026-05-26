@@ -103,7 +103,7 @@ export function AppleBentoGrid() {
   const families = getFiltered(activeFilter);
 
   return (
-    <section id="store" className="py-[80px] md:py-[120px] bg-primary overflow-hidden">
+    <section id="store" className="pt-[48px] pb-[80px] md:pt-[60px] md:pb-[100px] bg-primary overflow-hidden">
       <ProductPickerModal family={pickerFamily} onClose={() => setPickerFamily(null)} />
 
       <div className="max-w-[1280px] mx-auto px-4 md:px-6">
@@ -165,44 +165,35 @@ export function AppleBentoGrid() {
                     whileHover={{ scale: 1.01 }}
                     onClick={() => setPickerFamily(family)}
                     className={cn(
-                      "bg-secondary rounded-[24px] overflow-hidden flex flex-col items-center pt-8 md:pt-12 relative group cursor-pointer shadow-sm hover:shadow-md transition-shadow",
+                      "bg-secondary rounded-[24px] overflow-hidden flex flex-row relative group cursor-pointer shadow-sm hover:shadow-md transition-shadow min-h-[164px]",
                       allOos && "opacity-60 grayscale-[0.4]"
                     )}
                   >
-                    {/* Text Content */}
-                    <div className="text-center px-5 md:px-8 z-10 w-full mb-6 md:mb-8">
-                      {/* Tag pill */}
-                      <div className="flex justify-center mb-3">
-                        <span
-                          className="inline-block rounded-full px-3 py-0.5 text-[11px] font-semibold tracking-wide"
-                          style={{
-                            backgroundColor: TAG_STYLES[family.tag].bg,
-                            color: TAG_STYLES[family.tag].color,
-                          }}
-                        >
-                          {t(TAG_KEY[family.tag])}
-                        </span>
-                      </div>
+                    {/* Left — Text */}
+                    <div className="flex-1 flex flex-col px-5 py-5 md:px-6 md:py-6 z-10">
+                      <span
+                        className="self-start rounded-full px-3 py-0.5 text-[11px] font-semibold tracking-wide mb-2.5"
+                        style={{ backgroundColor: TAG_STYLES[family.tag].bg, color: TAG_STYLES[family.tag].color }}
+                      >
+                        {t(TAG_KEY[family.tag])}
+                      </span>
 
-                      <h3 className="text-[22px] md:text-[28px] font-semibold tracking-[-0.01em] text-primary mb-1 md:mb-2">
+                      <h3 className="text-[18px] md:text-[20px] font-semibold tracking-[-0.01em] text-primary mb-1 leading-snug">
                         {family.name}
                       </h3>
 
-                      {/* Star rating */}
-                      <div className="flex items-center justify-center gap-1.5 mb-3">
-                        <span className="text-[13px]" style={{ color: '#f59e0b' }}>★</span>
-                        <span className="text-[13px] font-medium text-primary">{seedRating(family.name).toFixed(1)}</span>
-                        <span className="text-[12px] text-tertiary">({seedReviewCount(family.name)})</span>
+                      <div className="flex items-center gap-1 mb-1.5">
+                        <span className="text-[12px]" style={{ color: "#f59e0b" }}>★</span>
+                        <span className="text-[12px] font-medium text-primary">{seedRating(family.name).toFixed(1)}</span>
+                        <span className="text-[11px] text-tertiary">({seedReviewCount(family.name)})</span>
                       </div>
 
-                      <div className="text-[14px] md:text-[15px] text-secondary font-normal mb-4 md:mb-5">
-                        {multi
-                          ? `${family.variants.length} ${t("card_options")}`
-                          : firstVariant.unit}
-                      </div>
+                      <p className="text-[13px] text-secondary mb-0">
+                        {multi ? `${family.variants.length} ${t("card_options")}` : firstVariant.unit}
+                      </p>
 
-                      <div className="flex flex-col items-center gap-2 md:gap-3">
-                        <span className="text-[17px] md:text-[18px] text-primary font-medium">
+                      <div className="mt-auto pt-3 flex items-center gap-3 flex-wrap">
+                        <span className="text-[15px] md:text-[16px] text-primary font-medium">
                           {multi ? `${t("card_from")} $${family.minPrice}` : `$${firstVariant.price.toFixed(2)}`}
                         </span>
                         <button
@@ -210,10 +201,10 @@ export function AppleBentoGrid() {
                           disabled={allOos}
                           onClick={(e) => { e.stopPropagation(); setPickerFamily(family); }}
                           className={cn(
-                            "rounded-full px-5 py-2 text-[13px] font-medium text-white cursor-pointer border-none z-20 relative",
+                            "rounded-full px-4 py-1.5 text-[12px] font-medium cursor-pointer border-none z-20 relative",
                             allOos
                               ? "bg-surface text-tertiary cursor-not-allowed"
-                              : "bg-accent hover:bg-[color:var(--accent-hover)] btn-physical btn-physical-accent"
+                              : "bg-accent text-white hover:bg-[color:var(--accent-hover)] btn-physical btn-physical-accent"
                           )}
                         >
                           <span style={{ pointerEvents: "none" }}>
@@ -223,9 +214,9 @@ export function AppleBentoGrid() {
                       </div>
                     </div>
 
-                    {/* Vial */}
-                    <div className="w-full h-[200px] md:h-[300px] mt-auto relative flex justify-center items-end">
-                      <div className="absolute -bottom-[30px] md:-bottom-[40px] w-[120px] md:w-[160px] pointer-events-none group-hover:scale-[1.05] group-hover:-translate-y-4 transition-transform duration-700">
+                    {/* Right — Vial */}
+                    <div className="relative w-[96px] md:w-[112px] flex-shrink-0">
+                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[76px] md:w-[90px] pointer-events-none group-hover:scale-[1.05] group-hover:-translate-y-2 transition-transform duration-700">
                         <GlassVial productName={family.name} weight={20} unit={firstVariant.unit} />
                       </div>
                     </div>
