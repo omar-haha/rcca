@@ -29,6 +29,7 @@ export const translations = {
     card_oos:         "Out of Stock",
     card_select:      "Select Options",
     card_add:         "Add to Bag",
+    card_show_more:   "Show More",
 
     // Benefit tags
     tag_weight:   "Weight Loss",
@@ -240,6 +241,7 @@ export const translations = {
     card_oos:         "Rupture de stock",
     card_select:      "Sélectionner",
     card_add:         "Ajouter",
+    card_show_more:   "Voir plus",
 
     // Benefit tags
     tag_weight:   "Perte de poids",

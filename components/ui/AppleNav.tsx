@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { flushSync } from "react-dom";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useCart } from "@/components/providers/CartProvider";
@@ -14,44 +14,40 @@ export function AppleNav() {
   const { lang, toggle: toggleLang, t } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const animTokenRef = useRef({ active: false });
+
   const handleThemeToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = Math.round(rect.left + rect.width / 2);
     const y = Math.round(rect.top + rect.height / 2);
     const root = document.documentElement;
 
-    // Capture old bg before switching so overlay matches outgoing theme
-    const oldBg = getComputedStyle(root).getPropertyValue("--bg").trim() || (theme === "dark" ? "#0a0a0a" : "#ffffff");
+    const newTheme = theme === "dark" ? "light" : "dark";
+    const newBg = newTheme === "dark" ? "#000000" : "#ffffff";
 
-    const nextTheme = theme === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", nextTheme);
-    toggleTheme();
-
-    // Old-theme overlay shrinks into the button — reveals new theme underneath
+    // Circle of the NEW theme expands from the button outward
     const overlay = document.createElement("div");
-    overlay.style.cssText = `position:fixed;inset:0;z-index:9998;pointer-events:none;background-color:${oldBg}`;
+    overlay.style.cssText = `position:fixed;inset:0;z-index:9998;pointer-events:none;background-color:${newBg};clip-path:circle(0px at ${x}px ${y}px)`;
     document.body.appendChild(overlay);
 
     overlay.animate(
       [
-        { clipPath: `circle(200vmax at ${x}px ${y}px)` },
         { clipPath: `circle(0px at ${x}px ${y}px)` },
+        { clipPath: `circle(200vmax at ${x}px ${y}px)` },
       ],
       { duration: 1100, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }
-    ).finished.then(() => overlay.remove());
+    ).finished.then(() => {
+      root.setAttribute("data-theme", newTheme);
+      toggleTheme();
+      overlay.remove();
+    });
   };
 
   const handleLangToggle = () => {
-    const DURATION = 700;
-    const HALF = DURATION / 2;
-    const TICK = 50; // ms between character refreshes — prevents vibration
-    const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    const rand = () => CHARS[Math.floor(Math.random() * CHARS.length)];
-    const scramble = (s: string, reveal: number) =>
-      [...s].map(c => (c === " " || c === "$" || /\d/.test(c)) ? c : Math.random() < reveal ? c : rand()).join("");
+    const TICK = 16; // ms per character (~700ms for a 40-char change)
 
-    const getNodes = (): [Text, string][] => {
-      const out: [Text, string][] = [];
+    const getVisibleNodes = (): Map<Text, string> => {
+      const map = new Map<Text, string>();
       const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
       let n: Node | null;
       while ((n = walker.nextNode())) {
@@ -64,57 +60,63 @@ export function AppleNav() {
         if (r.bottom < 0 || r.top > window.innerHeight) continue;
         const st = getComputedStyle(p);
         if (st.display === "none" || st.visibility === "hidden") continue;
-        out.push([t, v]);
+        map.set(t, v);
       }
-      return out;
+      return map;
     };
 
-    let nodes = getNodes();
-    const start = Date.now();
-    let lastTick = 0;
+    // Cancel any in-progress animation
+    animTokenRef.current.active = false;
+    const token = { active: true };
+    animTokenRef.current = token;
 
-    const phaseIn = (phase2Start: number) => {
-      const e = Date.now() - phase2Start;
-      const now = Date.now();
-      if (now - lastTick >= TICK) {
-        lastTick = now;
-        const reveal = Math.min(1, e / HALF);
-        nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = scramble(orig, reveal); });
-      }
-      if (e < HALF) {
-        requestAnimationFrame(() => phaseIn(phase2Start));
-      } else {
-        // Hard restore — guarantees no node stays scrambled regardless of tick alignment
-        nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = orig; });
-      }
-    };
+    // Snapshot old text, switch language, then compare
+    const before = getVisibleNodes();
+    flushSync(() => toggleLang());
 
-    const phaseOut = () => {
-      const elapsed = Date.now() - start;
-      const now = Date.now();
-      if (now - lastTick >= TICK) {
-        lastTick = now;
-        const reveal = Math.max(0, 1 - elapsed / HALF);
-        nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = scramble(orig, reveal); });
-      }
-      if (elapsed < HALF) {
-        requestAnimationFrame(phaseOut);
-      } else {
-        // Restore every phase-1 node to its real text before React reconciles.
-        // Without this, nodes whose EN/FR text is identical are never updated by
-        // React, so getNodes() would capture scrambled values as the "originals"
-        // and the hard-restore in phaseIn would write gibberish back.
-        nodes.forEach(([t, orig]) => { if (t.parentNode) t.nodeValue = orig; });
-        flushSync(() => toggleLang());
-        requestAnimationFrame(() => {
-          nodes = getNodes();
-          lastTick = 0;
-          phaseIn(Date.now());
-        });
-      }
-    };
+    type Anim = { node: Text; prefix: string; del: string; ins: string };
+    const anims: Anim[] = [];
 
-    requestAnimationFrame(phaseOut);
+    before.forEach((oldText, node) => {
+      if (!node.parentNode) return;
+      const newText = node.nodeValue ?? "";
+      if (newText === oldText) return;
+
+      // Common prefix — only animate the differing suffix
+      let pLen = 0;
+      while (pLen < oldText.length && pLen < newText.length && oldText[pLen] === newText[pLen]) pLen++;
+      const del = oldText.slice(pLen);
+      const ins = newText.slice(pLen);
+
+      // Skip very long changes (paragraphs) — they already show correct via flushSync
+      if (del.length + ins.length > 44) return;
+
+      anims.push({ node, prefix: oldText.slice(0, pLen), del, ins });
+      node.nodeValue = oldText; // restore old text so animation starts from it
+    });
+
+    anims.forEach(({ node, prefix, del, ins }) => {
+      const total = del.length + ins.length;
+      if (total === 0) return;
+      let step = 0;
+
+      const tick = () => {
+        if (!token.active) { node.nodeValue = prefix + ins; return; }
+        if (!node.parentNode) return;
+
+        if (step < del.length) {
+          node.nodeValue = prefix + del.slice(0, del.length - step);
+        } else {
+          node.nodeValue = prefix + ins.slice(0, step - del.length);
+        }
+
+        step++;
+        if (step <= total) setTimeout(tick, TICK);
+        else node.nodeValue = prefix + ins;
+      };
+
+      setTimeout(tick, TICK);
+    });
   };
 
   const NAV_LINKS = [

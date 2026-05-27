@@ -87,7 +87,10 @@ export function AppleBentoGrid() {
   ];
   const [pickerFamily, setPickerFamily] = useState<ProductFamily | null>(null);
   const [revealed, setRevealed] = useState(true);
+  const [showAll, setShowAll] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => { setShowAll(false); }, [activeFilter]);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -101,6 +104,7 @@ export function AppleBentoGrid() {
   }, []);
 
   const families = getFiltered(activeFilter);
+  const visibleFamilies = showAll ? families : families.slice(0, 9);
 
   return (
     <section id="store" className="pt-[48px] pb-[80px] md:pt-[60px] md:pb-[100px] bg-primary overflow-hidden">
@@ -153,7 +157,7 @@ export function AppleBentoGrid() {
               exit="exit"
               className="grid grid-cols-1 md:grid-cols-3 gap-6"
             >
-              {families.map((family) => {
+              {visibleFamilies.map((family) => {
                 const allOos = family.variants.every((v) => v.stock === "out");
                 const multi = family.variants.length > 1;
                 const firstVariant = family.variants[0];
@@ -225,6 +229,17 @@ export function AppleBentoGrid() {
               })}
             </motion.div>
           </AnimatePresence>
+
+          {!showAll && families.length > 9 && (
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={() => setShowAll(true)}
+                className="rounded-full px-8 py-3 text-[14px] font-medium bg-surface text-primary hover:bg-surface-hover transition-colors border-none cursor-pointer"
+              >
+                {t("card_show_more")} ({families.length - 9})
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>
