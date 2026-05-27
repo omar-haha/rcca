@@ -35,10 +35,10 @@ export function AppleNav() {
         { clipPath: `circle(0px at ${x}px ${y}px)` },
         { clipPath: `circle(200vmax at ${x}px ${y}px)` },
       ],
-      { duration: 1100, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }
+      { duration: 1100, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }
     ).finished.then(() => {
       root.setAttribute("data-theme", newTheme);
-      toggleTheme();
+      flushSync(() => toggleTheme()); // render new theme before revealing page
       overlay.remove();
     });
   };
