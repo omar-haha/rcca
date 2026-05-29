@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Minus, Plus, ZoomIn } from "lucide-react";
 import { useCart } from "@/components/providers/CartProvider";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 import { GlassVial } from "@/components/ui/GlassVial";
 import { AppleNav } from "@/components/ui/AppleNav";
 import { AppleFooter } from "@/components/sections/AppleFooter";
@@ -16,24 +17,46 @@ import { cn } from "@/lib/utils";
 import { products } from "@/lib/products";
 import type { Product } from "@/lib/products";
 
-const STOCK_CONFIG = {
-  in:  { label: "In Stock",     color: "var(--success)" },
-  low: { label: "Low Stock",    color: "#f59e0b" },
-  out: { label: "Out of Stock", color: "var(--error)" },
-} as const;
+function stockStatus(qty: number): Product["stock"] {
+  if (qty === 0) return "out";
+  if (qty <= 5) return "low";
+  return "in";
+}
 
 export function ProductDetail({ product: initial }: { product: Product }) {
   const variants = products.filter((p) => p.name === initial.name);
   const { addToCart } = useCart();
+  const { t } = useLanguage();
   const [selected, setSelected] = useState<Product>(initial);
   const [qty, setQty] = useState(1);
   const [clicked, setClicked] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [liveVariants, setLiveVariants] = useState<Product[]>(variants);
+
+  // Fetch live stock and override the static stock field
+  useEffect(() => {
+    fetch("/api/stock")
+      .then((r) => r.json())
+      .then((map: Record<string, number>) => {
+        setLiveVariants(
+          variants.map((v) => (v.id in map ? { ...v, stock: stockStatus(map[v.id]) } : v))
+        );
+      })
+      .catch(() => {});
+  }, [initial.id]);
+
+  // Keep selected in sync if variants update
+  useEffect(() => {
+    const updated = liveVariants.find((v) => v.id === selected.id);
+    if (updated) setSelected(updated);
+  }, [liveVariants]);
 
   const p = selected;
   const oos = p.stock === "out";
-  const stock = STOCK_CONFIG[p.stock];
+
+  const stockLabel = p.stock === "in" ? t("pdp_in_stock") : p.stock === "low" ? t("pdp_low_stock") : t("pdp_out_stock");
+  const stockColor = p.stock === "in" ? "var(--success)" : p.stock === "low" ? "#f59e0b" : "var(--error)";
 
   const handleAdd = () => {
     if (oos) return;
@@ -43,11 +66,25 @@ export function ProductDetail({ product: initial }: { product: Product }) {
   };
 
   const SPECS = [
-    ["CAS Number",  p.cas],
-    ["Unit Size",   p.unit],
-    ["Purity",      p.purity],
-    ["Category",    p.cat.charAt(0).toUpperCase() + p.cat.slice(1)],
+    [t("pdp_cas"),      p.cas],
+    [t("pdp_unit"),     p.unit],
+    [t("pdp_purity"),   p.purity],
+    [t("pdp_category"), p.cat.charAt(0).toUpperCase() + p.cat.slice(1)],
   ];
+
+  // Related: same tag, different name, in-stock first, max 3
+  const related = products
+    .filter((rp) => rp.tag === p.tag && rp.name !== p.name)
+    .reduce<Product[]>((acc, rp) => {
+      if (acc.some((x) => x.name === rp.name)) return acc;
+      return [...acc, rp];
+    }, [])
+    .sort((a, b) => {
+      const aOos = a.stock === "out" ? 1 : 0;
+      const bOos = b.stock === "out" ? 1 : 0;
+      return aOos - bOos;
+    })
+    .slice(0, 3);
 
   return (
     <>
@@ -81,7 +118,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
             </motion.div>
             <button
               onClick={() => setZoomOpen(false)}
-              className="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center border-none cursor-pointer text-[13px] font-medium"
+              className="absolute top-5 right-5 w-9 h-9 rounded-full flex items-center justify-center border-none cursor-pointer"
               style={{ backgroundColor: "rgba(255,255,255,0.15)", color: "#fff" }}
             >
               ✕
@@ -93,19 +130,18 @@ export function ProductDetail({ product: initial }: { product: Product }) {
       <main className="pt-[44px] min-h-screen bg-primary">
         <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-10 md:py-16">
 
-          {/* Back link */}
           <Link
             href="/#store"
             className="inline-flex items-center gap-1 text-[14px] text-secondary hover:text-primary transition-colors no-underline mb-10 md:mb-14"
           >
             <ChevronLeft size={16} strokeWidth={2} />
-            All Products
+            {t("pdp_back")}
           </Link>
 
           {/* Two-column layout */}
           <div className="flex flex-col md:flex-row gap-10 md:gap-16 items-start">
 
-            {/* Vial — click to zoom */}
+            {/* Vial */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -120,7 +156,6 @@ export function ProductDetail({ product: initial }: { product: Product }) {
                 <div className="w-[180px] md:w-[210px] transition-transform duration-700 group-hover:scale-[1.04] group-hover:-translate-y-3">
                   <GlassVial productName={p.name} weight={20} unit={p.unit} />
                 </div>
-                {/* Zoom hint */}
                 <div
                   className="absolute bottom-4 right-4 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                   style={{ backgroundColor: "rgba(0,0,0,0.30)", color: "#fff" }}
@@ -130,7 +165,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
               </div>
             </motion.div>
 
-            {/* Product info */}
+            {/* Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -139,44 +174,32 @@ export function ProductDetail({ product: initial }: { product: Product }) {
             >
               {/* Badges */}
               <div className="flex items-center gap-2.5 mb-4 flex-wrap">
-                <span className="text-[11px] font-semibold tracking-widest uppercase text-tertiary">
-                  {p.cat}
-                </span>
+                <span className="text-[11px] font-semibold tracking-widest uppercase text-tertiary">{p.cat}</span>
                 {p.bestSeller && (
-                  <span
-                    className="text-[11px] font-semibold tracking-widest uppercase px-2.5 py-0.5 rounded-full"
-                    style={{ backgroundColor: "var(--accent)22", color: "var(--accent)" }}
-                  >
-                    Best Seller
+                  <span className="text-[11px] font-semibold tracking-widest uppercase px-2.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--accent)22", color: "var(--accent)" }}>
+                    {t("pdp_best_seller")}
                   </span>
                 )}
-                <span
-                  className="text-[11px] font-semibold tracking-widest uppercase px-2.5 py-0.5 rounded-full"
-                  style={{ backgroundColor: stock.color + "22", color: stock.color }}
-                >
-                  {stock.label}
+                <span className="text-[11px] font-semibold tracking-widest uppercase px-2.5 py-0.5 rounded-full" style={{ backgroundColor: stockColor + "22", color: stockColor }}>
+                  {stockLabel}
                 </span>
               </div>
 
               <h1 className="text-[36px] md:text-[48px] font-semibold tracking-[-0.02em] text-primary leading-[1.05] mb-3">
                 {p.name}
               </h1>
-
-              <p className="text-[16px] text-secondary mb-5">
-                {p.unit} · {p.purity} Purity
-              </p>
+              <p className="text-[16px] text-secondary mb-6">{p.unit} · {p.purity} Purity</p>
 
               {/* Variant selector */}
-              {variants.length > 1 && (
+              {liveVariants.length > 1 && (
                 <div className="mb-6">
                   <p className="text-[11px] font-semibold tracking-widest uppercase mb-2.5" style={{ color: "var(--text-legal)" }}>
-                    Select Dose
+                    {t("pdp_select_dose")}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {variants.map((v) => {
+                    {liveVariants.map((v) => {
                       const isActive = v.id === p.id;
                       const vOos = v.stock === "out";
-                      const doseLabel = v.unit.split(" ×")[0];
                       return (
                         <button
                           key={v.id}
@@ -190,7 +213,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
                               : { backgroundColor: "transparent", borderColor: "var(--border)", color: "var(--text-muted)" }
                           }
                         >
-                          {doseLabel} · ${v.price}
+                          {v.unit.split(" ×")[0]} · ${v.price}
                         </button>
                       );
                     })}
@@ -202,33 +225,27 @@ export function ProductDetail({ product: initial }: { product: Product }) {
                 ${p.price.toFixed(2)}
               </div>
 
-              {/* Qty stepper + Add to Bag */}
+              {/* Qty + Add */}
               <div className="flex items-center gap-3 mb-10">
-                <div
-                  className="flex items-center rounded-full border shrink-0 overflow-hidden"
-                  style={{ borderColor: "var(--border)" }}
-                >
+                <div className="flex items-center rounded-full border shrink-0 overflow-hidden" style={{ borderColor: "var(--border)" }}>
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
                     disabled={qty === 1 || oos}
-                    className="w-11 h-11 flex items-center justify-center border-none cursor-pointer active:translate-y-px disabled:opacity-25 disabled:cursor-not-allowed transition-all duration-150"
+                    className="w-11 h-11 flex items-center justify-center border-none cursor-pointer disabled:opacity-25 disabled:cursor-not-allowed transition-all duration-150"
                     style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                     aria-label="Decrease quantity"
                   >
                     <Minus size={13} strokeWidth={2.5} />
                   </button>
-                  <span
-                    className="px-4 text-[15px] font-semibold tabular-nums select-none"
-                    style={{ backgroundColor: "var(--surface)", color: "var(--text)" }}
-                  >
+                  <span className="px-4 text-[15px] font-semibold tabular-nums select-none" style={{ backgroundColor: "var(--surface)", color: "var(--text)" }}>
                     {qty}
                   </span>
                   <button
                     type="button"
                     onClick={() => setQty((q) => q + 1)}
                     disabled={oos}
-                    className="w-11 h-11 flex items-center justify-center border-none cursor-pointer active:translate-y-px disabled:opacity-25 disabled:cursor-not-allowed transition-all duration-150"
+                    className="w-11 h-11 flex items-center justify-center border-none cursor-pointer disabled:opacity-25 disabled:cursor-not-allowed transition-all duration-150"
                     style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                     aria-label="Increase quantity"
                   >
@@ -249,17 +266,14 @@ export function ProductDetail({ product: initial }: { product: Product }) {
                       : "bg-accent hover:bg-[color:var(--accent-hover)] btn-physical btn-physical-accent"
                   )}
                 >
-                  <span
-                    className={clicked ? "animate-text-warp" : undefined}
-                    style={{ pointerEvents: "none" }}
-                  >
-                    {oos ? "Out of Stock" : "Add to Bag"}
+                  <span className={clicked ? "animate-text-warp" : undefined} style={{ pointerEvents: "none" }}>
+                    {oos ? t("pdp_out_stock") : t("pdp_add")}
                   </span>
                 </button>
               </div>
 
-              {/* Specs table */}
-              <div className="rounded-[16px] overflow-hidden border" style={{ borderColor: "var(--border)" }}>
+              {/* Specs */}
+              <div className="rounded-[16px] overflow-hidden border mb-8" style={{ borderColor: "var(--border)" }}>
                 {SPECS.map(([label, value], i) => (
                   <div
                     key={label}
@@ -270,15 +284,63 @@ export function ProductDetail({ product: initial }: { product: Product }) {
                     }}
                   >
                     <span style={{ color: "var(--text-muted)" }}>{label}</span>
-                    <span className="font-medium font-mono text-[13px]" style={{ color: "var(--text)" }}>
-                      {value}
-                    </span>
+                    <span className="font-medium font-mono text-[13px]" style={{ color: "var(--text)" }}>{value}</span>
                   </div>
                 ))}
               </div>
-            </motion.div>
 
+              {/* Description */}
+              {p.description && (
+                <div>
+                  <p className="text-[11px] font-semibold tracking-widest uppercase mb-3" style={{ color: "var(--text-muted)" }}>
+                    {t("pdp_about")}
+                  </p>
+                  <p className="text-[15px] text-secondary leading-relaxed">{p.description}</p>
+                </div>
+              )}
+            </motion.div>
           </div>
+
+          {/* Related products */}
+          {related.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.5 }}
+              className="mt-20 md:mt-28"
+            >
+              <h2 className="text-[22px] font-semibold tracking-tight text-primary mb-8">{t("pdp_related")}</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {related.map((rp) => {
+                  const rOos = rp.stock === "out";
+                  return (
+                    <Link
+                      key={rp.id}
+                      href={`/products/${rp.id}`}
+                      className={cn(
+                        "rounded-[20px] overflow-hidden flex flex-row no-underline transition-shadow hover:shadow-md min-h-[160px]",
+                        rOos && "opacity-60 grayscale-[0.4]"
+                      )}
+                      style={{ backgroundColor: "var(--surface)" }}
+                    >
+                      <div className="flex-1 flex flex-col px-5 py-5">
+                        <h3 className="text-[16px] font-semibold text-primary mb-1 leading-snug">{rp.name}</h3>
+                        <p className="text-[13px] text-secondary mb-auto">{rp.unit}</p>
+                        <p className="text-[15px] font-medium text-primary mt-3">${rp.price.toFixed(2)}</p>
+                      </div>
+                      <div className="relative w-[80px] shrink-0 flex items-end justify-center pb-2">
+                        <div className="w-[58px]">
+                          <GlassVial productName={rp.name} weight={20} unit={rp.unit} />
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+
         </div>
       </main>
 

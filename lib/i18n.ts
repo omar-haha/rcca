@@ -32,6 +32,21 @@ export const translations = {
     card_show_more:   "Show More",
     badge_low_stock:  "Low Stock",
 
+    // Product detail page
+    pdp_back:         "All Products",
+    pdp_best_seller:  "Best Seller",
+    pdp_in_stock:     "In Stock",
+    pdp_low_stock:    "Low Stock",
+    pdp_out_stock:    "Out of Stock",
+    pdp_select_dose:  "Select Dose",
+    pdp_add:          "Add to Bag",
+    pdp_cas:          "CAS Number",
+    pdp_unit:         "Unit Size",
+    pdp_purity:       "Purity",
+    pdp_category:     "Category",
+    pdp_about:        "About",
+    pdp_related:      "You Might Also Like",
+
     // Benefit tags
     tag_weight:   "Weight Loss",
     tag_muscle:   "Muscle Growth",
@@ -246,6 +261,21 @@ export const translations = {
     card_add:         "Ajouter",
     card_show_more:   "Voir plus",
     badge_low_stock:  "Stock limité",
+
+    // Product detail page
+    pdp_back:         "Tous les produits",
+    pdp_best_seller:  "Meilleure vente",
+    pdp_in_stock:     "En stock",
+    pdp_low_stock:    "Stock limité",
+    pdp_out_stock:    "Épuisé",
+    pdp_select_dose:  "Choisir la dose",
+    pdp_add:          "Ajouter au panier",
+    pdp_cas:          "Numéro CAS",
+    pdp_unit:         "Taille",
+    pdp_purity:       "Pureté",
+    pdp_category:     "Catégorie",
+    pdp_about:        "À propos",
+    pdp_related:      "Vous aimerez aussi",
 
     // Benefit tags
     tag_weight:   "Perte de poids",
