@@ -37,9 +37,23 @@ export function AppleNav() {
       ],
       { duration: 1100, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }
     ).finished.then(() => {
+      // Disable all CSS transitions so the new theme snaps in instantly under the overlay.
+      // Without this, transition-colors on every element starts at t=0 (old colors),
+      // so removing the overlay would reveal a mid-transition flash.
+      const noTransition = document.createElement("style");
+      noTransition.textContent = "*{transition:none!important}";
+      document.head.appendChild(noTransition);
+
       root.setAttribute("data-theme", newTheme);
-      flushSync(() => toggleTheme()); // render new theme before revealing page
-      overlay.remove();
+      flushSync(() => toggleTheme());
+
+      // Double-rAF: browser paints the fully-settled new theme before overlay lifts.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          overlay.remove();
+          noTransition.remove();
+        });
+      });
     });
   };
 

@@ -7,8 +7,24 @@ import { ProductPickerModal } from "@/components/modals/ProductPickerModal";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import type { ProductFamily, BenefitTag } from "@/lib/products";
+import type { ProductFamily, BenefitTag, Product } from "@/lib/products";
 import type { TranslationKey } from "@/lib/i18n";
+
+function stockStatus(qty: number): Product["stock"] {
+  if (qty === 0) return "out";
+  if (qty <= 5) return "low";
+  return "in";
+}
+
+function applyStock(families: ProductFamily[], stockMap: Record<string, number>): ProductFamily[] {
+  if (Object.keys(stockMap).length === 0) return families;
+  return families.map((f) => ({
+    ...f,
+    variants: f.variants.map((v) =>
+      v.id in stockMap ? { ...v, stock: stockStatus(stockMap[v.id]) } : v
+    ),
+  }));
+}
 
 const TAG_KEY: Record<BenefitTag, TranslationKey> = {
   'Weight Loss':   'tag_weight',
@@ -73,6 +89,14 @@ function getFiltered(key: FilterKey): ProductFamily[] {
 export function AppleBentoGrid() {
   const { t } = useLanguage();
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
+  const [stockMap, setStockMap] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    fetch("/api/stock")
+      .then((r) => r.json())
+      .then(setStockMap)
+      .catch(() => {});
+  }, []);
 
   const FILTERS: { key: FilterKey; label: string }[] = [
     { key: "all",           label: t("filter_all") },
@@ -103,7 +127,7 @@ export function AppleBentoGrid() {
     return () => obs.disconnect();
   }, []);
 
-  const families = getFiltered(activeFilter);
+  const families = applyStock(getFiltered(activeFilter), stockMap);
   const visibleFamilies = showAll ? families : families.slice(0, 9);
 
   return (
@@ -159,6 +183,7 @@ export function AppleBentoGrid() {
             >
               {visibleFamilies.map((family) => {
                 const allOos = family.variants.every((v) => v.stock === "out");
+                const anyLow = !allOos && family.variants.some((v) => v.stock === "low");
                 const multi = family.variants.length > 1;
                 const firstVariant = family.variants[0];
 
@@ -175,12 +200,19 @@ export function AppleBentoGrid() {
                   >
                     {/* Left — Text */}
                     <div className="flex-1 flex flex-col px-5 py-6 md:px-6 md:py-7 z-10">
-                      <span
-                        className="self-start rounded-full px-3 py-0.5 text-[11px] font-semibold tracking-wide mb-2.5"
-                        style={{ backgroundColor: TAG_STYLES[family.tag].bg, color: TAG_STYLES[family.tag].color }}
-                      >
-                        {t(TAG_KEY[family.tag])}
-                      </span>
+                      <div className="flex items-center gap-2 mb-2.5">
+                        <span
+                          className="rounded-full px-3 py-0.5 text-[11px] font-semibold tracking-wide"
+                          style={{ backgroundColor: TAG_STYLES[family.tag].bg, color: TAG_STYLES[family.tag].color }}
+                        >
+                          {t(TAG_KEY[family.tag])}
+                        </span>
+                        {anyLow && (
+                          <span className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wide" style={{ backgroundColor: "rgba(245,158,11,0.12)", color: "#d97706" }}>
+                            {t("badge_low_stock")}
+                          </span>
+                        )}
+                      </div>
 
                       <h3 className="text-[18px] md:text-[20px] font-semibold tracking-[-0.01em] text-primary mb-1 leading-snug">
                         {family.name}

@@ -13,7 +13,7 @@ const INPUT_CLASS =
 type PayMethod = "etransfer" | "crypto";
 type CryptoCoin = "BTC" | "ETH" | "USDT";
 
-const ETRANSFER_EMAIL = "pay@rcca.ca";
+const ETRANSFER_EMAIL = "pay@researchchemicals.ca";
 
 const CRYPTO_ADDRESSES: Record<CryptoCoin, string> = {
   BTC:  "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
@@ -33,7 +33,16 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const [cryptoCoin, setCryptoCoin] = useState<CryptoCoin>("BTC");
   const [copied, setCopied] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
   const [liveCount, setLiveCount] = useState(() => 12 + Math.floor(Math.random() * 36));
+
+  const [form, setForm] = useState({
+    firstName: "", lastName: "", email: "", industry: "",
+    street: "", city: "", postal: "", country: "Canada",
+  });
+  const setField = (k: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+      setForm((prev) => ({ ...prev, [k]: e.target.value }));
 
   useEffect(() => {
     if (!isOpen) return;
@@ -57,15 +66,37 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
     setTimeout(() => setCopied(null), 2200);
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
+    if (!form.firstName.trim() || !form.email.trim()) {
+      setFormError(t("checkout_err_required"));
+      return;
+    }
+    setFormError("");
     setIsSubmitting(true);
     setSavedTotal(cartTotal);
-    setTimeout(() => {
-      setOrderId("W" + Math.floor(100000000 + Math.random() * 900000000));
+
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer: form,
+          items: Object.values(cartItems),
+          total: cartTotal,
+          payMethod,
+          cryptoCoin: payMethod === "crypto" ? cryptoCoin : undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "error");
+      setOrderId(data.orderId);
       clearCart();
-      setIsSubmitting(false);
       setSuccessOpen(true);
-    }, 1600);
+    } catch {
+      setFormError(t("checkout_err_failed"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCloseSuccess = () => {
@@ -130,11 +161,11 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 </p>
                 <div className="flex flex-col gap-3">
                   <div className="grid grid-cols-2 gap-3">
-                    <input type="text" placeholder={t("checkout_first")} className={INPUT_CLASS} />
-                    <input type="text" placeholder={t("checkout_last")} className={INPUT_CLASS} />
+                    <input type="text" placeholder={t("checkout_first")} className={INPUT_CLASS} value={form.firstName} onChange={setField("firstName")} />
+                    <input type="text" placeholder={t("checkout_last")} className={INPUT_CLASS} value={form.lastName} onChange={setField("lastName")} />
                   </div>
-                  <input type="email" placeholder={t("checkout_email")} className={INPUT_CLASS} />
-                  <select className={cn(INPUT_CLASS, "appearance-none cursor-pointer")}>
+                  <input type="email" placeholder={t("checkout_email")} className={INPUT_CLASS} value={form.email} onChange={setField("email")} />
+                  <select className={cn(INPUT_CLASS, "appearance-none cursor-pointer")} value={form.industry} onChange={setField("industry")}>
                     <option value="">{t("checkout_industry")}</option>
                     <option>{t("checkout_ind_analytical")}</option>
                     <option>{t("checkout_ind_biotech")}</option>
@@ -152,12 +183,12 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   {t("checkout_shipping")}
                 </p>
                 <div className="flex flex-col gap-3">
-                  <input type="text" placeholder={t("checkout_street")} className={INPUT_CLASS} />
+                  <input type="text" placeholder={t("checkout_street")} className={INPUT_CLASS} value={form.street} onChange={setField("street")} />
                   <div className="grid grid-cols-2 gap-3">
-                    <input type="text" placeholder={t("checkout_city")} className={INPUT_CLASS} />
-                    <input type="text" placeholder={t("checkout_postal")} className={INPUT_CLASS} />
+                    <input type="text" placeholder={t("checkout_city")} className={INPUT_CLASS} value={form.city} onChange={setField("city")} />
+                    <input type="text" placeholder={t("checkout_postal")} className={INPUT_CLASS} value={form.postal} onChange={setField("postal")} />
                   </div>
-                  <select className={cn(INPUT_CLASS, "appearance-none cursor-pointer")}>
+                  <select className={cn(INPUT_CLASS, "appearance-none cursor-pointer")} value={form.country} onChange={setField("country")}>
                     <option>{t("checkout_country_ca")}</option>
                     <option>{t("checkout_country_us")}</option>
                     <option>{t("checkout_country_uk")}</option>
@@ -282,6 +313,11 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
               {/* Order total + CTA */}
               <div>
+                {formError && (
+                  <p className="text-[13px] mb-4 text-center" style={{ color: "var(--color-error, #dc2626)" }}>
+                    {formError}
+                  </p>
+                )}
                 <div className="flex justify-between items-baseline mb-5">
                   <span className="text-[14px]" style={{ color: "var(--text-muted)" }}>
                     {items.length} {t("checkout_item")}{items.length !== 1 && "s"}

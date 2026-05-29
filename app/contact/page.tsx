@@ -11,6 +11,8 @@ const INPUT =
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
   const { t } = useLanguage();
 
   const INFO = [
@@ -19,9 +21,31 @@ export default function ContactPage() {
     { icon: MapPin, label: t("page_contact_location"),    value: t("page_contact_location_val"), href: null },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSendError("");
+    setSending(true);
+    const fd = new FormData(e.currentTarget);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: fd.get("firstName"),
+          lastName:  fd.get("lastName"),
+          email:     fd.get("email"),
+          phone:     fd.get("phone"),
+          subject:   fd.get("subject"),
+          message:   fd.get("message"),
+        }),
+      });
+      if (!res.ok) throw new Error("error");
+      setSubmitted(true);
+    } catch {
+      setSendError("Failed to send. Please email us directly at support@researchchemicals.ca.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -55,12 +79,12 @@ export default function ContactPage() {
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <input type="text" placeholder={t("page_contact_first")} required className={INPUT} />
-                  <input type="text" placeholder={t("page_contact_last")} required className={INPUT} />
+                  <input name="firstName" type="text" placeholder={t("page_contact_first")} required className={INPUT} />
+                  <input name="lastName"  type="text" placeholder={t("page_contact_last")} required className={INPUT} />
                 </div>
-                <input type="email" placeholder={t("page_contact_email")} required className={INPUT} />
-                <input type="tel" placeholder={t("page_contact_phone")} className={INPUT} />
-                <select className={cn(INPUT, "appearance-none cursor-pointer")}>
+                <input name="email" type="email" placeholder={t("page_contact_email")} required className={INPUT} />
+                <input name="phone" type="tel" placeholder={t("page_contact_phone")} className={INPUT} />
+                <select name="subject" className={cn(INPUT, "appearance-none cursor-pointer")}>
                   <option value="">{t("page_contact_subject")}</option>
                   <option>{t("page_contact_subj_order")}</option>
                   <option>{t("page_contact_subj_product")}</option>
@@ -69,9 +93,10 @@ export default function ContactPage() {
                   <option>{t("page_contact_subj_coa")}</option>
                   <option>{t("page_contact_subj_other")}</option>
                 </select>
-                <textarea placeholder={t("page_contact_msg")} rows={5} required className={INPUT} style={{ resize: "none" }} />
-                <button type="submit" className="w-full py-[14px] rounded-full text-[15px] font-medium text-white border-none cursor-pointer btn-physical btn-physical-accent" style={{ backgroundColor: "var(--accent)" }}>
-                  <span style={{ pointerEvents: "none" }}>{t("page_contact_send")}</span>
+                <textarea name="message" placeholder={t("page_contact_msg")} rows={5} required className={INPUT} style={{ resize: "none" }} />
+                {sendError && <p className="text-[13px]" style={{ color: "#dc2626" }}>{sendError}</p>}
+                <button type="submit" disabled={sending} className="w-full py-[14px] rounded-full text-[15px] font-medium text-white border-none cursor-pointer btn-physical btn-physical-accent disabled:opacity-60 disabled:cursor-not-allowed" style={{ backgroundColor: "var(--accent)" }}>
+                  <span style={{ pointerEvents: "none" }}>{sending ? "Sending…" : t("page_contact_send")}</span>
                 </button>
               </form>
             )}

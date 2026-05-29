@@ -30,6 +30,7 @@ export const translations = {
     card_select:      "Select Options",
     card_add:         "Add to Bag",
     card_show_more:   "Show More",
+    badge_low_stock:  "Low Stock",
 
     // Benefit tags
     tag_weight:   "Weight Loss",
@@ -141,6 +142,8 @@ export const translations = {
     checkout_send_coin:"Send",
     checkout_amount:  "Amount",
     checkout_return:  "Return to Store",
+    checkout_err_required: "Please enter your name and email.",
+    checkout_err_failed:   "Something went wrong. Please try again or contact us.",
 
     // Age gate
     age_headline:     "Welcome to RCCA.",
@@ -242,6 +245,7 @@ export const translations = {
     card_select:      "Sélectionner",
     card_add:         "Ajouter",
     card_show_more:   "Voir plus",
+    badge_low_stock:  "Stock limité",
 
     // Benefit tags
     tag_weight:   "Perte de poids",
@@ -353,6 +357,8 @@ export const translations = {
     checkout_send_coin:"Envoyer",
     checkout_amount:  "Montant",
     checkout_return:  "Retour à la boutique",
+    checkout_err_required: "Veuillez entrer votre nom et votre courriel.",
+    checkout_err_failed:   "Une erreur s'est produite. Veuillez réessayer ou nous contacter.",
 
     // Age gate
     age_headline:     "Bienvenue chez RCCA.",
