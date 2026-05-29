@@ -30,37 +30,35 @@ export function AppleNav() {
     overlay.style.cssText = `position:fixed;inset:0;z-index:9998;pointer-events:none;background-color:${newBg};clip-path:circle(0px at ${x}px ${y}px)`;
     document.body.appendChild(overlay);
 
-    const DURATION = 1100;
+    // Exact radius to reach the farthest screen corner from the button.
+    // Animating to this (not 200vmax) means .finished fires the instant
+    // the screen is fully covered — zero premature coverage, zero hold.
+    const maxR = Math.ceil(
+      Math.sqrt(
+        Math.max(x, window.innerWidth  - x) ** 2 +
+        Math.max(y, window.innerHeight - y) ** 2
+      )
+    ) + 2;
 
     overlay.animate(
       [
         { clipPath: `circle(0px at ${x}px ${y}px)` },
-        { clipPath: `circle(200vmax at ${x}px ${y}px)` },
+        { clipPath: `circle(${maxR}px at ${x}px ${y}px)` },
       ],
-      { duration: DURATION, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }
-    );
-
-    // With this ease-out curve the circle visually covers the screen within the first
-    // ~15% of the animation, then .finished wouldn't fire for another ~950ms — causing
-    // a visible white/black hold. Instead we schedule the reveal ourselves, timed so
-    // the overlay lifts right at the natural end of the animation with no hold.
-    setTimeout(() => {
-      // Snap the new theme in instantly under the still-covering overlay.
+      { duration: 900, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }
+    ).finished.then(() => {
+      // Disable transitions so the new theme snaps in instantly under the overlay.
       const noTransition = document.createElement("style");
       noTransition.textContent = "*{transition:none!important}";
       document.head.appendChild(noTransition);
 
       root.setAttribute("data-theme", newTheme);
       flushSync(() => toggleTheme());
+      overlay.remove();
 
-      // Double-rAF: browser paints the new theme, then we lift the overlay.
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          overlay.remove();
-          noTransition.remove();
-        });
-      });
-    }, DURATION - 50);
+      // Re-enable transitions after one paint so the page doesn't feel frozen.
+      requestAnimationFrame(() => noTransition.remove());
+    });
   };
 
   const handleLangToggle = () => {
