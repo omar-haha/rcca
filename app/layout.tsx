@@ -11,13 +11,28 @@ const inter = Inter({ subsets: ['latin'] })
 const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron' })
 
 export const metadata: Metadata = {
-  title: 'RCCA | Research Grade Peptides & Compounds',
-  description: 'Next.js e-commerce platform for high-purity research chemicals and peptides. Rigorously verified, ISO-compliant research supplies.',
-  keywords: ['peptides', 'research chemicals', 'high-purity', 'lyophilized', 'HPLC verified'],
+  metadataBase: new URL('https://researchchemicals.ca'),
+  title: {
+    default: 'RCCA | Research Grade Peptides & Compounds',
+    template: '%s | RCCA',
+  },
+  description: 'High-purity, independently verified research chemicals and peptides. Batch-tested with COAs available. Shipped discreetly across Canada.',
+  keywords: ['peptides', 'research chemicals', 'BPC-157', 'Tirzepatide', 'Retatrutide', 'TB-500', 'Canada', 'high-purity', 'lyophilized', 'HPLC verified'],
   openGraph: {
     title: 'RCCA | Research Grade Peptides & Compounds',
-    description: 'Precision-synthesized, independently certified research chemicals and peptides delivered worldwide.',
+    description: 'High-purity, independently verified research chemicals and peptides. Batch-tested with COAs available. Shipped discreetly across Canada.',
     type: 'website',
+    url: '/',
+    siteName: 'RCCA',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'RCCA | Research Grade Peptides & Compounds',
+    description: 'High-purity, independently verified research chemicals and peptides. Shipped discreetly across Canada.',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 }
 
