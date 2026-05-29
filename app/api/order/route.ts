@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { supabase } from "@/lib/supabase";
+import { checkLimit, limiters } from "@/lib/ratelimit";
+import { products } from "@/lib/products";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -14,8 +16,20 @@ const CRYPTO_ADDRESSES: Record<string, string> = {
   USDT: "TRx7NaFCGZXv6pHerB2vB3PsVKuGxjCqGZ",
 };
 
+// Server-side price map — never trust client-supplied prices
+const SERVER_PRICES = new Map(products.map((p) => [p.id, p.price]));
+
 function genOrderId() {
   return "W" + Math.floor(100000000 + Math.random() * 900000000);
+}
+
+function escHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
 }
 
 type Item = { id: string; name: string; unit: string; price: number; qty: number };
@@ -67,16 +81,16 @@ function adminEmailHtml(orderId: string, c: Customer, items: Item[], total: numb
       <span style="color:#9ca3af;font-size:13px">New Order</span>
     </div>
     <div style="padding:32px">
-      <h2 style="margin:0 0 4px;font-size:22px;font-weight:700">${orderId}</h2>
+      <h2 style="margin:0 0 4px;font-size:22px;font-weight:700">${escHtml(orderId)}</h2>
       <p style="margin:0 0 28px;color:#6b7280;font-size:14px">Total: <strong style="color:#111;font-size:18px">$${total.toFixed(2)}</strong></p>
 
       <h3 style="margin:0 0 12px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#6b7280">Customer</h3>
-      <p style="margin:0 0 4px;font-size:15px;font-weight:600">${c.firstName} ${c.lastName}</p>
-      <p style="margin:0 0 4px;font-size:14px;color:#374151">${c.email}</p>
-      <p style="margin:0 0 24px;font-size:14px;color:#6b7280">${c.industry || "—"}</p>
+      <p style="margin:0 0 4px;font-size:15px;font-weight:600">${escHtml(c.firstName)} ${escHtml(c.lastName)}</p>
+      <p style="margin:0 0 4px;font-size:14px;color:#374151">${escHtml(c.email)}</p>
+      <p style="margin:0 0 24px;font-size:14px;color:#6b7280">${escHtml(c.industry || "—")}</p>
 
       <h3 style="margin:0 0 12px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#6b7280">Ship To</h3>
-      <p style="margin:0 0 24px;font-size:14px;color:#374151;line-height:1.6">${c.street}<br>${c.city}, ${c.postal}<br>${c.country}</p>
+      <p style="margin:0 0 24px;font-size:14px;color:#374151;line-height:1.6">${escHtml(c.street)}<br>${escHtml(c.city)}, ${escHtml(c.postal)}<br>${escHtml(c.country)}</p>
 
       <h3 style="margin:0 0 12px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#6b7280">Items</h3>
       <div style="margin-bottom:24px;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden">${itemsTableHtml(items)}</div>
@@ -95,7 +109,7 @@ function customerEmailHtml(orderId: string, c: Customer, items: Item[], total: n
       <span style="color:#fff;font-size:18px;font-weight:700;letter-spacing:-.02em">RCCA</span>
     </div>
     <div style="padding:32px">
-      <h2 style="margin:0 0 8px;font-size:22px;font-weight:700">Order received, ${c.firstName}.</h2>
+      <h2 style="margin:0 0 8px;font-size:22px;font-weight:700">Order received, ${escHtml(c.firstName)}.</h2>
       <p style="margin:0 0 28px;font-size:15px;color:#6b7280;line-height:1.6">
         We have your order and will process it shortly. Complete your payment using the details below.
       </p>
@@ -122,14 +136,39 @@ function customerEmailHtml(orderId: string, c: Customer, items: Item[], total: n
 }
 
 export async function POST(req: NextRequest) {
+  const limited = await checkLimit(limiters.order, req);
+  if (limited) return limited;
+
   try {
-    const { customer, items, total, payMethod, cryptoCoin } = (await req.json()) as {
+    const { customer, items, payMethod, cryptoCoin } = (await req.json()) as {
       customer: Customer;
       items: Item[];
-      total: number;
+      total: number; // ignored — recalculated server-side
       payMethod: string;
       cryptoCoin: string;
     };
+
+    // Validate required customer fields
+    if (!customer?.firstName?.trim() || !customer?.email?.trim()) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+    if (!Array.isArray(items) || items.length === 0) {
+      return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
+    }
+
+    // Re-derive prices from server — never trust client-supplied values
+    const validatedItems: Item[] = [];
+    for (const item of items) {
+      const serverPrice = SERVER_PRICES.get(item.id);
+      if (serverPrice === undefined) {
+        return NextResponse.json({ error: `Unknown product: ${item.id}` }, { status: 400 });
+      }
+      if (typeof item.qty !== "number" || item.qty < 1 || item.qty > 99) {
+        return NextResponse.json({ error: "Invalid quantity" }, { status: 400 });
+      }
+      validatedItems.push({ ...item, price: serverPrice });
+    }
+    const total = validatedItems.reduce((sum, i) => sum + i.price * i.qty, 0);
 
     const orderId = genOrderId();
 
@@ -137,7 +176,7 @@ export async function POST(req: NextRequest) {
       from: FROM_ADDRESS,
       to: [ADMIN_EMAIL],
       subject: `New Order ${orderId} — $${total.toFixed(2)}`,
-      html: adminEmailHtml(orderId, customer, items, total, payMethod, cryptoCoin),
+      html: adminEmailHtml(orderId, customer, validatedItems, total, payMethod, cryptoCoin),
     });
 
     if (customer.email) {
@@ -145,11 +184,11 @@ export async function POST(req: NextRequest) {
         from: FROM_ADDRESS,
         to: [customer.email],
         subject: `Order Received — ${orderId}`,
-        html: customerEmailHtml(orderId, customer, items, total, payMethod, cryptoCoin),
+        html: customerEmailHtml(orderId, customer, validatedItems, total, payMethod, cryptoCoin),
       });
     }
 
-    for (const item of items) {
+    for (const item of validatedItems) {
       await supabase.rpc("decrement_stock", { vid: item.id, qty: item.qty });
     }
 
@@ -165,7 +204,7 @@ export async function POST(req: NextRequest) {
       country:     customer.country,
       pay_method:  payMethod,
       crypto_coin: payMethod === "crypto" ? cryptoCoin : null,
-      items,
+      items:       validatedItems,
       total,
     });
 

@@ -13,6 +13,8 @@
     "@splinetool/runtime": "^1.12.95",
     "@supabase/supabase-js": "^2.106.2",
     "@tailwindcss/postcss": "^4.3.0",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",
     "lenis": "^1.3.23",
