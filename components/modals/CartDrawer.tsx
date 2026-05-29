@@ -35,9 +35,13 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
 
   const handleBrowseStore = () => {
     setCartOpen(false);
-    setTimeout(() => {
-      document.getElementById("store")?.scrollIntoView({ behavior: "smooth" });
-    }, 400);
+    if (window.location.pathname === "/") {
+      setTimeout(() => {
+        document.getElementById("store")?.scrollIntoView({ behavior: "smooth" });
+      }, 400);
+    } else {
+      window.location.href = "/#store";
+    }
   };
 
   return (

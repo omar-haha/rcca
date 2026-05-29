@@ -82,6 +82,7 @@ export const translations = {
     reviews_write_submit:   "Submit Review",
     reviews_write_success:  "Thank you! Your review is pending approval.",
     reviews_write_error:    "Failed to submit. Please try again.",
+    reviews_see_all:        "See all reviews",
 
     // Footer
     footer_explore:   "Explore",
@@ -89,6 +90,7 @@ export const translations = {
     footer_quality:   "Quality",
     footer_reviews:   "Reviews",
     footer_faq:       "FAQ",
+    footer_shipping:  "Shipping",
     footer_coa:       "COA",
     footer_contact:   "Contact",
     footer_legal:     "Legal",
@@ -324,6 +326,7 @@ export const translations = {
     reviews_write_submit:   "Envoyer l'avis",
     reviews_write_success:  "Merci ! Votre avis est en attente de modération.",
     reviews_write_error:    "Échec de l'envoi. Veuillez réessayer.",
+    reviews_see_all:        "Voir tous les avis",
 
     // Footer
     footer_explore:   "Explorer",
@@ -331,6 +334,7 @@ export const translations = {
     footer_quality:   "Qualité",
     footer_reviews:   "Avis",
     footer_faq:       "FAQ",
+    footer_shipping:  "Expédition",
     footer_coa:       "CAQ",
     footer_contact:   "Contact",
     footer_legal:     "Légal",

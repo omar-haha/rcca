@@ -40,6 +40,7 @@ export function AppleFooter() {
                 <li><a href="/#store"   className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_shop")}</a></li>
                 <li><a href="/reviews"  className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_reviews")}</a></li>
                 <li><a href="/faq"      className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_faq")}</a></li>
+                <li><a href="/shipping" className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_shipping")}</a></li>
                 <li><a href="/coa"      className="text-tertiary hover:text-primary transition-colors no-underline">{t("footer_coa")}</a></li>
               </ul>
             </div>

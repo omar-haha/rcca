@@ -45,19 +45,23 @@ export function AppleNav() {
         { clipPath: `circle(0px at ${x}px ${y}px)` },
         { clipPath: `circle(${maxR}px at ${x}px ${y}px)` },
       ],
-      { duration: 900, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }
+      { duration: 750, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }
     ).finished.then(() => {
-      // Disable transitions so the new theme snaps in instantly under the overlay.
+      // Snap the new theme in while the overlay still covers the screen,
+      // so the browser paints the correct colours before we lift the overlay.
       const noTransition = document.createElement("style");
       noTransition.textContent = "*{transition:none!important}";
       document.head.appendChild(noTransition);
 
       root.setAttribute("data-theme", newTheme);
       flushSync(() => toggleTheme());
-      overlay.remove();
 
-      // Re-enable transitions after one paint so the page doesn't feel frozen.
-      requestAnimationFrame(() => noTransition.remove());
+      // Wait one frame so the browser renders the new theme under the overlay,
+      // then lift the overlay — eliminates the old-theme flash.
+      requestAnimationFrame(() => {
+        overlay.remove();
+        requestAnimationFrame(() => noTransition.remove());
+      });
     });
   };
 

@@ -6,6 +6,7 @@ import { GlassVial } from "@/components/ui/GlassVial";
 import { AppleNav } from "@/components/ui/AppleNav";
 import { AppleHero } from "@/components/sections/AppleHero";
 import { AppleBentoGrid } from "@/components/sections/AppleBentoGrid";
+import { HomepageReviews } from "@/components/sections/HomepageReviews";
 import { AppleFooter } from "@/components/sections/AppleFooter";
 import { CartDrawer } from "@/components/modals/CartDrawer";
 import { CheckoutModal } from "@/components/modals/CheckoutModal";
@@ -61,7 +62,8 @@ export default function Home() {
         {/* Catalog: Bento Grid */}
         <AppleBentoGrid />
 
-
+        {/* Social proof */}
+        <HomepageReviews />
       </main>
 
       <AppleFooter />
