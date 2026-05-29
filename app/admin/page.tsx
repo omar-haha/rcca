@@ -23,6 +23,18 @@ type Order = {
 
 type StockRow = { variant_id: string; quantity: number; updated_at: string };
 
+type ReviewRow = {
+  id: string;
+  name: string;
+  location: string;
+  product: string;
+  rating: number;
+  body: string;
+  date_label: string;
+  approved: boolean;
+  created_at: string;
+};
+
 const STATUS_COLORS: Record<string, string> = {
   pending:   "rgba(245,158,11,0.15)",
   paid:      "rgba(34,197,94,0.15)",
@@ -293,10 +305,135 @@ function StockTab({ token }: { token: string }) {
   );
 }
 
+// ── Reviews tab ───────────────────────────────────────────────────────────────
+function ReviewCard({
+  review: r,
+  acting,
+  onApprove,
+  onDelete,
+}: {
+  review: ReviewRow;
+  acting: string | null;
+  onApprove: (id: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  return (
+    <div className="rounded-[16px] p-5" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap mb-1">
+            <span className="text-[14px] font-semibold text-primary">{r.name}</span>
+            {r.location && <span className="text-[12px] text-tertiary">{r.location}</span>}
+            <span className="text-[11px] font-medium rounded-full px-2 py-0.5" style={{ backgroundColor: "var(--bg-alt)", color: "var(--text-muted)" }}>
+              {r.product}
+            </span>
+            <span className="text-[12px]" style={{ color: "#f59e0b" }}>{"★".repeat(r.rating)}</span>
+          </div>
+          <p className="text-[13px] text-secondary leading-relaxed">{r.body}</p>
+          <p className="text-[11px] text-tertiary mt-1">{r.date_label} · {fmtDate(r.created_at)}</p>
+        </div>
+        <div className="flex gap-2 shrink-0">
+          {!r.approved && (
+            <button
+              onClick={() => onApprove(r.id)}
+              disabled={acting === r.id}
+              className="rounded-full px-3 py-1.5 text-[12px] font-medium text-white border-none cursor-pointer disabled:opacity-40"
+              style={{ backgroundColor: "#16a34a" }}
+            >
+              {acting === r.id ? "…" : "Approve"}
+            </button>
+          )}
+          <button
+            onClick={() => onDelete(r.id)}
+            disabled={acting === r.id}
+            className="rounded-full px-3 py-1.5 text-[12px] font-medium border-none cursor-pointer disabled:opacity-40"
+            style={{ backgroundColor: "rgba(239,68,68,0.12)", color: "#dc2626" }}
+          >
+            {acting === r.id ? "…" : "Delete"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReviewsTab({ token }: { token: string }) {
+  const [reviews, setReviews] = useState<ReviewRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [acting, setActing] = useState<string | null>(null);
+
+  const headers = { Authorization: `Bearer ${token}` };
+
+  useEffect(() => {
+    fetch("/api/admin/reviews", { headers })
+      .then((r) => r.json())
+      .then(setReviews)
+      .finally(() => setLoading(false));
+  }, [token]);
+
+  const approve = async (id: string) => {
+    setActing(id);
+    await fetch("/api/admin/reviews", {
+      method: "PATCH",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ id, approved: true }),
+    });
+    setReviews((prev) => prev.map((r) => (r.id === id ? { ...r, approved: true } : r)));
+    setActing(null);
+  };
+
+  const remove = async (id: string) => {
+    setActing(id);
+    await fetch("/api/admin/reviews", {
+      method: "DELETE",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    setReviews((prev) => prev.filter((r) => r.id !== id));
+    setActing(null);
+  };
+
+  if (loading) return <p className="text-secondary text-[14px] p-6">Loading…</p>;
+
+  const pending = reviews.filter((r) => !r.approved);
+  const approved = reviews.filter((r) => r.approved);
+
+  return (
+    <div className="flex flex-col gap-8">
+      {pending.length > 0 && (
+        <div>
+          <p className="text-[13px] font-semibold uppercase tracking-widest mb-4" style={{ color: "#d97706" }}>
+            Pending ({pending.length})
+          </p>
+          <div className="flex flex-col gap-3">
+            {pending.map((r) => (
+              <ReviewCard key={r.id} review={r} acting={acting} onApprove={approve} onDelete={remove} />
+            ))}
+          </div>
+        </div>
+      )}
+      <div>
+        <p className="text-[13px] font-semibold uppercase tracking-widest mb-4" style={{ color: "var(--text-muted)" }}>
+          Published ({approved.length})
+        </p>
+        {approved.length === 0 ? (
+          <p className="text-secondary text-[14px]">No approved reviews yet.</p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {approved.map((r) => (
+              <ReviewCard key={r.id} review={r} acting={acting} onApprove={approve} onDelete={remove} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function AdminPage() {
   const [token, setToken] = useState<string | null>(null);
-  const [tab, setTab] = useState<"orders" | "stock">("orders");
+  const [tab, setTab] = useState<"orders" | "stock" | "reviews">("orders");
 
   useEffect(() => {
     const t = sessionStorage.getItem("admin_token");
@@ -312,7 +449,7 @@ export default function AdminPage() {
         <div className="flex items-center gap-6">
           <span className="text-[16px] font-semibold text-primary">RCCA Admin</span>
           <div className="flex gap-1">
-            {(["orders", "stock"] as const).map((t) => (
+            {(["orders", "stock", "reviews"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -339,7 +476,7 @@ export default function AdminPage() {
 
       {/* Content */}
       <div className="max-w-[900px] mx-auto px-4 md:px-6 py-8">
-        {tab === "orders" ? <OrdersTab token={token} /> : <StockTab token={token} />}
+        {tab === "orders" ? <OrdersTab token={token} /> : tab === "stock" ? <StockTab token={token} /> : <ReviewsTab token={token} />}
       </div>
     </div>
   );
