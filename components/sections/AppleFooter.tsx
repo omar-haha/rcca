@@ -48,8 +48,8 @@ export function AppleFooter() {
             <div className="hidden md:flex flex-1 justify-center">
               <a
                 href="/contact"
-                className="flex items-center gap-3 rounded-[16px] px-4 py-3.5 border no-underline transition-colors text-left w-full hover:border-[color:var(--accent)]"
-                style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
+                className="flex items-center gap-3 rounded-[16px] px-5 py-4 border no-underline transition-colors text-left hover:border-[color:var(--accent)]"
+                style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)", maxWidth: 300, width: "100%" }}
               >
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: "var(--bg-alt)" }}>
                   <Mail size={15} strokeWidth={1.5} style={{ color: "var(--text-muted)" }} />

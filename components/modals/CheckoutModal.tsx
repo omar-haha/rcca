@@ -210,22 +210,26 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   {(["etransfer", "crypto"] as PayMethod[]).map((method) => {
                     const active = payMethod === method;
+                    const isDisabled = method === "crypto";
                     return (
                       <button
                         key={method}
                         type="button"
-                        onClick={() => setPayMethod(method)}
-                        className="rounded-[14px] p-4 text-left border-none cursor-pointer transition-all duration-200"
+                        disabled={isDisabled}
+                        onClick={() => !isDisabled && setPayMethod(method)}
+                        className="rounded-[14px] p-4 text-left border-none transition-all duration-200 relative"
                         style={{
-                          backgroundColor: active ? "var(--surface)" : "var(--bg-alt)",
-                          outline: active ? "2px solid var(--accent)" : "2px solid transparent",
+                          backgroundColor: isDisabled ? "var(--bg-alt)" : active ? "var(--surface)" : "var(--bg-alt)",
+                          outline: active && !isDisabled ? "2px solid var(--accent)" : "2px solid transparent",
+                          cursor: isDisabled ? "not-allowed" : "pointer",
+                          opacity: isDisabled ? 0.45 : 1,
                         }}
                       >
                         <div className="text-[14px] font-semibold text-primary mb-0.5 leading-tight">
                           {method === "etransfer" ? t("checkout_etransfer") : t("checkout_crypto")}
                         </div>
                         <div className="text-[12px]" style={{ color: "var(--text-muted)" }}>
-                          {method === "etransfer" ? t("checkout_etransfer_sub") : t("checkout_crypto_sub")}
+                          {method === "etransfer" ? t("checkout_etransfer_sub") : "Coming soon"}
                         </div>
                       </button>
                     );

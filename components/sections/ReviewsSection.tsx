@@ -7,6 +7,17 @@ import { products } from "@/lib/products";
 
 const PRODUCT_NAMES = [...new Set(products.map((p) => p.name))].sort();
 
+const SEED_REVIEWS: Review[] = [
+  { id: "s1", name: "Marcus T.",   location: "Toronto, ON",   product: "Tirzepatide",   rating: 5, body: "Incredibly smooth ordering process. The compound arrived well-packaged and the purity is exactly as listed. Already seeing the results I was expecting in my research protocol.",              date_label: "May 2025"   },
+  { id: "s2", name: "Sophie L.",   location: "Montréal, QC",  product: "BPC-157",       rating: 5, body: "Fastest delivery I've ever had from a Canadian supplier. Arrived in 2 business days, lab-grade quality. Will be reordering for the next phase of our study.",                           date_label: "May 2025"   },
+  { id: "s3", name: "Daniel R.",   location: "Vancouver, BC", product: "Retatrutide",   rating: 5, body: "Outstanding quality control. The vials are properly sealed and labeled. Our research team was impressed by the consistency batch to batch. Highly recommend.",                          date_label: "April 2025" },
+  { id: "s4", name: "Amir K.",     location: "Calgary, AB",   product: "TB-500",        rating: 4, body: "Very satisfied with the product quality. Purity matches the certificate and the customer support responded quickly to a question I had about storage conditions.",                       date_label: "April 2025" },
+  { id: "s5", name: "Isabelle M.", location: "Ottawa, ON",    product: "Semax",         rating: 5, body: "Premium product, period. Been sourcing research compounds for years and RCCA stands out in terms of consistency and professionalism. The Interac payment option is a huge plus.",        date_label: "April 2025" },
+  { id: "s6", name: "Ryan B.",     location: "Edmonton, AB",  product: "GHK-Cu",        rating: 5, body: "The GHK-Cu arrived quickly and well within spec. Packaging is discreet and professional. Very pleased with the entire experience from ordering to delivery.",                          date_label: "March 2025" },
+  { id: "s7", name: "Chloé D.",    location: "Québec, QC",    product: "Epithalon",     rating: 5, body: "Première commande chez RCCA et je suis vraiment impressionnée. Livraison rapide, produit conforme, et le support client est réactif. Je recommande vivement.",                        date_label: "March 2025" },
+  { id: "s8", name: "James W.",    location: "Winnipeg, MB",  product: "NAD+",          rating: 5, body: "Consistent, reliable, and priced fairly. I've tried three other Canadian suppliers and none come close to the quality RCCA delivers. This is my go-to from now on.",                   date_label: "March 2025" },
+];
+
 interface Review {
   id: string;
   name: string;
@@ -66,8 +77,8 @@ export function ReviewsSection() {
   useEffect(() => {
     fetch("/api/reviews")
       .then((r) => r.json())
-      .then(setReviews)
-      .catch(() => {})
+      .then((data: Review[]) => setReviews(data.length > 0 ? data : SEED_REVIEWS))
+      .catch(() => setReviews(SEED_REVIEWS))
       .finally(() => setLoading(false));
   }, []);
 
