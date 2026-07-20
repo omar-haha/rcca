@@ -11,14 +11,13 @@ const INPUT_CLASS =
   "w-full bg-secondary border border-transparent rounded-[12px] p-4 text-[17px] text-primary placeholder:text-secondary outline-none transition-all focus:border-[color:var(--accent)] focus:bg-primary";
 
 type PayMethod = "etransfer" | "crypto";
-type CryptoCoin = "BTC" | "ETH" | "USDT";
+type CryptoCoin = "BTC" | "ETH";
 
 const ETRANSFER_EMAIL = "pay@researchchemicals.ca";
 
 const CRYPTO_ADDRESSES: Record<CryptoCoin, string> = {
-  BTC:  "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
-  ETH:  "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
-  USDT: "TRx7NaFCGZXv6pHerB2vB3PsVKuGxjCqGZ",
+  BTC: "bc1qzk9q3737nejypfnmz425kxa2szzsgr2c954jsz",
+  ETH: "0xAA7251F9DC904A399A73F85479b03F7d053a3A33",
 };
 
 export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -270,7 +269,7 @@ export function CheckoutModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
                   <div className="rounded-[14px] p-5 flex flex-col gap-4" style={{ backgroundColor: "var(--bg-alt)" }}>
                     {/* Coin tabs */}
                     <div className="flex gap-2">
-                      {(["BTC", "ETH", "USDT"] as CryptoCoin[]).map((coin) => (
+                      {(["BTC", "ETH"] as CryptoCoin[]).map((coin) => (
                         <button
                           key={coin}
                           type="button"

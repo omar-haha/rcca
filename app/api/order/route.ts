@@ -11,9 +11,8 @@ const FROM_ADDRESS = process.env.RESEND_FROM  ?? "onboarding@resend.dev";
 const ETRANSFER_EMAIL = "pay@researchchemicals.ca";
 
 const CRYPTO_ADDRESSES: Record<string, string> = {
-  BTC:  "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
-  ETH:  "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
-  USDT: "TRx7NaFCGZXv6pHerB2vB3PsVKuGxjCqGZ",
+  BTC: "bc1qzk9q3737nejypfnmz425kxa2szzsgr2c954jsz",
+  ETH: "0xAA7251F9DC904A399A73F85479b03F7d053a3A33",
 };
 
 // Server-side price map — never trust client-supplied prices

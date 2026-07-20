@@ -26,7 +26,7 @@ const CONTENT_EN = [
   },
   {
     heading: "Payment & Dispatch",
-    body: "Orders are dispatched only after payment is confirmed. For Interac e-Transfer, this typically takes 1–4 hours on business days. For cryptocurrency, confirmation requires the standard number of network confirmations (usually 1–3 for BTC, a few minutes for ETH/USDT).",
+    body: "Orders are dispatched only after payment is confirmed. For Interac e-Transfer, this typically takes 1–4 hours on business days. For cryptocurrency, confirmation requires the standard number of network confirmations (usually 1–3 for BTC, a few minutes for ETH).",
   },
   {
     heading: "Lost or Delayed Shipments",
