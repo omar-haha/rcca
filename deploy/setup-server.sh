@@ -79,11 +79,12 @@ if [ ! -d "$APP_DIR/.git" ]; then
 fi
 chown -R "$DEPLOY_USER:$DEPLOY_USER" "$APP_DIR"
 
-echo "==> Installing Supabase keepalive cron (prevents free-tier 7-day auto-pause)"
+echo "==> Installing Supabase + Upstash keepalive cron (prevents free-tier auto-pause/archival)"
 apt-get install -y cron
 systemctl enable --now cron
-CRON_LINE="0 3 */3 * * curl -s https://researchchemicals.ca/api/stock > /dev/null"
-( crontab -u "$DEPLOY_USER" -l 2>/dev/null | grep -vF "researchchemicals.ca/api/stock" ; echo "$CRON_LINE" ) | crontab -u "$DEPLOY_USER" -
+chmod +x "$APP_DIR/deploy/keepalive.sh"
+CRON_LINE="0 3 */3 * * $APP_DIR/deploy/keepalive.sh"
+( crontab -u "$DEPLOY_USER" -l 2>/dev/null | grep -vF "keepalive.sh" ; echo "$CRON_LINE" ) | crontab -u "$DEPLOY_USER" -
 
 echo ""
 echo "############################################################"
