@@ -186,10 +186,11 @@ export async function POST(req: NextRequest) {
     }
 
     for (const item of validatedItems) {
-      await supabase.rpc("decrement_stock", { vid: item.id, qty: item.qty });
+      const { error: stockErr } = await supabase.rpc("decrement_stock", { vid: item.id, qty: item.qty });
+      if (stockErr) console.error("[api/order] decrement_stock failed", item.id, stockErr);
     }
 
-    await supabase.from("orders").insert({
+    const { error: insertErr } = await supabase.from("orders").insert({
       id: orderId,
       first_name:  customer.firstName,
       last_name:   customer.lastName,
@@ -204,6 +205,7 @@ export async function POST(req: NextRequest) {
       items:       validatedItems,
       total,
     });
+    if (insertErr) console.error("[api/order] orders insert failed", orderId, insertErr);
 
     return NextResponse.json({ orderId });
   } catch (err) {

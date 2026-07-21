@@ -6,13 +6,22 @@ import { supabase } from "@/lib/supabase";
 // make Next execute it during the Docker build, before secrets are mounted.
 export const dynamic = "force-dynamic";
 
+// In-process cache standing in for the ISR revalidate=60 we can't use here —
+// keeps repeat requests fast without hitting Supabase every time.
+let cache: { data: Record<string, number>; expires: number } | null = null;
+const TTL_MS = 60_000;
+
 export async function GET() {
+  if (cache && cache.expires > Date.now()) {
+    return NextResponse.json(cache.data);
+  }
+
   const { data, error } = await supabase
     .from("stock")
     .select("variant_id, quantity");
 
   if (error) {
-    return NextResponse.json({}, { status: 500 });
+    return NextResponse.json(cache?.data ?? {}, { status: cache ? 200 : 500 });
   }
 
   const map: Record<string, number> = {};
@@ -20,5 +29,6 @@ export async function GET() {
     map[row.variant_id] = row.quantity;
   }
 
-  return NextResponse.json(map);
+  cache = { data: map, expires: Date.now() + TTL_MS };
+  return NextResponse.json(cache.data);
 }

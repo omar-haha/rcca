@@ -5,15 +5,26 @@ import { checkLimit, limiters } from "@/lib/ratelimit";
 // force-dynamic (not revalidate/ISR): see app/api/stock/route.ts for why.
 export const dynamic = "force-dynamic";
 
+// In-process cache standing in for the ISR revalidate=60 we can't use here —
+// keeps repeat requests fast without hitting Supabase every time.
+let cache: { data: unknown[]; expires: number } | null = null;
+const TTL_MS = 60_000;
+
 export async function GET() {
+  if (cache && cache.expires > Date.now()) {
+    return NextResponse.json(cache.data);
+  }
+
   const { data, error } = await supabase
     .from("reviews")
     .select("id, name, location, product, rating, body, date_label")
     .eq("approved", true)
     .order("created_at", { ascending: false });
 
-  if (error) return NextResponse.json([], { status: 500 });
-  return NextResponse.json(data ?? []);
+  if (error) return NextResponse.json(cache?.data ?? [], { status: cache ? 200 : 500 });
+
+  cache = { data: data ?? [], expires: Date.now() + TTL_MS };
+  return NextResponse.json(cache.data);
 }
 
 export async function POST(req: NextRequest) {

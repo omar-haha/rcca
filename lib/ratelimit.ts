@@ -24,7 +24,16 @@ export async function checkLimit(
   limiter: Ratelimit,
   req: NextRequest
 ): Promise<NextResponse | null> {
-  const { success, limit, remaining, reset } = await limiter.limit(getIp(req));
+  let result;
+  try {
+    result = await limiter.limit(getIp(req));
+  } catch (err) {
+    // Fail open: if Upstash itself is unreachable, don't block real
+    // customers over an anti-abuse feature being down.
+    console.error("[ratelimit] Upstash unreachable, allowing request", err);
+    return null;
+  }
+  const { success, limit, remaining, reset } = result;
   if (!success) {
     return NextResponse.json(
       { error: "Too many requests. Please try again later." },
