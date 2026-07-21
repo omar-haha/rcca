@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { checkLimit, limiters } from "@/lib/ratelimit";
 
-export const revalidate = 60;
+// force-dynamic (not revalidate/ISR): see app/api/stock/route.ts for why.
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const { data, error } = await supabase

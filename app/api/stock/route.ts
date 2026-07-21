@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
-export const revalidate = 60; // cache for 60s
+// force-dynamic (not revalidate/ISR): this route reads live Supabase data via
+// env vars only present at container runtime, not at `next build` — ISR would
+// make Next execute it during the Docker build, before secrets are mounted.
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const { data, error } = await supabase

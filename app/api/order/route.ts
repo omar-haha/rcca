@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
+import { resend } from "@/lib/resend";
 import { supabase } from "@/lib/supabase";
 import { checkLimit, limiters } from "@/lib/ratelimit";
 import { products } from "@/lib/products";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 const ADMIN_EMAIL  = process.env.ADMIN_EMAIL  ?? "contact@researchchemicals.ca";
 const FROM_ADDRESS = process.env.RESEND_FROM  ?? "onboarding@resend.dev";
