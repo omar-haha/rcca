@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # One-time bootstrap for a fresh Hetzner Ubuntu 24.04 server.
 # Run as root: bash setup-server.sh
+#
+# Before running this against a real server, make sure the repo's
+# working tree is clean and everything (Dockerfile, docker-compose.yml,
+# deploy/, .github/workflows/) is committed AND pushed to origin/main —
+# this script clones from GitHub, so anything not pushed won't be there.
 set -euo pipefail
 
 REPO_URL="git@github.com:omar-haha/rcca.git"
@@ -34,8 +39,14 @@ if ! id "$DEPLOY_USER" &>/dev/null; then
   usermod -aG docker "$DEPLOY_USER"
 fi
 
-echo "==> Generating SSH keypair #1: for GitHub Actions to SSH INTO this server"
+echo "==> Carrying over root's authorized_keys so you can SSH in as $DEPLOY_USER"
 mkdir -p "/home/$DEPLOY_USER/.ssh"
+touch "/home/$DEPLOY_USER/.ssh/authorized_keys"
+if [ -f /root/.ssh/authorized_keys ]; then
+  cat /root/.ssh/authorized_keys >> "/home/$DEPLOY_USER/.ssh/authorized_keys"
+fi
+
+echo "==> Generating SSH keypair #1: for GitHub Actions to SSH INTO this server"
 if [ ! -f "/home/$DEPLOY_USER/.ssh/github_actions_deploy" ]; then
   ssh-keygen -t ed25519 -f "/home/$DEPLOY_USER/.ssh/github_actions_deploy" -N "" -C "github-actions-deploy"
   cat "/home/$DEPLOY_USER/.ssh/github_actions_deploy.pub" >> "/home/$DEPLOY_USER/.ssh/authorized_keys"
@@ -61,10 +72,18 @@ echo ""
 read -rp "Press Enter once the deploy key is added to GitHub... "
 
 echo "==> Cloning repo into $APP_DIR (as $DEPLOY_USER)"
+mkdir -p "$APP_DIR"
+chown "$DEPLOY_USER:$DEPLOY_USER" "$APP_DIR"
 if [ ! -d "$APP_DIR/.git" ]; then
   sudo -u "$DEPLOY_USER" git clone "$REPO_URL" "$APP_DIR"
 fi
 chown -R "$DEPLOY_USER:$DEPLOY_USER" "$APP_DIR"
+
+echo "==> Installing Supabase keepalive cron (prevents free-tier 7-day auto-pause)"
+apt-get install -y cron
+systemctl enable --now cron
+CRON_LINE="0 3 */3 * * curl -s https://researchchemicals.ca/api/stock > /dev/null"
+( crontab -u "$DEPLOY_USER" -l 2>/dev/null | grep -vF "researchchemicals.ca/api/stock" ; echo "$CRON_LINE" ) | crontab -u "$DEPLOY_USER" -
 
 echo ""
 echo "############################################################"
