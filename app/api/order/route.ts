@@ -169,27 +169,9 @@ export async function POST(req: NextRequest) {
 
     const orderId = genOrderId();
 
-    await resend.emails.send({
-      from: FROM_ADDRESS,
-      to: [ADMIN_EMAIL],
-      subject: `New Order ${orderId} — $${total.toFixed(2)}`,
-      html: adminEmailHtml(orderId, customer, validatedItems, total, payMethod, cryptoCoin),
-    });
-
-    if (customer.email) {
-      await resend.emails.send({
-        from: FROM_ADDRESS,
-        to: [customer.email],
-        subject: `Order Received — ${orderId}`,
-        html: customerEmailHtml(orderId, customer, validatedItems, total, payMethod, cryptoCoin),
-      });
-    }
-
-    for (const item of validatedItems) {
-      const { error: stockErr } = await supabase.rpc("decrement_stock", { vid: item.id, qty: item.qty });
-      if (stockErr) console.error("[api/order] decrement_stock failed", item.id, stockErr);
-    }
-
+    // Record the order before doing anything else — if this fails, we must
+    // not tell the customer their order succeeded (they'd get a payment-
+    // instructions email for an order that doesn't exist anywhere).
     const { error: insertErr } = await supabase.from("orders").insert({
       id: orderId,
       first_name:  customer.firstName,
@@ -205,7 +187,31 @@ export async function POST(req: NextRequest) {
       items:       validatedItems,
       total,
     });
-    if (insertErr) console.error("[api/order] orders insert failed", orderId, insertErr);
+    if (insertErr) {
+      console.error("[api/order] orders insert failed", orderId, insertErr);
+      return NextResponse.json({ error: "Failed to process order" }, { status: 500 });
+    }
+
+    for (const item of validatedItems) {
+      const { error: stockErr } = await supabase.rpc("decrement_stock", { vid: item.id, qty: item.qty });
+      if (stockErr) console.error("[api/order] decrement_stock failed", item.id, stockErr);
+    }
+
+    await resend.emails.send({
+      from: FROM_ADDRESS,
+      to: [ADMIN_EMAIL],
+      subject: `New Order ${orderId} — $${total.toFixed(2)}`,
+      html: adminEmailHtml(orderId, customer, validatedItems, total, payMethod, cryptoCoin),
+    });
+
+    if (customer.email) {
+      await resend.emails.send({
+        from: FROM_ADDRESS,
+        to: [customer.email],
+        subject: `Order Received — ${orderId}`,
+        html: customerEmailHtml(orderId, customer, validatedItems, total, payMethod, cryptoCoin),
+      });
+    }
 
     return NextResponse.json({ orderId });
   } catch (err) {
