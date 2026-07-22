@@ -7,6 +7,9 @@ services:
       - .env.production
     expose:
       - "3000"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
 
   caddy:
     image: caddy:2-alpine
