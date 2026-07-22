@@ -165,6 +165,24 @@ export async function POST(req: NextRequest) {
       }
       validatedItems.push({ ...item, price: serverPrice });
     }
+
+    // Never oversell — check requested quantities against live stock.
+    // Variants with no row in `stock` yet are left unrestricted.
+    const { data: stockRows } = await supabase
+      .from("stock")
+      .select("variant_id, quantity")
+      .in("variant_id", validatedItems.map((i) => i.id));
+    const stockMap = new Map((stockRows ?? []).map((r) => [r.variant_id, r.quantity]));
+    for (const item of validatedItems) {
+      const available = stockMap.get(item.id);
+      if (available !== undefined && item.qty > available) {
+        return NextResponse.json(
+          { error: `Only ${available} left of ${item.name} — please update your bag.` },
+          { status: 400 }
+        );
+      }
+    }
+
     const total = validatedItems.reduce((sum, i) => sum + i.price * i.qty, 0);
 
     const orderId = genOrderId();
