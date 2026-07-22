@@ -7,9 +7,10 @@ const redis = Redis.fromEnv();
 
 // Sliding-window limiters per endpoint
 export const limiters = {
-  order:   new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(5,  "1 h"), prefix: "rl:order"   }),
-  review:  new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(3,  "1 h"), prefix: "rl:review"  }),
-  contact: new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(5,  "1 h"), prefix: "rl:contact" }),
+  order:     new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(5,  "1 h"),  prefix: "rl:order"      }),
+  review:    new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(3,  "1 h"),  prefix: "rl:review"     }),
+  contact:   new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(5,  "1 h"),  prefix: "rl:contact"    }),
+  adminAuth: new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, "15 m"), prefix: "rl:admin-auth" }),
 };
 
 export function getIp(req: NextRequest): string {
