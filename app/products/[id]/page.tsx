@@ -22,5 +22,32 @@ export default async function Page({ params }: Props) {
   const { id } = await params;
   const product = products.find((p) => p.id === id);
   if (!product) notFound();
-  return <ProductDetail product={product} />;
+
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    sku: product.id,
+    description: product.description ?? `${product.name} ${product.unit}, ${product.purity} purity (supplier-reported).`,
+    offers: {
+      "@type": "Offer",
+      url: `https://researchchemicals.ca/products/${product.id}`,
+      priceCurrency: "CAD",
+      price: product.price.toFixed(2),
+      availability:
+        product.stock === "out"
+          ? "https://schema.org/OutOfStock"
+          : "https://schema.org/InStock",
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <ProductDetail product={product} />
+    </>
+  );
 }
