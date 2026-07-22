@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import type { ProductFamily } from "@/lib/products";
 
 function PickerContent({ family, onClose }: { family: ProductFamily; onClose: () => void }) {
-  const { addToCart } = useCart();
+  const { addToCart, getRemainingStock } = useCart();
   const { t } = useLanguage();
   const [selectedId, setSelectedId] = useState<string>(family.variants[0].id);
   const [qty, setQty] = useState(1);
@@ -19,6 +19,8 @@ function PickerContent({ family, onClose }: { family: ProductFamily; onClose: ()
 
   const selected = family.variants.find((v) => v.id === selectedId) ?? family.variants[0];
   const oos = selected.stock === "out";
+  const remaining = getRemainingStock(selected.id);
+  const atMax = remaining !== null && qty >= remaining;
 
   const handleAdd = () => {
     if (oos) return;
@@ -135,8 +137,8 @@ function PickerContent({ family, onClose }: { family: ProductFamily; onClose: ()
               </span>
               <button
                 type="button"
-                onClick={() => setQty((q) => q + 1)}
-                disabled={oos}
+                onClick={() => setQty((q) => (atMax ? q : q + 1))}
+                disabled={oos || atMax}
                 className="w-10 h-10 flex items-center justify-center border-none cursor-pointer disabled:opacity-25 disabled:cursor-not-allowed"
                 style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                 aria-label="Increase"
@@ -164,6 +166,12 @@ function PickerContent({ family, onClose }: { family: ProductFamily; onClose: ()
               </span>
             </button>
           </div>
+
+          {!oos && atMax && (
+            <p className="text-[12px] mt-2" style={{ color: "var(--text-muted)" }}>
+              {t("stock_max_available")}: {remaining}
+            </p>
+          )}
 
           <Link
             href={`/products/${selected.id}`}

@@ -25,7 +25,7 @@ function stockStatus(qty: number): Product["stock"] {
 
 export function ProductDetail({ product: initial }: { product: Product }) {
   const variants = products.filter((p) => p.name === initial.name);
-  const { addToCart } = useCart();
+  const { addToCart, getRemainingStock } = useCart();
   const { t } = useLanguage();
   const [selected, setSelected] = useState<Product>(initial);
   const [qty, setQty] = useState(1);
@@ -54,6 +54,8 @@ export function ProductDetail({ product: initial }: { product: Product }) {
 
   const p = selected;
   const oos = p.stock === "out";
+  const remaining = getRemainingStock(p.id);
+  const atMax = remaining !== null && qty >= remaining;
 
   const stockLabel = p.stock === "in" ? t("pdp_in_stock") : p.stock === "low" ? t("pdp_low_stock") : t("pdp_out_stock");
   const stockColor = p.stock === "in" ? "var(--success)" : p.stock === "low" ? "#f59e0b" : "var(--error)";
@@ -226,7 +228,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
               </div>
 
               {/* Qty + Add */}
-              <div className="flex items-center gap-3 mb-10">
+              <div className="flex items-center gap-3 mb-2">
                 <div className="flex items-center rounded-full border shrink-0 overflow-hidden" style={{ borderColor: "var(--border)" }}>
                   <button
                     type="button"
@@ -243,8 +245,8 @@ export function ProductDetail({ product: initial }: { product: Product }) {
                   </span>
                   <button
                     type="button"
-                    onClick={() => setQty((q) => q + 1)}
-                    disabled={oos}
+                    onClick={() => setQty((q) => (atMax ? q : q + 1))}
+                    disabled={oos || atMax}
                     className="w-11 h-11 flex items-center justify-center border-none cursor-pointer disabled:opacity-25 disabled:cursor-not-allowed transition-all duration-150"
                     style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                     aria-label="Increase quantity"
@@ -271,6 +273,10 @@ export function ProductDetail({ product: initial }: { product: Product }) {
                   </span>
                 </button>
               </div>
+
+              <p className="text-[12px] mb-8 h-[15px]" style={{ color: "var(--text-muted)" }}>
+                {!oos && atMax ? `${t("stock_max_available")}: ${remaining}` : ""}
+              </p>
 
               {/* Specs */}
               <div className="rounded-[16px] overflow-hidden border mb-8" style={{ borderColor: "var(--border)" }}>

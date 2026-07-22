@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Product } from "@/lib/products";
 
 export type CartItem = {
@@ -23,6 +23,9 @@ interface CartContextType {
   clearCart: () => void;
   lastAdded: { name: string; unit: string } | null;
   clearLastAdded: () => void;
+  // Stock still available to add for a given variant, given what's already
+  // in the bag. null = no live stock data for this id, don't restrict.
+  getRemainingStock: (id: string) => number | null;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -31,18 +34,36 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<Record<string, CartItem>>({});
   const [cartOpen, setCartOpen] = useState(false);
   const [lastAdded, setLastAdded] = useState<{ name: string; unit: string } | null>(null);
+  const [stockMap, setStockMap] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    fetch("/api/stock")
+      .then((r) => r.json())
+      .then(setStockMap)
+      .catch(() => {});
+  }, []);
 
   const cartArray = Object.values(cartItems);
   const cartCount = cartArray.reduce((s, i) => s + i.qty, 0);
   const cartTotal = cartArray.reduce((s, i) => s + i.price * i.qty, 0);
 
+  const getRemainingStock = (id: string): number | null => {
+    if (!(id in stockMap)) return null;
+    const inCart = cartItems[id]?.qty ?? 0;
+    return Math.max(0, stockMap[id] - inCart);
+  };
+
   const addToCart = (p: Product, qty: number) => {
-    setCartItems((prev) => ({
-      ...prev,
-      [p.id]: prev[p.id]
-        ? { ...prev[p.id], qty: prev[p.id].qty + qty }
-        : { id: p.id, name: p.name, price: p.price, unit: p.unit, qty },
-    }));
+    setCartItems((prev) => {
+      const current = prev[p.id]?.qty ?? 0;
+      const cap = p.id in stockMap ? stockMap[p.id] : Infinity;
+      const newQty = Math.min(current + qty, cap);
+      if (newQty <= 0) return prev;
+      return {
+        ...prev,
+        [p.id]: { id: p.id, name: p.name, price: p.price, unit: p.unit, qty: newQty },
+      };
+    });
     setLastAdded({ name: p.name, unit: p.unit });
     setTimeout(() => setLastAdded(null), 2500);
   };
@@ -51,7 +72,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCartItems((prev) => {
       if (!prev[id]) return prev;
       const next = { ...prev };
-      const newQty = next[id].qty + delta;
+      const cap = id in stockMap ? stockMap[id] : Infinity;
+      const newQty = Math.min(next[id].qty + delta, cap);
       if (newQty <= 0) {
         delete next[id];
       } else {
@@ -89,6 +111,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         lastAdded,
         clearLastAdded,
+        getRemainingStock,
       }}
     >
       {children}

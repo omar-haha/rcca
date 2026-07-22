@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
-  const { cartItems, cartTotal, cartOpen, setCartOpen, removeFromCart, updateQty } = useCart();
+  const { cartItems, cartTotal, cartOpen, setCartOpen, removeFromCart, updateQty, getRemainingStock } = useCart();
   const { t } = useLanguage();
   const items = Object.values(cartItems);
   const [removingId, setRemovingId] = useState<string | null>(null);
@@ -168,6 +168,11 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                         </div>
                       </div>
 
+                      {(() => {
+                        const remaining = getRemainingStock(item.id);
+                        const atMax = remaining !== null && remaining <= 0;
+                        return (
+                      <>
                       <div className="flex items-center justify-between mt-3">
                         {/* Qty stepper */}
                         <div
@@ -190,8 +195,9 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                             {item.qty}
                           </span>
                           <button
-                            onClick={() => updateQty(item.id, 1)}
-                            className="w-8 h-8 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:bg-[var(--surface)] active:bg-[var(--border)] active:translate-y-px"
+                            onClick={() => { if (!atMax) updateQty(item.id, 1); }}
+                            disabled={atMax}
+                            className="w-8 h-8 flex items-center justify-center border-none cursor-pointer transition-all duration-150 hover:bg-[var(--surface)] active:bg-[var(--border)] active:translate-y-px disabled:opacity-25 disabled:cursor-not-allowed"
                             style={{ backgroundColor: "var(--surface-hover)", color: "var(--text)" }}
                             aria-label="Increase quantity"
                           >
@@ -204,6 +210,14 @@ export function CartDrawer({ onCheckout }: { onCheckout: () => void }) {
                           ${(item.price * item.qty).toFixed(2)}
                         </div>
                       </div>
+                      {atMax && (
+                        <p className="text-[11px] mt-1" style={{ color: "var(--text-muted)" }}>
+                          {t("stock_max_available")}
+                        </p>
+                      )}
+                      </>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
