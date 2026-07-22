@@ -26,4 +26,8 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-CMD ["node", "server.js"]
+# --dns-result-order=ipv4first: this container has no real IPv6 route, but
+# outbound hosts (e.g. Supabase) still resolve an AAAA record. Without this,
+# Node tries IPv6 first, hangs until it times out, then falls back to IPv4 --
+# adding several seconds to every outbound request.
+CMD ["node", "--dns-result-order=ipv4first", "server.js"]
