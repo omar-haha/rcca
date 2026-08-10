@@ -9,6 +9,9 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Enables output: 'standalone' in next.config.ts — see the comment there for
+# why this can't just be on unconditionally (it breaks Vercel deploys).
+ENV DOCKER_BUILD=1
 RUN npm run build
 
 # ---- runner ----
