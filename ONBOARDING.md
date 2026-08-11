@@ -1,15 +1,15 @@
-# LOAM — Developer Handoff
+# VESSEL — Developer Handoff
 
-> This is a portfolio/demo project (see [README.md](README.md)) adapted from a real production codebase, with the catalog and copy swapped to a generic home-goods category. The technical structure, patterns, and gotchas below are unchanged from the original and reflect real decisions made while building it — this doc is kept because documentation discipline is part of what the demo is meant to show.
+> This is a portfolio/demo project (see [README.md](README.md)) adapted from a real production codebase, with the catalog and copy swapped to a generic supplements category. The technical structure, patterns, and gotchas below are unchanged from the original and reflect real decisions made while building it — this doc is kept because documentation discipline is part of what the demo is meant to show.
 
 ## What this is
 
-LOAM is a home-goods e-commerce storefront: Next.js 15.5 App Router, strict Apple-aesthetic design system, fully bilingual (EN/FR) UI and product labels, bag/checkout flow, Supabase-backed orders/stock/reviews, and a password-gated admin panel. Repo: `omar-haha/rcca`.
+VESSEL is a supplements e-commerce storefront: Next.js 15.5 App Router, strict Apple-aesthetic design system, fully bilingual (EN/FR) UI and product labels, bag/checkout flow, Supabase-backed orders/stock/reviews, and a password-gated admin panel. Repo: `omar-haha/rcca`.
 
 ### A few things worth knowing before touching product or marketing copy
 
-- **Product copy describes materials and craft, not overstated claims.** Keep it concrete and specific rather than vague ("kiln-dried oak shelving" beats "premium quality").
-- **Never claim LOAM tests or verifies materials independently.** Makers document composition and finishing; LOAM retains and relays that documentation. See the Materials & Care section below and `lib/legalContent.ts`.
+- **Product copy describes formulation and dosage, not overstated claims.** Keep it concrete and specific rather than vague ("27g protein isolate per scoop, under 1g sugar" beats "premium quality").
+- **Never claim VESSEL tests or verifies potency in-house.** Testing is performed by independent, accredited third-party labs; VESSEL commissions it and relays the results but does not perform or independently re-verify it. See the Testing & Quality section below and `lib/legalContent.ts`.
 - **Never re-enable the commented-out blocks** (fabricated reviews, fake star ratings, fake live-viewer counter). They're commented rather than deleted deliberately, each with a comment saying why — see "Known decisions / gotchas".
 
 ---
@@ -29,7 +29,8 @@ LOAM is a home-goods e-commerce storefront: Next.js 15.5 App Router, strict Appl
 | Transactional email | Resend |
 | Rate limiting | Upstash Redis + `@upstash/ratelimit` |
 | Analytics | GA4, **consent-gated** (opt-in) |
-| Deployment | Docker Compose + Caddy on a VPS, deployed by GitHub Actions over SSH |
+| Deployment (live demo) | Vercel, auto-deployed on push to `main` |
+| Deployment (pipeline demonstrated in-repo) | Docker Compose + Caddy on a VPS, driven by GitHub Actions over SSH — not wired to this repo; see Deployment below |
 
 ---
 
@@ -60,23 +61,19 @@ Without Supabase/Resend/Upstash credentials the UI renders fine — stock and re
 
 ## Deployment
 
-**Not Vercel.** Push to `main` → [.github/workflows/deploy.yml](.github/workflows/deploy.yml) SSHes into the host (`appleboy/ssh-action`) and runs:
+**The live demo runs on Vercel**, auto-deployed via Vercel's GitHub integration on every push to `main` — no workflow file needed for that path.
 
-```bash
-cd /opt/rcca && git fetch origin main && git reset --hard origin/main
-docker compose build --pull && docker compose up -d && docker image prune -f
-```
+This repo was adapted from a production project that deploys differently, and that pipeline still lives in the repo as a demonstrated capability, just not wired up here:
 
+- [.github/workflows/deploy.yml](.github/workflows/deploy.yml) **does not exist in this repo.** In the original project it SSHed into a host (`appleboy/ssh-action`) on every push to `main` and ran `git reset --hard origin/main && docker compose up -d`. It was **deliberately removed** from this repo — leaving it in place would mean a portfolio-demo push could silently redeploy over a real server. If you want to stand this path up again against your own host, recreate that workflow file pointed at your own `HETZNER_HOST` / `HETZNER_USER` / `HETZNER_SSH_KEY` secrets.
 - [docker-compose.yml](docker-compose.yml) — `app` (Next.js, expose 3000, env from `.env.production` **on the server**) + `caddy` (ports 80/443, TLS).
 - [Caddyfile](Caddyfile) — reverse proxies the site domain to `app:3000`; update it to your own domain before deploying for real.
-- Secrets live in `.env.production` on the host, not in the repo. Adding an env var means updating that file **and** redeploying.
-- Required GitHub secrets: `HETZNER_HOST`, `HETZNER_USER`, `HETZNER_SSH_KEY` (or your host equivalent).
 - [deploy/setup-server.sh](deploy/setup-server.sh) provisions a fresh host; [deploy/keepalive.sh](deploy/keepalive.sh) is a health check that also prevents Supabase/Upstash free-tier inactivity pausing.
-- No staging environment. `main` is production.
+- No staging environment either way. `main` is production.
 
 ### Database migrations
 
-[deploy/migrations/](deploy/migrations/) holds plain SQL, applied **by hand** in the Supabase SQL editor — nothing runs them automatically.
+[deploy/migrations/](deploy/migrations/) holds plain SQL, applied **by hand** in the Supabase SQL editor — nothing runs them automatically, on either deploy path.
 
 | File | Adds |
 |---|---|
@@ -102,10 +99,9 @@ Defined in [app/globals.css](app/globals.css).
 |---|---|
 | `rc_theme` | ThemeProvider + anti-flash script |
 | `rc_lang` | LanguageProvider |
-| `rc_age_ok` | AgeGateModal |
 | `rc_analytics_consent` | Analytics consent banner (`"granted"` / `"denied"`) |
 
-To retest a first-time visit, clear `rc_age_ok` and `rc_analytics_consent` (devtools → Application → Local Storage).
+To retest a first-time visit, clear `rc_analytics_consent` (devtools → Application → Local Storage).
 
 ### z-index layers
 
@@ -119,7 +115,6 @@ Worth knowing before adding any overlay — a mismatch here is easy to miss loca
 | 3000 | CartDrawer, CheckoutModal |
 | 4000 | Checkout success, LegalModal (if revived) |
 | 5000 | Product image zoom overlay |
-| **9999** | **AgeGateModal** — full-screen, blocks everything below |
 
 ### Key CSS variables
 
@@ -157,7 +152,7 @@ border-primary → var(--border)
 ```
 app/
   layout.tsx               Root layout — fonts, providers, anti-flash script, Organization JSON-LD, <Analytics/>
-  page.tsx                 Homepage: AgeGate, Nav, CartToast, CartDrawer, CheckoutModal, AppleHero, AppleBentoGrid, HomepageReviews, Footer
+  page.tsx                 Homepage: Nav, CartToast, CartDrawer, CheckoutModal, AppleHero, AppleBentoGrid, HomepageReviews, Footer
   globals.css              Theme variables, utility aliases, button utilities, keyframes
   loading.tsx              Suspense shell with centered Spinner
   not-found.tsx            404
@@ -165,7 +160,7 @@ app/
   opengraph-image.tsx      Generated OG image
   robots.ts / sitemap.ts   Generated robots.txt + sitemap.xml
   products/[id]/page.tsx   Server component; generateStaticParams pre-renders every SKU; generateMetadata per product
-  coa/page.tsx             Materials & Care explainer (maker-issued documentation)
+  coa/page.tsx             Testing & Quality explainer (lab-issued Certificates of Analysis)
   faq/page.tsx             FAQ; content inline as FAQS_EN / FAQS_FR
   legal/page.tsx           Tabbed Disclaimers / Privacy / Terms / Refund; reads lib/legalContent.ts; deep links via #hash
   reviews/page.tsx         Full reviews page (ReviewsSection)
@@ -184,7 +179,7 @@ app/
 
 components/
   Analytics.tsx            "use client" — GA4 **gated behind an opt-in consent banner**; renders nothing without NEXT_PUBLIC_GA_ID
-  PageShell.tsx            Shared chrome for sub-pages (AgeGate + Nav + cart stack + Footer + <main>)
+  PageShell.tsx            Shared chrome for sub-pages (Nav + cart stack + Footer + <main>)
 
   providers/
     ThemeProvider.tsx           Dark/light toggle, persists to localStorage
@@ -202,14 +197,13 @@ components/
 
   sections/
     AppleHero.tsx       Full-viewport hero (variant: primary/secondary/tertiary); CTA uses scrollIntoView to avoid hash side-effects
-    AppleBentoGrid.tsx  Catalog — one card per product family; filter pills = All + 8 room/use-case tags, active pill tinted in that tag's colour; 9 cards then "Show More"; IntersectionObserver reveal + AnimatePresence on filter change
+    AppleBentoGrid.tsx  Catalog — one card per product family; filter pills = All + 8 use-case tags, active pill tinted in that tag's colour; 9 cards then "Show More"; IntersectionObserver reveal + AnimatePresence on filter change
     ProductDetail.tsx   "use client" full product page; brings its own nav/cart stack
     HomepageReviews.tsx Three most recent approved reviews; renders null when there are none
     ReviewsSection.tsx  Full reviews grid + submit form (incl. optional order verification)
     AppleFooter.tsx     Explore | Contact card → /contact | Legal links → /legal#<tab>
 
   modals/
-    AgeGateModal.tsx        Province selector sets minimum age; persists rc_age_ok
     CartDrawer.tsx          Slide-in bag; scroll-locked; collapse-on-delete; qty steppers
     CheckoutModal.tsx       Contact + Order Notes + Shipping + Payment + click-wrap consent; success screen echoes payment instructions
     ProductPickerModal.tsx  Variant picker from a bento card; option pills, qty, Add to Bag, link to product page
@@ -259,9 +253,9 @@ Defined in [lib/products.ts](lib/products.ts):
   bestSeller?: boolean, description?: string }
 ```
 
-**39 SKUs across 28 product families.** Multi-variant products (e.g. the dinnerware and cookware sets) are separate entries sharing a `name`. Field names are kept from the original codebase this demo was adapted from — `cas` holds a SKU/model code, `purity` holds a material/finish description. Renaming them would be a bigger diff than it's worth; the UI labels (`pdp_cas`, `pdp_purity` in i18n.ts) already say "SKU" and "Material".
+**39 SKUs across 28 product families.** Multi-variant products (e.g. the whey isolate and casein protein SKUs) are separate entries sharing a `name`. Field names are kept from the original codebase this demo was adapted from — `cas` holds a SKU/lot code, `purity` holds a potency/dose description. Renaming them would be a bigger diff than it's worth; the UI labels (`pdp_cas`, `pdp_purity` in i18n.ts) already say "SKU" and "Potency".
 
-- `tag` — one of eight **room/use-case** values: `Kitchen`, `Lighting`, `Bedding`, `Decor`, `Storage`, `Outdoor`, `Bath`, `Ancillary`.
+- `tag` — one of eight **use-case** values: `Protein`, `Energy`, `Sleep`, `Recovery`, `Cognitive`, `Immunity`, `Wellness`, `Ancillary`.
 - `description` — pulled from the `DESC` map.
 - `stock: 'out'` cards are greyed out and sorted to the end. Live quantities from `/api/stock` override this field at runtime.
 - `bestSeller: true` — currently 3 SKUs. Note the "Best Sellers" filter pill no longer exists, so this now only affects the PDP badge.
@@ -294,10 +288,10 @@ Live quantities live in the Supabase `stock` table (`variant_id`, `quantity`) an
 
 [components/modals/CheckoutModal.tsx](components/modals/CheckoutModal.tsx) → `POST /api/order`. Sections in order:
 
-1. **Contact** — first/last name, email, industry dropdown (6 options — trade categories like Interior Design, Hospitality, Retail).
+1. **Contact** — first/last name, email, industry dropdown (6 options — categories like Gym / Fitness Studio, Personal Training, Retail).
 2. **Order Notes** — required free-text field, minimum 15 characters (`MIN_INTENT_LENGTH`, mirrored in the API). Demonstrates a required, server-validated free-text field stored with the order; the internal variable/column names (`researchIntent`, `orders.research_intent`) are kept from the original codebase, only the label/placeholder copy changed.
 3. **Shipping** — street, city, postal, country (7 options).
-4. **Payment** — **Interac e-Transfer** (`pay@loamgoods.example`) or **Cryptocurrency (BTC / ETH)** — the wallet addresses are the well-known public example addresses, not real wallets. Copy buttons per field.
+4. **Payment** — **Interac e-Transfer** (`pay@vesselwellness.example`) or **Cryptocurrency (BTC / ETH)** — the wallet addresses are the well-known public example addresses, not real wallets. Copy buttons per field.
 5. **Click-wrap consent** — required checkbox linking to `/legal#terms`. Blocks submission.
 
 Then: order id generated server-side, cart cleared, success screen echoes the payment instructions for the chosen method (`savedTotal` captures the total before `clearCart()`). For e-transfer it also shows the security question/answer, since autodeposit isn't enabled — the answer is the order number.
@@ -356,15 +350,6 @@ The business name is derived from four constants (`ENTITY_EN/FR`, `LIABLE_PARTY_
 
 Québec's Law 25 expects consent *before* non-essential tracking starts, and the Privacy Policy describes exactly this behaviour. **If you change the gating, change that clause too** — otherwise the published policy becomes false. `<Analytics/>` sits inside `LanguageProvider` so the banner is localised.
 
-### It waits for the age gate
-
-The banner is `z-[2500]`; `AgeGateModal` is a full-screen `z-[9999]` overlay. Showing both at once just hides the banner behind the gate, so they are sequenced:
-
-- `AgeGateModal` exports `AGE_GATE_CLEARED` (`"rc:age-gate-cleared"`) and dispatches it on `window` when the gate is dismissed.
-- `Analytics` shows the banner only once **either** `rc_age_ok` is already set (returning visitor) **or** that event fires (first visit). Storage-blocked browsers don't wait, since the gate can never record a pass there.
-
-**This is a cross-file contract** — renaming or dropping the event silently means first-time visitors never get a cookie choice, and nothing fails loudly. Keep the two ends in sync.
-
 ### Why you may not see the banner locally
 
 If `NEXT_PUBLIC_GA_ID` is unset — and there is no `.env.local` in a fresh checkout — `Analytics` returns `null` and no banner appears. That is intended: don't ask permission for analytics that aren't running. To exercise it locally:
@@ -373,7 +358,7 @@ If `NEXT_PUBLIC_GA_ID` is unset — and there is no `.env.local` in a fresh chec
 echo 'NEXT_PUBLIC_GA_ID=G-TESTING123' > .env.local   # then restart the dev server
 ```
 
-Then clear `rc_age_ok` and `rc_analytics_consent` to replay a first visit. In production the value comes from `.env.production` on the host.
+Then clear `rc_analytics_consent` to replay a first visit. In production the value comes from `.env.production` on the host (self-hosted path) or Vercel's project env vars (live demo).
 
 ---
 
@@ -381,9 +366,9 @@ Then clear `rc_age_ok` and `rc_analytics_consent` to replay a first visit. In pr
 
 `<GlassVial productName unit className blur? showLabel? weight />`
 
-The component name and internal styling (`vial-label` CSS class, etc.) are kept from the original codebase this demo was adapted from — renaming them would be a large, low-value diff. What changed is the label content itself: it now shows a generic "Handmade" / batch-and-production-date tag instead of the original's lab-vial-specific text. Functionally it's unchanged: an image with a bilingual label overlay.
+The component name and internal styling (`vial-label` CSS class, etc.) are kept from the original codebase this demo was adapted from — renaming them would be a large, low-value diff. The label content shows a "LAB TESTED" / batch-and-production-date tag. Functionally it's an image with a bilingual label overlay, plus a CSS-only cap and gloss highlight layered on top (see below).
 
-- Image: `/public/images/vial-rembg-cropped.png` — replaced with a generic placeholder graphic for this demo (RGBA, 385×883 to match the original component's sizing math). Other PNGs in that folder are unused experiments.
+- Image: `/public/images/vial-rembg-cropped.png` — a flat tan/brown silhouette with no bottle cues on its own (no cap, no shine); it only ever read as a product because of the label text sitting on it. `GlassVial.tsx` applies `filter: grayscale(0.85) brightness(1.4) contrast(0.95)` to push the base tone toward clean frosted-plastic white, plus two absolutely-positioned divs for a screw cap (accent-coloured, positioned by percentage over the image) and a diagonal gloss-streak gradient. All CSS, no new image asset. Other PNGs in that folder are unused experiments.
 - Bilingual label overlay uses `cqi` container-query units for font scaling; `productName` length drives font size.
 - `weight` is accepted but unused (destructured as `_weight`) — kept for call-site compatibility.
 - Label variables (`--label-bg`, `--label-fg`, …) are scoped to `.vial-label` in globals.css — always white regardless of theme.
@@ -403,15 +388,6 @@ The component name and internal styling (`vial-label` CSS class, etc.) are kept 
 | `clearCart()` | Wipes all items (after checkout confirmation) |
 | `clearLastAdded()` | Dismisses the toast |
 | `getRemainingStock(id)` | Addable remainder, or `null` when there's no live data |
-
----
-
-## Age gate
-
-- Shows until dismissed — `localStorage.rc_age_ok` **persists across sessions** (it is not sessionStorage).
-- Province selector auto-populates the minimum age (18 or 19); no manual age entry.
-- Confirmation checkbox required. Declining replaces `document.body.innerHTML`, which a reload undoes — this is a speed bump, not verification. **Never describe it as "age verification" in copy.**
-- On dismissal it dispatches `AGE_GATE_CLEARED`, which releases the cookie consent banner (see Analytics above). Don't remove that dispatch.
 
 ---
 
@@ -440,21 +416,20 @@ framer-motion handles all other entry/scroll animation (spring variants in Apple
 
 ## Known decisions / gotchas
 
-- **Build is strict TypeScript.** The dev server tolerates errors the build rejects. Run `npm run build` (or `npx tsc --noEmit`) before pushing — `main` deploys straight to production.
+- **Build is strict TypeScript.** The dev server tolerates errors the build rejects. Run `npm run build` (or `npx tsc --noEmit`) before pushing — `main` deploys straight to production (Vercel).
 - **`npm run lint` is unusable** — no ESLint config; `next lint` prompts interactively. Use `tsc --noEmit`.
 - **EN/FR translation blocks must stay in sync** — a key in `en` but not `fr` is a type error. Comment out in both, and remove the `t()` calls.
 - **Commented-out fake-social-proof code is deliberate.** Fabricated seed reviews, hashed star ratings, and the fake live-viewer counter are commented with a reason. Don't "clean up" by restoring them — they were disabled because presenting fabricated content as real customer activity is a real deceptive-marketing issue, not a style preference.
 - **All nav/footer links are absolute** (`/`, `/#store`, `/coa`, …). A bare `#store` resolves relative to the current path — on `/products/[id]` it becomes `/products/[id]#store`.
-- **New overlays: check the z-index table above.** The cookie banner sat behind the age gate on first visit until they were explicitly sequenced — a bug that is invisible unless you test with cleared localStorage.
 - **Active filter pills use a tint, not a solid fill, on purpose.** Several tag colours (`#d97706` amber, `#16a34a` green, `#0891b2` cyan) only reach ~3.2–3.6:1 against white, so a solid fill with white label text fails WCAG AA at 14px. `filterColor()` + `color-mix(in srgb, <colour> 16%, transparent)` keeps the colour identity and stays legible in both themes. If you switch to solid fills, darken those three first.
 - **`color-mix()` is used in inline styles** (filter pills). Fine in current evergreen browsers; if you need to support anything older, precompute the tints instead.
 - **Inline styles beat Tailwind hover classes.** With `style={{ backgroundColor }}`, `hover:bg-*` won't apply — use `bg-[var(--x)]` instead.
 - **Supabase writes should degrade, not fail.** Follow the `isMissingColumnError` retry pattern when adding columns so a missing migration doesn't take checkout down.
 - **Order emails go out only after a successful insert** in `/api/order`. Keep that ordering.
-- **Body scroll lock:** CartDrawer, AgeGateModal, CheckoutModal (and LegalModal, if revived) set `document.body.style.overflow = "hidden"` while open and restore on close/unmount.
+- **Body scroll lock:** CartDrawer, CheckoutModal (and LegalModal, if revived) set `document.body.style.overflow = "hidden"` while open and restore on close/unmount.
 - **`data-lenis-prevent="true"`** is needed on scrollable modal bodies so Lenis doesn't hijack their scroll.
 - **CartDrawer `shrink-0`** on each item wrapper stops flexbox squashing cards and hiding qty steppers.
 - **`h-full` inside auto-height flex containers** resolves to auto in most browsers — relied on in GlassVial so the image sizes naturally.
 - **Add to Bag inner `<span>`** has `pointer-events: none` so clicks in the button padding hit the button, not the span.
 - **AnimatePresence + IntersectionObserver in AppleBentoGrid:** `whileInView` with `once: true` only fires on first scroll, so initial reveal uses `IntersectionObserver`, then `AnimatePresence mode="wait"` with `key={activeFilter}` animates items out/in on filter change.
-- **Material claims:** never state or imply LOAM tests or independently verifies materials. Composition is maker-reported; the Materials & Care page and the legal Purity & Analytical Data clause must keep saying so.
+- **Testing claims:** never state or imply VESSEL performs its own potency/purity testing in-house. Testing is lab-performed by independent third parties; VESSEL commissions it and relays the results but does not independently re-verify them. The Testing & Quality page and the legal Testing Data clause must keep saying so.
