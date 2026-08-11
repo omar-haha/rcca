@@ -1,5 +1,7 @@
 # VESSEL — Full-Stack E-Commerce Portfolio Demo
 
+**Live demo:** [vessel-demoversion.vercel.app](https://vessel-demoversion.vercel.app)
+
 A complete e-commerce storefront built to demonstrate production-grade patterns end to end — not a live business. The catalog (supplements), branding, and legal copy are fictional; the architecture, checkout flow, admin tooling, and deployment pipeline are the same ones used in a real production project this demo was adapted from.
 
 **This is a demo, not a live store.** Payment details shown at checkout are placeholder values (public example crypto addresses, a fictional e-transfer email) and nothing here processes real payments. See [ONBOARDING.md](ONBOARDING.md) for the full developer handoff — file map, component behavior, and the gotchas that came from actually building and running this.
