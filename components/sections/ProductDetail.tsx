@@ -12,7 +12,6 @@ import { AppleFooter } from "@/components/sections/AppleFooter";
 import { CartDrawer } from "@/components/modals/CartDrawer";
 import { CartToast } from "@/components/ui/CartToast";
 import { CheckoutModal } from "@/components/modals/CheckoutModal";
-import { AgeGateModal } from "@/components/modals/AgeGateModal";
 import { cn } from "@/lib/utils";
 import { products } from "@/lib/products";
 import type { Product } from "@/lib/products";
@@ -116,7 +115,6 @@ export function ProductDetail({ product: initial }: { product: Product }) {
 
   return (
     <>
-      <AgeGateModal />
       <AppleNav />
       <CartToast />
       <CartDrawer onCheckout={() => setCheckoutOpen(true)} />

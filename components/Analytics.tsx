@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Script from "next/script";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { AGE_GATE_CLEARED } from "@/components/modals/AgeGateModal";
 
 // GA4 is opt-in, not opt-out.
 //
@@ -25,9 +24,6 @@ export function Analytics() {
 
   // undefined = not yet read from storage, null = no choice made yet
   const [consent, setConsent] = useState<Consent | null | undefined>(undefined);
-  // The age gate is a full-screen z-[9999] overlay; this banner is z-[2500], so
-  // showing both at once just hides the banner behind it. Wait the gate out.
-  const [ageGateCleared, setAgeGateCleared] = useState(false);
 
   useEffect(() => {
     try {
@@ -37,17 +33,6 @@ export function Analytics() {
       // Storage blocked — treat as no consent and don't nag on every page view.
       setConsent("denied");
     }
-
-    try {
-      if (localStorage.getItem("rc_age_ok")) setAgeGateCleared(true);
-    } catch {
-      // Storage blocked: the gate can never record a pass, so don't wait on it.
-      setAgeGateCleared(true);
-    }
-
-    const onCleared = () => setAgeGateCleared(true);
-    window.addEventListener(AGE_GATE_CLEARED, onCleared);
-    return () => window.removeEventListener(AGE_GATE_CLEARED, onCleared);
   }, []);
 
   const choose = (value: Consent) => {
@@ -75,7 +60,7 @@ export function Analytics() {
         </>
       )}
 
-      {consent === null && ageGateCleared && (
+      {consent === null && (
         <div
           role="dialog"
           aria-label={t("cookie_aria")}

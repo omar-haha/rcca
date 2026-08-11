@@ -26,14 +26,53 @@ export function GlassVial({ productName, weight: _weight, unit, className, blur 
       style={{ perspective: "800px" }}
     >
       <div className="relative w-full h-full pointer-events-none flex justify-center">
-        <Image
-          src="/images/vial-rembg-cropped.png"
-          alt={productName}
-          width={385}
-          height={883}
-          className="w-full h-auto object-contain drop-shadow-2xl transition-all duration-300"
-          priority
-        />
+        <div className="relative w-full">
+          {/* Base render is a flat tan/brown silhouette with no bottle cues —
+              grayscale + brightness pushes it toward a clean frosted-plastic
+              white so it reads as a supplement bottle instead of a brown blob. */}
+          <Image
+            src="/images/vial-rembg-cropped.png"
+            alt={productName}
+            width={385}
+            height={883}
+            className="w-full h-auto object-contain drop-shadow-2xl transition-all duration-300"
+            style={{ filter: "grayscale(0.85) brightness(1.4) contrast(0.95)" }}
+            priority
+          />
+
+          {/* Screw cap */}
+          <div
+            className="absolute left-1/2 z-10"
+            style={{
+              top: "1%",
+              width: "58%",
+              height: "9%",
+              transform: "translateX(-50%)",
+              borderRadius: "10% 10% 6% 6%",
+              background: "linear-gradient(180deg, var(--accent) 0%, var(--accent) 70%, rgba(0,0,0,0.18) 100%)",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.25), inset 0 1px 2px rgba(255,255,255,0.35)",
+            }}
+          />
+          <div
+            className="absolute left-1/2 z-10"
+            style={{
+              top: "9.5%",
+              width: "62%",
+              height: "1.6%",
+              transform: "translateX(-50%)",
+              borderRadius: "2px",
+              background: "rgba(0,0,0,0.15)",
+            }}
+          />
+
+          {/* Gloss streak over the bottle body */}
+          <div
+            className="absolute inset-0 z-[5] pointer-events-none"
+            style={{
+              background: "linear-gradient(100deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.55) 42%, rgba(255,255,255,0) 54%)",
+            }}
+          />
+        </div>
       </div>
 
       {!blur && showLabel && (

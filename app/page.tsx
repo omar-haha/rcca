@@ -10,7 +10,6 @@ import { HomepageReviews } from "@/components/sections/HomepageReviews";
 import { AppleFooter } from "@/components/sections/AppleFooter";
 import { CartDrawer } from "@/components/modals/CartDrawer";
 import { CheckoutModal } from "@/components/modals/CheckoutModal";
-import { AgeGateModal } from "@/components/modals/AgeGateModal";
 import { CartToast } from "@/components/ui/CartToast";
 
 export default function Home() {
@@ -20,7 +19,6 @@ export default function Home() {
   return (
     <>
       {/* Modals & Navigation */}
-      <AgeGateModal />
       <AppleNav />
       <CartToast />
       <CartDrawer onCheckout={() => setCheckoutOpen(true)} />
