@@ -10,15 +10,15 @@ const CONTENT_EN = [
   },
   {
     heading: "Domestic Shipping (Canada)",
-    body: "Standard shipping within Canada typically takes 2–5 business days after dispatch. We ship via Canada Post Xpresspost or equivalent tracked carrier. Expedited and overnight options may be available — contact us at support@loamgoods.example to request.",
+    body: "Standard shipping within Canada typically takes 2–5 business days after dispatch. We ship via Canada Post Xpresspost or equivalent tracked carrier. Expedited and overnight options may be available — contact us at support@vesselwellness.example to request.",
   },
   {
     heading: "International Shipping",
-    body: "We ship to select international destinations. Delivery times vary by country, typically 7–14 business days. You are solely responsible for ensuring that importing these products complies with all regulations in your jurisdiction. LOAM reserves the right to refuse any international shipment.",
+    body: "We ship to select international destinations. Delivery times vary by country, typically 7–14 business days. You are solely responsible for ensuring that importing these products complies with all regulations in your jurisdiction. VESSEL reserves the right to refuse any international shipment.",
   },
   {
     heading: "Protective Packaging",
-    body: "All orders ship in protective, unbranded outer packaging suited to each product — corner protectors and rigid mailers for framed pieces, padded wrap for ceramics and glass. Shipping labels contain only the sender and recipient addresses, as with any commercial shipment.",
+    body: "All orders ship in protective, unbranded outer packaging suited to each product — sealed foil pouches for powders, tamper-evident seals on capsule bottles, and insulated packaging for temperature-sensitive items. Shipping labels contain only the sender and recipient addresses, as with any commercial shipment.",
   },
   {
     heading: "Order Tracking",
@@ -30,7 +30,7 @@ const CONTENT_EN = [
   },
   {
     heading: "Lost or Delayed Shipments",
-    body: "If your tracking shows no movement for 5+ business days or the carrier confirms the parcel is lost, contact us at support@loamgoods.example with your order number. We will open an investigation with the carrier and, at our discretion, dispatch a replacement or issue store credit.",
+    body: "If your tracking shows no movement for 5+ business days or the carrier confirms the parcel is lost, contact us at support@vesselwellness.example with your order number. We will open an investigation with the carrier and, at our discretion, dispatch a replacement or issue store credit.",
   },
 ];
 
@@ -41,15 +41,15 @@ const CONTENT_FR = [
   },
   {
     heading: "Livraison nationale (Canada)",
-    body: "La livraison standard au Canada prend généralement 2 à 5 jours ouvrables après l'expédition. Nous expédions via Xpresspost de Postes Canada ou un transporteur équivalent avec suivi. Des options expéditées peuvent être disponibles — contactez-nous à support@loamgoods.example pour en faire la demande.",
+    body: "La livraison standard au Canada prend généralement 2 à 5 jours ouvrables après l'expédition. Nous expédions via Xpresspost de Postes Canada ou un transporteur équivalent avec suivi. Des options expéditées peuvent être disponibles — contactez-nous à support@vesselwellness.example pour en faire la demande.",
   },
   {
     heading: "Livraison internationale",
-    body: "Nous expédions vers certaines destinations internationales. Les délais varient selon le pays, généralement 7 à 14 jours ouvrables. Vous êtes entièrement responsable de vous assurer que l'importation de ces produits est conforme à toutes les réglementations applicables dans votre juridiction. LOAM se réserve le droit de refuser tout envoi international.",
+    body: "Nous expédions vers certaines destinations internationales. Les délais varient selon le pays, généralement 7 à 14 jours ouvrables. Vous êtes entièrement responsable de vous assurer que l'importation de ces produits est conforme à toutes les réglementations applicables dans votre juridiction. VESSEL se réserve le droit de refuser tout envoi international.",
   },
   {
     heading: "Emballage protecteur",
-    body: "Toutes les commandes sont expédiées dans un emballage extérieur protecteur et sans marque, adapté à chaque produit — protecteurs de coins et enveloppes rigides pour les pièces encadrées, emballage matelassé pour la céramique et le verre. Les étiquettes d'expédition contiennent uniquement les adresses de l'expéditeur et du destinataire, comme pour tout envoi commercial.",
+    body: "Toutes les commandes sont expédiées dans un emballage extérieur protecteur et sans marque, adapté à chaque produit — pochettes scellées pour les poudres, sceaux d'inviolabilité sur les flacons de capsules, et emballage isolé pour les articles sensibles à la température. Les étiquettes d'expédition contiennent uniquement les adresses de l'expéditeur et du destinataire, comme pour tout envoi commercial.",
   },
   {
     heading: "Suivi de commande",
@@ -61,7 +61,7 @@ const CONTENT_FR = [
   },
   {
     heading: "Colis perdus ou retardés",
-    body: "Si votre suivi ne montre aucun mouvement pendant 5 jours ouvrables ou plus, ou si le transporteur confirme la perte du colis, contactez-nous à support@loamgoods.example avec votre numéro de commande. Nous ouvrirons une enquête et, à notre discrétion, enverrons un remplacement ou accorderons un crédit en boutique.",
+    body: "Si votre suivi ne montre aucun mouvement pendant 5 jours ouvrables ou plus, ou si le transporteur confirme la perte du colis, contactez-nous à support@vesselwellness.example avec votre numéro de commande. Nous ouvrirons une enquête et, à notre discrétion, enverrons un remplacement ou accorderons un crédit en boutique.",
   },
 ];
 
@@ -97,8 +97,8 @@ export default function ShippingPage() {
           {lang === "fr"
             ? "Des questions ? Écrivez-nous à "
             : "Questions? Email us at "}
-          <a href="mailto:support@loamgoods.example" className="text-primary hover:underline">
-            support@loamgoods.example
+          <a href="mailto:support@vesselwellness.example" className="text-primary hover:underline">
+            support@vesselwellness.example
           </a>
         </p>
       </div>

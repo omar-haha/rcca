@@ -81,8 +81,8 @@ export default function LegalPage() {
 
         <div className="mt-14 rounded-[16px] p-6 text-[12px] text-secondary leading-relaxed" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}>
           {t("page_legal_footer")}{" "}
-          <a href="mailto:support@loamgoods.example" className="text-[color:var(--accent)] no-underline hover:underline">
-            support@loamgoods.example
+          <a href="mailto:support@vesselwellness.example" className="text-[color:var(--accent)] no-underline hover:underline">
+            support@vesselwellness.example
           </a>
         </div>
       </div>

@@ -29,28 +29,25 @@ function applyStock(families: ProductFamily[], stockMap: Record<string, number>)
   });
 }
 
-// Key names kept as tag_metabolic/tag_endocrine/etc. from the original codebase
-// this demo was adapted from — only the translated text (in lib/i18n.ts) changed
-// to Kitchen/Lighting/etc. Renaming these keys would be a large, low-value diff.
 const TAG_KEY: Record<BenefitTag, TranslationKey> = {
-  'Kitchen':  'tag_metabolic',
-  'Lighting': 'tag_endocrine',
-  'Bedding':  'tag_regenerative',
-  'Decor':    'tag_longevity',
-  'Storage':  'tag_neurological',
-  'Outdoor':  'tag_pigmentation',
-  'Bath':     'tag_neuroendocrine',
+  'Protein':  'tag_protein',
+  'Energy':   'tag_energy',
+  'Sleep':    'tag_sleep',
+  'Recovery': 'tag_recovery',
+  'Cognitive':'tag_cognitive',
+  'Immunity': 'tag_immunity',
+  'Wellness': 'tag_wellness',
   'Ancillary':'tag_ancillary',
 };
 
 const TAG_STYLES: Record<BenefitTag, { bg: string; color: string }> = {
-  'Kitchen':  { bg: 'rgba(59,130,246,0.12)',  color: '#3b82f6' },
-  'Lighting': { bg: 'rgba(34,197,94,0.12)',   color: '#16a34a' },
-  'Bedding':  { bg: 'rgba(251,146,60,0.12)',  color: '#ea580c' },
-  'Decor':    { bg: 'rgba(168,85,247,0.12)',  color: '#9333ea' },
-  'Storage':  { bg: 'rgba(6,182,212,0.12)',   color: '#0891b2' },
-  'Outdoor':  { bg: 'rgba(245,158,11,0.12)',  color: '#d97706' },
-  'Bath':     { bg: 'rgba(239,68,68,0.12)',   color: '#dc2626' },
+  'Protein':  { bg: 'rgba(59,130,246,0.12)',  color: '#3b82f6' },
+  'Energy':   { bg: 'rgba(34,197,94,0.12)',   color: '#16a34a' },
+  'Sleep':    { bg: 'rgba(251,146,60,0.12)',  color: '#ea580c' },
+  'Recovery': { bg: 'rgba(168,85,247,0.12)',  color: '#9333ea' },
+  'Cognitive':{ bg: 'rgba(6,182,212,0.12)',   color: '#0891b2' },
+  'Immunity': { bg: 'rgba(245,158,11,0.12)',  color: '#d97706' },
+  'Wellness': { bg: 'rgba(239,68,68,0.12)',   color: '#dc2626' },
   'Ancillary':{ bg: 'rgba(107,114,128,0.12)', color: '#6b7280' },
 };
 
@@ -116,15 +113,15 @@ export function AppleBentoGrid() {
   }, []);
 
   const FILTERS: { key: FilterKey; label: string }[] = [
-    { key: "all",      label: t("filter_all") },
-    { key: "Kitchen",  label: t("tag_metabolic") },
-    { key: "Lighting", label: t("tag_endocrine") },
-    { key: "Bedding",  label: t("tag_regenerative") },
-    { key: "Decor",    label: t("tag_longevity") },
-    { key: "Storage",  label: t("tag_neurological") },
-    { key: "Outdoor",  label: t("tag_pigmentation") },
-    { key: "Bath",     label: t("tag_neuroendocrine") },
-    { key: "Ancillary",label: t("tag_ancillary") },
+    { key: "all",       label: t("filter_all") },
+    { key: "Protein",   label: t("tag_protein") },
+    { key: "Energy",    label: t("tag_energy") },
+    { key: "Sleep",     label: t("tag_sleep") },
+    { key: "Recovery",  label: t("tag_recovery") },
+    { key: "Cognitive", label: t("tag_cognitive") },
+    { key: "Immunity",  label: t("tag_immunity") },
+    { key: "Wellness",  label: t("tag_wellness") },
+    { key: "Ancillary", label: t("tag_ancillary") },
   ];
   const [pickerFamily, setPickerFamily] = useState<ProductFamily | null>(null);
   const [revealed, setRevealed] = useState(true);

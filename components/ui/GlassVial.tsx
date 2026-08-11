@@ -76,14 +76,14 @@ export function GlassVial({ productName, weight: _weight, unit, className, blur 
                 className="bg-label-badge px-[1.5cqi] py-[0.5cqi] font-bold uppercase tracking-widest"
                 style={{ fontSize: "3cqi" }}
               >
-                HANDMADE
+                LAB TESTED
               </div>
               <div className="flex flex-col leading-none">
                 <div className="text-label-muted font-mono tracking-widest uppercase" style={{ fontSize: "3.5cqi" }}>
-                  Fabriqué à la main
+                  Testé en laboratoire
                 </div>
                 <div className="text-label-muted font-mono tracking-widest uppercase opacity-60" style={{ fontSize: "2.6cqi" }}>
-                  Handcrafted
+                  Third-Party Verified
                 </div>
               </div>
             </div>

@@ -5,10 +5,10 @@ import { PageShell } from "@/components/PageShell";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 
 const METHODS = [
-  { method: "XRF",          full_en: "X-Ray Fluorescence",        full_fr: "Fluorescence X",                        use_en: "Metal composition & purity (brass, copper)",    use_fr: "Composition et pureté du métal (laiton, cuivre)" },
-  { method: "Crocking Test",full_en: "AATCC Colorfastness Test",  full_fr: "Test de solidité des couleurs AATCC",   use_en: "Dye & finish durability (textiles)",             use_fr: "Durabilité de la teinture et de la finition (textiles)" },
-  { method: "Moisture Meter",full_en: "Wood Moisture Content",    full_fr: "Teneur en humidité du bois",            use_en: "Kiln-dry verification (solid wood)",             use_fr: "Vérification du séchage au four (bois massif)" },
-  { method: "Load Test",    full_en: "Static Load Testing",       full_fr: "Essai de charge statique",              use_en: "Shelf & furniture weight rating",                use_fr: "Capacité de charge des étagères et meubles" },
+  { method: "HPLC",         full_en: "High-Performance Liquid Chromatography", full_fr: "Chromatographie liquide à haute performance", use_en: "Potency & active ingredient verification",  use_fr: "Vérification de la puissance et des ingrédients actifs" },
+  { method: "ICP-MS",       full_en: "Inductively Coupled Plasma Mass Spectrometry", full_fr: "Spectrométrie de masse à plasma à couplage inductif", use_en: "Heavy metal screening (lead, arsenic, mercury, cadmium)", use_fr: "Dépistage des métaux lourds (plomb, arsenic, mercure, cadmium)" },
+  { method: "Microbial Panel", full_en: "Microbiological Testing",  full_fr: "Analyse microbiologique",               use_en: "Pathogen & contaminant screening",               use_fr: "Dépistage des pathogènes et des contaminants" },
+  { method: "USP <2040>",   full_en: "Disintegration Testing",    full_fr: "Test de désintégration",                use_en: "Capsule/tablet dissolution verification",        use_fr: "Vérification de la dissolution des capsules et comprimés" },
 ];
 
 export default function CoaPage() {
@@ -79,7 +79,7 @@ export default function CoaPage() {
             <p className="text-[13px] text-secondary leading-relaxed">{t("page_coa_cta_sub")}</p>
           </div>
           <a
-            href="mailto:support@loamgoods.example?subject=COA Request"
+            href="mailto:support@vesselwellness.example?subject=COA Request"
             className="shrink-0 rounded-full px-6 py-3 text-[14px] font-medium text-white no-underline btn-physical btn-physical-accent"
             style={{ backgroundColor: "var(--accent)" }}
           >

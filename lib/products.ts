@@ -1,7 +1,7 @@
 export type Category = 'core' | 'accessory';
 
-// Room/use-case tags for the catalogue filter pills.
-export type BenefitTag = 'Kitchen' | 'Lighting' | 'Bedding' | 'Decor' | 'Storage' | 'Outdoor' | 'Bath' | 'Ancillary';
+// Goal/use-case tags for the catalogue filter pills.
+export type BenefitTag = 'Protein' | 'Energy' | 'Sleep' | 'Recovery' | 'Cognitive' | 'Immunity' | 'Wellness' | 'Ancillary';
 
 export interface ProductFamily {
   name: string;
@@ -44,148 +44,148 @@ export function getProductFamilies(): ProductFamily[] {
 export interface Product {
   id: string;
   name: string;
-  cas: string;      // SKU / model code
+  cas: string;      // SKU / lot code
   cat: Category;
   tag: BenefitTag;
   price: number;
-  unit: string;      // size / variant label
-  purity: string;    // material / finish
+  unit: string;      // size / count variant label
+  purity: string;    // active ingredient / labeled dose
   stock: 'in' | 'low' | 'out';
   bestSeller?: boolean;
   description?: string;
 }
 
 const DESC: Record<string, string> = {
-  'Ceramic Dinnerware Set':     'Hand-glazed stoneware dinnerware with a soft matte finish. Dishwasher and microwave safe, with a slightly irregular edge that gives each piece a handmade feel.',
-  'Stainless Steel Cookware Set': 'Five-ply stainless steel construction for even heat distribution across gas, electric, and induction ranges. Oven-safe to 500°F, with riveted stay-cool handles.',
-  'Marble Cutting Board':       'Solid honed marble board that doubles as a serving surface. Naturally cool to the touch, ideal for cheese, pastry, and charcuterie.',
-  'Copper Kettle':              'Hand-hammered copper stovetop kettle with a brass handle and whistle spout. Lined with food-grade stainless steel.',
-  'Citrus Dish Soap':           'Plant-derived dish soap concentrate in citrus and cedar. Biodegradable formula, cuts grease without leaving residue.',
+  'Whey Protein Isolate':        'Cold-processed whey isolate with 27g of protein per scoop and under 1g of sugar. Mixes clean with no chalky aftertaste, third-party tested for banned substances.',
+  'Micellar Casein Protein':     'Slow-digesting micellar casein for overnight muscle recovery. 24g protein per serving, unflavored base blends into any shake without clumping.',
+  'Plant-Based Protein Blend':   'Pea, rice, and hemp protein blend delivering a complete amino acid profile. 21g protein per serving, no gums or artificial sweeteners.',
+  'Mass Gainer Formula':         'High-calorie blend of whey, oats, and MCT oil built for hardgainers. 50g protein and 750 calories per serving, mixes in a shaker with no blender required.',
+  'Protein Shaker Bottle':       'BPA-free 28oz shaker with a wire whisk ball and leak-proof flip lid. Dishwasher-safe, fits most cupholders.',
 
-  'Brass Reading Lamp':         'Solid brass task lamp with an articulating arm and a linen shade. Warm 2700K bulb included, designed for a bedside table or reading nook.',
-  'Pendant Light Fixture':      'Blown-glass pendant with an exposed brass fitting. Hardwired or plug-in installation, adjustable drop length.',
-  'Lamp & Shade Bundle':        'Ceramic table lamp base paired with a matching linen drum shade. Sold as a set so the proportions are right out of the box.',
-  'Adjustable Floor Lamp':      'Powder-coated steel floor lamp with a telescoping pole and rotating shade, built for reading corners and living rooms alike.',
-  'Standing Arc Lamp':          'Overarching floor lamp in a matte black finish, designed to light a sofa or reading chair without a side table.',
+  'Pre-Workout Formula':         '300mg of caffeine paired with citrulline malate and beta-alanine for sustained energy without the crash. Third-party tested, available in two flavors.',
+  'Energy Capsules':             '200mg caffeine balanced with L-theanine for smooth, jitter-free focus. No sugar, no crash, portable capsule format for on-the-go dosing.',
+  'Pre-Workout & Shaker Bundle': 'The pre-workout formula paired with the shaker bottle, sold together at a bundle price.',
+  'B12 Energy Shots':            '5000mcg of methylcobalamin B12 in a 2oz shot, sugar-free and gluten-free. Sold as a 12-pack for daily use.',
+  'Electrolyte Powder':          '1000mg sodium plus potassium and magnesium per stick pack, formulated for rehydration during and after training. No artificial dyes.',
 
-  'Linen Duvet Cover':          'Stonewashed 100% French flax linen, pre-shrunk and softened for immediate use. Breathable in summer, insulating in winter.',
-  'Wool Throw Blanket':         'Woven from undyed merino wool with a herringbone pattern. Naturally temperature-regulating and machine washable on cold.',
-  'Blanket & Pillow Bundle':    'The wool throw blanket paired with a matching lumbar pillow cover, sold together at a bundle price.',
-  'Weighted Sleep Mask':        'Contoured sleep mask with light glass-bead weighting and a moisture-wicking cover, designed to block light without pressing on the eyes.',
-  'Cotton Throw Pillow':        'Brushed cotton pillow cover with a hidden zip closure and a plush insert. Machine washable cover.',
+  'Sleep Support Formula':       '5mg melatonin combined with magnesium and chamomile extract for a formula that supports falling asleep without next-day grogginess.',
+  'Magnesium Glycinate':         '400mg of elemental magnesium in the glycinate form, chosen for absorption and to avoid the GI upset of cheaper magnesium salts.',
+  'Sleep Stack Bundle':          'Melatonin, magnesium, and L-theanine sold together as a 30- or 60-day supply, dosed to be taken as a single nightly stack.',
+  'L-Theanine Capsules':         '200mg of L-theanine per capsule, often paired with caffeine for focus or taken alone in the evening to support a calm, clear mind.',
+  'Ashwagandha Extract':         'KSM-66 ashwagandha root extract standardized to 5% withanolides, 600mg per capsule, studied for stress and cortisol support.',
 
-  'Cedar Wood Diffuser':        'Passive reed diffuser housed in a turned cedar block. No flame, no cords — just a slow, consistent scent throw.',
-  'Brass Bookend Set':          'Solid cast brass bookends with a weighted base and a brushed finish that resists fingerprints.',
-  'Ceramic Vase':               'Wheel-thrown stoneware vase with a reactive glaze, so no two pieces finish exactly alike.',
-  'Scented Candle Set':         'Coconut-wax candles in a reusable ceramic vessel, poured with a cotton wick and a clean 40+ hour burn time.',
-  'Wall Art Print Set':         'Archival giclée prints on matte cotton paper, sold as a coordinated set for gallery-wall layouts.',
-  'Marble Coasters Set':        'Honed marble coasters with a cork backing to protect surfaces, sold in a stacked set.',
-  'Woven Wall Hanging':         'Handwoven cotton and jute wall hanging on a natural dowel, undyed fiber throughout.',
+  'BCAA Recovery Powder':        'Branched-chain amino acids in a 2:1:1 leucine-to-isoleucine-to-valine ratio, formulated to reduce muscle soreness during training blocks.',
+  'Creatine Monohydrate':        '5g of micronized creatine monohydrate per serving, unflavored and mixes instantly. The most studied supplement for strength and power output.',
+  'Collagen Peptides':           'Grass-fed, hydrolyzed Type I & III collagen peptides that dissolve in hot or cold liquid without altering taste or texture.',
+  'Joint Support Formula':       'Glucosamine and chondroitin sulfate at clinical doses, formulated to support joint comfort and mobility with continued daily use.',
+  'Turmeric Curcumin':           'Curcumin extract standardized to 95% curcuminoids, paired with black pepper extract for absorption.',
+  'Omega-3 Fish Oil':            'Molecularly distilled fish oil delivering 1000mg combined EPA and DHA per softgel, third-party tested for heavy metals.',
+  'Tart Cherry Extract':         'Concentrated Montmorency tart cherry extract, studied for exercise recovery and as a natural source of melatonin.',
 
-  'Modular Shelving Unit':      'Powder-coated steel frame with solid oak shelves that reconfigure without tools. Wall-anchor hardware included.',
-  'Stackable Storage Bins':     'Felt storage bins with reinforced rims and leather handles, designed to stack cleanly on a shelf or closet floor.',
+  'Nootropic Focus Stack':       'Alpha-GPC and L-tyrosine combined for mental clarity and sustained focus, without the stimulant load of a caffeine-based formula.',
+  "Lion's Mane Extract":         "1000mg of organic lion's mane mushroom extract per serving, standardized for beta-glucan content and studied for cognitive support.",
 
-  'Terracotta Planter':         'Raw terracotta planter with a drainage hole and saucer, left unglazed so it weathers naturally outdoors.',
-  'Outdoor String Lights':      'Weatherproof string lights on a black rubber cable, with shatter-resistant globe bulbs rated for patios and decks.',
+  'Zinc + Vitamin C':            'Zinc picolinate paired with vitamin C at immune-support doses, formulated for daily use during cold and flu season.',
+  'Elderberry Gummies':          'Black elderberry extract in a sugar-conscious gummy format, formulated to support immune function without a pill.',
 
-  'Aromatherapy Diffuser Set':  'Ultrasonic diffuser paired with a starter set of essential oils, finished in a matte ceramic housing that fits a bathroom shelf.',
+  'Daily Multivitamin':          'A complete daily multivitamin formulated to fill common dietary gaps, with active forms of B vitamins and chelated minerals for absorption.',
 
-  'All-Purpose Glass Cleaner':  'Streak-free glass and mirror cleaner in a refillable glass spray bottle, made without ammonia.',
+  'Empty Vegetable Capsules':    'Size 00 vegetable-based capsules for custom supplement stacking, gelatin-free and easy to fill by hand or with a capsule machine.',
 };
 
 export const products: Product[] = [
-  // Ceramic Dinnerware Set
-  { id: 'dinnerware-4pc',   name: 'Ceramic Dinnerware Set',       cas: 'LM-DW-004', cat: 'core',      tag: 'Kitchen',  price: 75,  unit: '4-Piece Set',  purity: 'Glazed Stoneware', stock: 'in',  bestSeller: true, description: DESC['Ceramic Dinnerware Set'] },
-  { id: 'dinnerware-8pc',   name: 'Ceramic Dinnerware Set',       cas: 'LM-DW-008', cat: 'core',      tag: 'Kitchen',  price: 90,  unit: '8-Piece Set',  purity: 'Glazed Stoneware', stock: 'in',  description: DESC['Ceramic Dinnerware Set'] },
-  { id: 'dinnerware-12pc',  name: 'Ceramic Dinnerware Set',       cas: 'LM-DW-012', cat: 'core',      tag: 'Kitchen',  price: 180, unit: '12-Piece Set', purity: 'Glazed Stoneware', stock: 'out', description: DESC['Ceramic Dinnerware Set'] },
+  // Whey Protein Isolate
+  { id: 'whey-isolate-1lb',  name: 'Whey Protein Isolate',       cas: 'VS-WP-004', cat: 'core',      tag: 'Protein',  price: 75,  unit: '1 lb',  purity: '27g Protein/Serving', stock: 'in',  bestSeller: true, description: DESC['Whey Protein Isolate'] },
+  { id: 'whey-isolate-2lb',  name: 'Whey Protein Isolate',       cas: 'VS-WP-008', cat: 'core',      tag: 'Protein',  price: 90,  unit: '2 lb',  purity: '27g Protein/Serving', stock: 'in',  description: DESC['Whey Protein Isolate'] },
+  { id: 'whey-isolate-5lb',  name: 'Whey Protein Isolate',       cas: 'VS-WP-012', cat: 'core',      tag: 'Protein',  price: 180, unit: '5 lb',  purity: '27g Protein/Serving', stock: 'out', description: DESC['Whey Protein Isolate'] },
 
-  // Stainless Steel Cookware Set
-  { id: 'cookware-5pc',     name: 'Stainless Steel Cookware Set', cas: 'LM-CK-005', cat: 'core',      tag: 'Kitchen',  price: 70,  unit: '5-Piece Set',  purity: '5-Ply Stainless',  stock: 'out', description: DESC['Stainless Steel Cookware Set'] },
-  { id: 'cookware-8pc',     name: 'Stainless Steel Cookware Set', cas: 'LM-CK-008', cat: 'core',      tag: 'Kitchen',  price: 90,  unit: '8-Piece Set',  purity: '5-Ply Stainless',  stock: 'in',  bestSeller: true, description: DESC['Stainless Steel Cookware Set'] },
-  { id: 'cookware-10pc',    name: 'Stainless Steel Cookware Set', cas: 'LM-CK-010', cat: 'core',      tag: 'Kitchen',  price: 150, unit: '10-Piece Set', purity: '5-Ply Stainless',  stock: 'in',  description: DESC['Stainless Steel Cookware Set'] },
-  { id: 'cookware-12pc',    name: 'Stainless Steel Cookware Set', cas: 'LM-CK-012', cat: 'core',      tag: 'Kitchen',  price: 190, unit: '12-Piece Set', purity: '5-Ply Stainless',  stock: 'out', description: DESC['Stainless Steel Cookware Set'] },
-  { id: 'cookware-14pc',    name: 'Stainless Steel Cookware Set', cas: 'LM-CK-014', cat: 'core',      tag: 'Kitchen',  price: 360, unit: '14-Piece Set', purity: '5-Ply Stainless',  stock: 'out', description: DESC['Stainless Steel Cookware Set'] },
+  // Micellar Casein Protein
+  { id: 'casein-1lb',        name: 'Micellar Casein Protein',    cas: 'VS-CS-005', cat: 'core',      tag: 'Protein',  price: 70,  unit: '1 lb', purity: '24g Protein/Serving', stock: 'out', description: DESC['Micellar Casein Protein'] },
+  { id: 'casein-2lb',        name: 'Micellar Casein Protein',    cas: 'VS-CS-008', cat: 'core',      tag: 'Protein',  price: 90,  unit: '2 lb', purity: '24g Protein/Serving', stock: 'in',  bestSeller: true, description: DESC['Micellar Casein Protein'] },
+  { id: 'casein-3lb',        name: 'Micellar Casein Protein',    cas: 'VS-CS-010', cat: 'core',      tag: 'Protein',  price: 150, unit: '3 lb', purity: '24g Protein/Serving', stock: 'in',  description: DESC['Micellar Casein Protein'] },
+  { id: 'casein-4lb',        name: 'Micellar Casein Protein',    cas: 'VS-CS-012', cat: 'core',      tag: 'Protein',  price: 190, unit: '4 lb', purity: '24g Protein/Serving', stock: 'out', description: DESC['Micellar Casein Protein'] },
+  { id: 'casein-5lb',        name: 'Micellar Casein Protein',    cas: 'VS-CS-014', cat: 'core',      tag: 'Protein',  price: 360, unit: '5 lb', purity: '24g Protein/Serving', stock: 'out', description: DESC['Micellar Casein Protein'] },
 
-  // Marble Cutting Board
-  { id: 'marble-board',     name: 'Marble Cutting Board',         cas: 'LM-MB-001', cat: 'core',      tag: 'Kitchen',  price: 160, unit: 'One Size',     purity: 'Honed Marble',     stock: 'out', description: DESC['Marble Cutting Board'] },
+  // Plant-Based Protein Blend
+  { id: 'plant-protein',     name: 'Plant-Based Protein Blend',  cas: 'VS-PB-001', cat: 'core',      tag: 'Protein',  price: 160, unit: '2 lb',  purity: '21g Protein/Serving', stock: 'out', description: DESC['Plant-Based Protein Blend'] },
 
-  // Copper Kettle
-  { id: 'copper-kettle',    name: 'Copper Kettle',                cas: 'LM-CP-001', cat: 'core',      tag: 'Kitchen',  price: 170, unit: '1.5L',         purity: 'Hammered Copper',  stock: 'out', description: DESC['Copper Kettle'] },
+  // Mass Gainer Formula
+  { id: 'mass-gainer',       name: 'Mass Gainer Formula',        cas: 'VS-MG-001', cat: 'core',      tag: 'Protein',  price: 170, unit: '6 lb',  purity: '50g Protein/Serving', stock: 'out', description: DESC['Mass Gainer Formula'] },
 
-  // Citrus Dish Soap
-  { id: 'dish-soap',        name: 'Citrus Dish Soap',             cas: 'LM-DS-001', cat: 'accessory', tag: 'Kitchen',  price: 75,  unit: '500ml',        purity: 'Plant-Derived',    stock: 'out', description: DESC['Citrus Dish Soap'] },
+  // Protein Shaker Bottle
+  { id: 'shaker-bottle',     name: 'Protein Shaker Bottle',      cas: 'VS-SB-001', cat: 'accessory', tag: 'Protein',  price: 75,  unit: '28oz',  purity: 'BPA-Free',            stock: 'out', description: DESC['Protein Shaker Bottle'] },
 
-  // Brass Reading Lamp
-  { id: 'brass-lamp',       name: 'Brass Reading Lamp',           cas: 'LM-LT-014', cat: 'core',      tag: 'Lighting', price: 150, unit: 'One Size',     purity: 'Solid Brass',      stock: 'in',  description: DESC['Brass Reading Lamp'] },
+  // Pre-Workout Formula
+  { id: 'preworkout',        name: 'Pre-Workout Formula',        cas: 'VS-PW-014', cat: 'core',      tag: 'Energy',   price: 150, unit: '30 Servings', purity: '300mg Caffeine',           stock: 'in',  description: DESC['Pre-Workout Formula'] },
 
-  // Pendant Light Fixture
-  { id: 'pendant-light',    name: 'Pendant Light Fixture',        cas: 'LM-LT-500', cat: 'core',      tag: 'Lighting', price: 120, unit: 'One Size',     purity: 'Blown Glass',      stock: 'in',  description: DESC['Pendant Light Fixture'] },
+  // Energy Capsules
+  { id: 'energy-caps',       name: 'Energy Capsules',            cas: 'VS-EC-500', cat: 'core',      tag: 'Energy',   price: 120, unit: '60 Capsules', purity: '200mg Caffeine + L-Theanine', stock: 'in',  description: DESC['Energy Capsules'] },
 
-  // Lamp & Shade Bundle
-  { id: 'lamp-shade-set',   name: 'Lamp & Shade Bundle',          cas: 'LM-LT-157', cat: 'core',      tag: 'Lighting', price: 110, unit: 'One Size',     purity: 'Ceramic & Linen',  stock: 'in',  description: DESC['Lamp & Shade Bundle'] },
+  // Pre-Workout & Shaker Bundle
+  { id: 'preworkout-shaker-set', name: 'Pre-Workout & Shaker Bundle', cas: 'VS-PW-157', cat: 'core', tag: 'Energy',   price: 110, unit: '30 Servings + Shaker', purity: 'Stim & Non-Stim', stock: 'in',  description: DESC['Pre-Workout & Shaker Bundle'] },
 
-  // Adjustable Floor Lamp
-  { id: 'floor-lamp',       name: 'Adjustable Floor Lamp',        cas: 'LM-LT-070', cat: 'core',      tag: 'Lighting', price: 75,  unit: 'One Size',     purity: 'Powder-Coated Steel', stock: 'out', description: DESC['Adjustable Floor Lamp'] },
+  // B12 Energy Shots
+  { id: 'b12-shots',         name: 'B12 Energy Shots',           cas: 'VS-B12-070', cat: 'core',     tag: 'Energy',   price: 75,  unit: '12-Pack', purity: '5000mcg B12',           stock: 'out', description: DESC['B12 Energy Shots'] },
 
-  // Standing Arc Lamp
-  { id: 'arc-lamp',         name: 'Standing Arc Lamp',            cas: 'LM-LT-029', cat: 'core',      tag: 'Lighting', price: 150, unit: 'One Size',     purity: 'Matte Steel',      stock: 'in',  description: DESC['Standing Arc Lamp'] },
+  // Electrolyte Powder
+  { id: 'electrolyte-powder', name: 'Electrolyte Powder',        cas: 'VS-EL-029', cat: 'core',      tag: 'Energy',   price: 150, unit: '40 Servings', purity: '1000mg Sodium',        stock: 'in',  description: DESC['Electrolyte Powder'] },
 
-  // Linen Duvet Cover
-  { id: 'linen-duvet',      name: 'Linen Duvet Cover',            cas: 'LM-BD-500', cat: 'core',      tag: 'Bedding',  price: 120, unit: 'Queen',        purity: '100% French Flax', stock: 'in',  description: DESC['Linen Duvet Cover'] },
+  // Sleep Support Formula
+  { id: 'sleep-formula',     name: 'Sleep Support Formula',      cas: 'VS-SL-500', cat: 'core',      tag: 'Sleep',    price: 120, unit: '60 Capsules', purity: '5mg Melatonin + Mg',   stock: 'in',  description: DESC['Sleep Support Formula'] },
 
-  // Wool Throw Blanket
-  { id: 'wool-throw',       name: 'Wool Throw Blanket',           cas: 'LM-BD-157', cat: 'core',      tag: 'Bedding',  price: 55,  unit: 'One Size',     purity: '100% Merino Wool', stock: 'in',  bestSeller: true, description: DESC['Wool Throw Blanket'] },
+  // Magnesium Glycinate
+  { id: 'magnesium-glycinate', name: 'Magnesium Glycinate',      cas: 'VS-MAG-157', cat: 'core',     tag: 'Sleep',    price: 55,  unit: '90 Capsules', purity: '400mg Elemental Mg',   stock: 'in',  bestSeller: true, description: DESC['Magnesium Glycinate'] },
 
-  // Blanket & Pillow Bundle
-  { id: 'blanket-pillow-10', name: 'Blanket & Pillow Bundle',     cas: 'LM-BD-157B', cat: 'core',     tag: 'Bedding',  price: 100, unit: 'Standard Pillow', purity: 'Wool & Cotton',  stock: 'in',  description: DESC['Blanket & Pillow Bundle'] },
-  { id: 'blanket-pillow-20', name: 'Blanket & Pillow Bundle',     cas: 'LM-BD-157C', cat: 'core',     tag: 'Bedding',  price: 190, unit: 'Euro Pillow',  purity: 'Wool & Cotton',   stock: 'in',  description: DESC['Blanket & Pillow Bundle'] },
+  // Sleep Stack Bundle
+  { id: 'sleep-stack-30',    name: 'Sleep Stack Bundle',         cas: 'VS-SS-157B', cat: 'core',     tag: 'Sleep',    price: 100, unit: '30-Day Supply', purity: 'Melatonin + Mg + L-Theanine', stock: 'in',  description: DESC['Sleep Stack Bundle'] },
+  { id: 'sleep-stack-60',    name: 'Sleep Stack Bundle',         cas: 'VS-SS-157C', cat: 'core',     tag: 'Sleep',    price: 190, unit: '60-Day Supply', purity: 'Melatonin + Mg + L-Theanine', stock: 'in',  description: DESC['Sleep Stack Bundle'] },
 
-  // Weighted Sleep Mask
-  { id: 'sleep-mask',       name: 'Weighted Sleep Mask',          cas: 'LM-BD-062', cat: 'accessory', tag: 'Bedding',  price: 60,  unit: 'One Size',     purity: 'Glass-Bead Weighted', stock: 'out', description: DESC['Weighted Sleep Mask'] },
+  // L-Theanine Capsules
+  { id: 'l-theanine',        name: 'L-Theanine Capsules',        cas: 'VS-LT-062', cat: 'accessory', tag: 'Sleep',    price: 60,  unit: '60 Capsules', purity: '200mg/Capsule',        stock: 'out', description: DESC['L-Theanine Capsules'] },
 
-  // Cotton Throw Pillow
-  { id: 'throw-pillow',     name: 'Cotton Throw Pillow',          cas: 'LM-BD-013', cat: 'accessory', tag: 'Bedding',  price: 60,  unit: '18x18 in',     purity: 'Brushed Cotton',   stock: 'out', description: DESC['Cotton Throw Pillow'] },
+  // Ashwagandha Extract
+  { id: 'ashwagandha',       name: 'Ashwagandha Extract',        cas: 'VS-ASH-013', cat: 'accessory', tag: 'Sleep',   price: 60,  unit: '90 Capsules', purity: 'KSM-66, 600mg',        stock: 'out', description: DESC['Ashwagandha Extract'] },
 
-  // Cedar Wood Diffuser
-  { id: 'cedar-diffuser',   name: 'Cedar Wood Diffuser',          cas: 'LM-DC-307', cat: 'accessory', tag: 'Decor',    price: 70,  unit: 'One Size',     purity: 'Solid Cedar',      stock: 'out', description: DESC['Cedar Wood Diffuser'] },
+  // BCAA Recovery Powder
+  { id: 'bcaa-powder',       name: 'BCAA Recovery Powder',       cas: 'VS-BC-307', cat: 'accessory', tag: 'Recovery', price: 70,  unit: '30 Servings', purity: '2:1:1 Ratio',          stock: 'out', description: DESC['BCAA Recovery Powder'] },
 
-  // Brass Bookend Set
-  { id: 'bookends-50mg',    name: 'Brass Bookend Set',            cas: 'LM-DC-049', cat: 'accessory', tag: 'Decor',    price: 40,  unit: 'Small Pair',   purity: 'Cast Brass',       stock: 'in',  description: DESC['Brass Bookend Set'] },
-  { id: 'bookends-100mg',   name: 'Brass Bookend Set',            cas: 'LM-DC-050', cat: 'accessory', tag: 'Decor',    price: 60,  unit: 'Large Pair',   purity: 'Cast Brass',       stock: 'in',  description: DESC['Brass Bookend Set'] },
+  // Creatine Monohydrate
+  { id: 'creatine-60',       name: 'Creatine Monohydrate',       cas: 'VS-CR-049', cat: 'accessory', tag: 'Recovery', price: 40,  unit: '60 Servings',  purity: '5g Micronized',       stock: 'in',  description: DESC['Creatine Monohydrate'] },
+  { id: 'creatine-120',      name: 'Creatine Monohydrate',       cas: 'VS-CR-050', cat: 'accessory', tag: 'Recovery', price: 60,  unit: '120 Servings', purity: '5g Micronized',       stock: 'in',  description: DESC['Creatine Monohydrate'] },
 
-  // Ceramic Vase
-  { id: 'ceramic-vase',     name: 'Ceramic Vase',                 cas: 'LM-DC-070', cat: 'accessory', tag: 'Decor',    price: 45,  unit: 'One Size',     purity: 'Reactive Glaze',   stock: 'in',  description: DESC['Ceramic Vase'] },
+  // Collagen Peptides
+  { id: 'collagen-peptides', name: 'Collagen Peptides',          cas: 'VS-CO-070', cat: 'accessory', tag: 'Recovery', price: 45,  unit: '45 Servings', purity: 'Type I & III, Grass-Fed', stock: 'in',  description: DESC['Collagen Peptides'] },
 
-  // Scented Candle Set
-  { id: 'candle-set-50mg',  name: 'Scented Candle Set',           cas: 'LM-DC-140', cat: 'accessory', tag: 'Decor',    price: 140, unit: 'Set of 2',     purity: 'Coconut Wax',      stock: 'in',  description: DESC['Scented Candle Set'] },
-  { id: 'candle-set-70mg',  name: 'Scented Candle Set',           cas: 'LM-DC-141', cat: 'accessory', tag: 'Decor',    price: 165, unit: 'Set of 3',     purity: 'Coconut Wax',      stock: 'out', description: DESC['Scented Candle Set'] },
+  // Joint Support Formula
+  { id: 'joint-support-60',  name: 'Joint Support Formula',      cas: 'VS-JS-140', cat: 'accessory', tag: 'Recovery', price: 140, unit: '60ct', purity: 'Glucosamine + Chondroitin', stock: 'in',  description: DESC['Joint Support Formula'] },
+  { id: 'joint-support-90',  name: 'Joint Support Formula',      cas: 'VS-JS-141', cat: 'accessory', tag: 'Recovery', price: 165, unit: '90ct', purity: 'Glucosamine + Chondroitin', stock: 'out', description: DESC['Joint Support Formula'] },
 
-  // Wall Art Print Set
-  { id: 'wall-art-10mg',    name: 'Wall Art Print Set',           cas: 'LM-DC-100', cat: 'accessory', tag: 'Decor',    price: 70,  unit: 'Set of 2, A3',  purity: 'Archival Giclée',  stock: 'in',  description: DESC['Wall Art Print Set'] },
-  { id: 'wall-art-40mg',    name: 'Wall Art Print Set',           cas: 'LM-DC-101', cat: 'accessory', tag: 'Decor',    price: 200, unit: 'Set of 4, A2',  purity: 'Archival Giclée',  stock: 'out', description: DESC['Wall Art Print Set'] },
+  // Turmeric Curcumin
+  { id: 'turmeric-60',       name: 'Turmeric Curcumin',          cas: 'VS-TC-100', cat: 'accessory', tag: 'Recovery', price: 70,  unit: '60ct',  purity: '95% Curcuminoids',    stock: 'in',  description: DESC['Turmeric Curcumin'] },
+  { id: 'turmeric-120',      name: 'Turmeric Curcumin',          cas: 'VS-TC-101', cat: 'accessory', tag: 'Recovery', price: 200, unit: '120ct', purity: '95% Curcuminoids',    stock: 'out', description: DESC['Turmeric Curcumin'] },
 
-  // Marble Coasters Set
-  { id: 'marble-coasters',  name: 'Marble Coasters Set',          cas: 'LM-DC-053', cat: 'accessory', tag: 'Decor',    price: 80,  unit: 'Set of 4',     purity: 'Honed Marble',     stock: 'out', description: DESC['Marble Coasters Set'] },
+  // Omega-3 Fish Oil
+  { id: 'fish-oil',          name: 'Omega-3 Fish Oil',           cas: 'VS-OM-053', cat: 'accessory', tag: 'Recovery', price: 80,  unit: '120 Softgels', purity: '1000mg EPA/DHA',   stock: 'out', description: DESC['Omega-3 Fish Oil'] },
 
-  // Woven Wall Hanging
-  { id: 'wall-hanging',     name: 'Woven Wall Hanging',           cas: 'LM-DC-031', cat: 'accessory', tag: 'Decor',    price: 90,  unit: 'One Size',     purity: 'Cotton & Jute',    stock: 'in',  description: DESC['Woven Wall Hanging'] },
+  // Tart Cherry Extract
+  { id: 'tart-cherry',       name: 'Tart Cherry Extract',        cas: 'VS-TCH-031', cat: 'accessory', tag: 'Recovery', price: 90, unit: '90 Capsules', purity: 'Recovery & Sleep Support', stock: 'in',  description: DESC['Tart Cherry Extract'] },
 
-  // Modular Shelving Unit
-  { id: 'shelving-unit',    name: 'Modular Shelving Unit',        cas: 'LM-ST-129', cat: 'core',      tag: 'Storage',  price: 65,  unit: 'One Size',     purity: 'Steel & Oak',      stock: 'in',  description: DESC['Modular Shelving Unit'] },
+  // Nootropic Focus Stack
+  { id: 'nootropic-stack',   name: 'Nootropic Focus Stack',      cas: 'VS-NF-129', cat: 'core',      tag: 'Cognitive', price: 65, unit: '30 Servings', purity: 'Alpha-GPC + L-Tyrosine', stock: 'in',  description: DESC['Nootropic Focus Stack'] },
 
-  // Stackable Storage Bins
-  { id: 'storage-bins',     name: 'Stackable Storage Bins',       cas: 'LM-ST-807', cat: 'accessory', tag: 'Storage',  price: 65,  unit: 'One Size',     purity: 'Felt & Leather',   stock: 'in',  description: DESC['Stackable Storage Bins'] },
+  // Lion's Mane Extract
+  { id: 'lions-mane',        name: "Lion's Mane Extract",        cas: 'VS-LM-807', cat: 'accessory', tag: 'Cognitive', price: 65, unit: '60 Capsules', purity: '1000mg Organic',        stock: 'in',  description: DESC["Lion's Mane Extract"] },
 
-  // Terracotta Planter
-  { id: 'terracotta-planter', name: 'Terracotta Planter',         cas: 'LM-OD-921', cat: 'accessory', tag: 'Outdoor',  price: 60,  unit: 'One Size',     purity: 'Unglazed Terracotta', stock: 'in', description: DESC['Terracotta Planter'] },
+  // Zinc + Vitamin C
+  { id: 'zinc-vitc',         name: 'Zinc + Vitamin C',           cas: 'VS-ZC-921', cat: 'accessory', tag: 'Immunity', price: 60,  unit: '90 Tablets', purity: 'Immune Support',         stock: 'in',  description: DESC['Zinc + Vitamin C'] },
 
-  // Outdoor String Lights
-  { id: 'string-lights',    name: 'Outdoor String Lights',        cas: 'LM-OD-062', cat: 'accessory', tag: 'Outdoor',  price: 60,  unit: '48 ft',        purity: 'Weatherproof',     stock: 'in',  description: DESC['Outdoor String Lights'] },
+  // Elderberry Gummies
+  { id: 'elderberry-gummies', name: 'Elderberry Gummies',        cas: 'VS-EB-062', cat: 'accessory', tag: 'Immunity', price: 60,  unit: '60 Gummies', purity: 'Immune Support',         stock: 'in',  description: DESC['Elderberry Gummies'] },
 
-  // Aromatherapy Diffuser Set
-  { id: 'aroma-diffuser',   name: 'Aromatherapy Diffuser Set',    cas: 'LM-BT-189', cat: 'accessory', tag: 'Bath',     price: 60,  unit: 'One Size',     purity: 'Matte Ceramic',    stock: 'in',  description: DESC['Aromatherapy Diffuser Set'] },
+  // Daily Multivitamin
+  { id: 'multivitamin',      name: 'Daily Multivitamin',         cas: 'VS-MV-189', cat: 'accessory', tag: 'Wellness', price: 60,  unit: '90 Tablets', purity: 'Complete Daily Formula', stock: 'in',  description: DESC['Daily Multivitamin'] },
 
-  // All-Purpose Glass Cleaner
-  { id: 'glass-cleaner-3',  name: 'All-Purpose Glass Cleaner',    cas: 'LM-AC-773', cat: 'accessory', tag: 'Ancillary', price: 10, unit: '250ml Refill', purity: 'Ammonia-Free',     stock: 'out', description: DESC['All-Purpose Glass Cleaner'] },
-  { id: 'glass-cleaner-10', name: 'All-Purpose Glass Cleaner',    cas: 'LM-AC-774', cat: 'accessory', tag: 'Ancillary', price: 25, unit: '1L Refill',    purity: 'Ammonia-Free',     stock: 'out', description: DESC['All-Purpose Glass Cleaner'] },
+  // Empty Vegetable Capsules
+  { id: 'empty-caps-250',    name: 'Empty Vegetable Capsules',   cas: 'VS-VC-773', cat: 'accessory', tag: 'Ancillary', price: 10, unit: '250ct',  purity: 'Size 00, Vegetable-Based', stock: 'out', description: DESC['Empty Vegetable Capsules'] },
+  { id: 'empty-caps-1000',   name: 'Empty Vegetable Capsules',   cas: 'VS-VC-774', cat: 'accessory', tag: 'Ancillary', price: 25, unit: '1000ct', purity: 'Size 00, Vegetable-Based', stock: 'out', description: DESC['Empty Vegetable Capsules'] },
 ];

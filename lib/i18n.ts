@@ -10,7 +10,7 @@ export const translations = {
 
     // Hero
     hero_headline:    "Thoughtfully Made.",
-    hero_sub:         "Sourced from vetted makers with material documentation for every batch. Considered pieces for every room.",
+    hero_sub:         "Third-party lab tested for potency and purity, batch after batch. Considered formulas for every goal.",
     hero_cta:         "Shop Now",
     hero_cta2:        "View Quality",
     hero_cat_weight:  "Kitchen",
@@ -19,7 +19,7 @@ export const translations = {
 
     // Store / BentoGrid
     store_headline:   "The Collection.",
-    store_sub:        "Considered pieces for your next room refresh.",
+    store_sub:        "Considered formulas for your next training block.",
     filter_bestseller:"Best Sellers",
     filter_instock:   "In Stock",
     filter_all:       "All",
@@ -49,22 +49,22 @@ export const translations = {
     pdp_related:      "You Might Also Like",
 
     // Room / use-case tags (see BenefitTag in lib/products.ts)
-    tag_metabolic:     "Kitchen",
-    tag_endocrine:     "Lighting",
-    tag_regenerative:  "Bedding",
-    tag_longevity:     "Decor",
-    tag_neurological:  "Storage",
-    tag_pigmentation:  "Outdoor",
-    tag_neuroendocrine:"Bath",
+    tag_protein:       "Protein",
+    tag_energy:        "Energy",
+    tag_sleep:         "Sleep",
+    tag_recovery:      "Recovery",
+    tag_cognitive:     "Cognitive",
+    tag_immunity:      "Immunity",
+    tag_wellness:      "Wellness",
     tag_ancillary:     "Ancillary",
 
     // Quality section
-    quality_headline: "Considered Materials. Every Order.",
-    quality_sub:      "Every piece ships with a maker-issued materials note for its batch. Care guides available on request.",
-    quality_suppliers:"Vetted Maker Network",
-    quality_grade:    "Studio Grade",
+    quality_headline: "Lab Tested. Every Batch.",
+    quality_sub:      "Every product ships with a lab-issued Certificate of Analysis for its batch. Documentation available on request.",
+    quality_suppliers:"Independent Lab Network",
+    quality_grade:    "cGMP Grade",
     quality_delivery: "Fast Delivery",
-    quality_coa_link: "Materials & Care →",
+    quality_coa_link: "Testing & Quality →",
     quality_legal_link:"Legal Disclosures →",
 
     // Reviews section
@@ -207,7 +207,7 @@ export const translations = {
     cookie_decline:   "Essential only",
 
     // Age gate
-    age_headline:     "Welcome to LOAM.",
+    age_headline:     "Welcome to VESSEL.",
     age_sub:          "Select your province to confirm you meet the minimum age requirement for your region.",
     age_province:     "Province / Territory",
     age_confirm_pre:  "I am",
@@ -260,22 +260,22 @@ export const translations = {
     page_reviews_title:  "What our customers say.",
 
     page_coa_eyebrow:  "Quality Assurance",
-    page_coa_title:    "Materials & Care",
-    page_coa_sub:      "Every piece we sell ships with a materials note issued by the maker for that batch. We retain these documents and provide them on request so you have material and care information for your records.",
-    page_coa_steps_title: "How We Source",
-    page_coa_methods_note: "This is how our maker network sources and finishes materials, as reported on their documentation. LOAM does not operate a workshop and does not perform or commission this fabrication.",
-    page_coa_cta_title:   "Request a Materials Note",
+    page_coa_title:    "Testing & Quality",
+    page_coa_sub:      "Every batch we sell is tested by an independent, accredited lab before it ships. We retain these Certificates of Analysis and provide them on request so you know exactly what's in what you're taking.",
+    page_coa_steps_title: "How We Test",
+    page_coa_methods_note: "This is how our lab partners verify potency and screen for contaminants, as reported on each Certificate of Analysis. VESSEL does not operate its own lab and does not perform this testing in-house.",
+    page_coa_cta_title:   "Request a Certificate of Analysis",
     page_coa_cta_sub:     "Include your order number and the product name. We respond within 1 business day.",
     page_coa_cta_btn:     "Email Support",
     page_coa_step: "Step",
-    page_coa_s1_title: "Batch Production",
-    page_coa_s1_body:  "Each batch is produced under controlled conditions by a maker in our vetted network. Makers maintain production records and raw material sourcing for every run.",
-    page_coa_s2_title: "Maker Inspection",
-    page_coa_s2_body:  "Our makers and their quality teams perform material inspection, finish checks, and durability testing before a batch ships to us. This inspection is carried out by the maker — LOAM does not commission its own independent testing and does not independently verify these results.",
-    page_coa_s3_title: "Materials Note Issued",
-    page_coa_s3_body:  "The maker issues a materials note for the released batch, stating material composition, SKU, batch number, finish, and production date. We record it against the batch we receive.",
+    page_coa_s1_title: "Batch Manufacturing",
+    page_coa_s1_body:  "Each batch is manufactured under cGMP-controlled conditions at a facility in our vetted network. Facilities maintain production records and raw material sourcing for every run.",
+    page_coa_s2_title: "Third-Party Lab Testing",
+    page_coa_s2_body:  "An independent, accredited lab tests a sample from every batch for potency, heavy metals, and microbial contaminants before it's cleared to ship. This testing is performed by the lab — VESSEL does not conduct its own in-house testing and does not alter or independently re-verify these results.",
+    page_coa_s3_title: "Certificate of Analysis Issued",
+    page_coa_s3_body:  "The lab issues a Certificate of Analysis for the released batch, stating potency, contaminant screening results, SKU, lot number, and test date. We record it against the batch we receive.",
     page_coa_s4_title: "Available on Request",
-    page_coa_s4_body:  "The maker's materials note is available for every product we sell, passed on as received. Email support@loamgoods.example with your order number and the product you need documentation for — we'll respond within 1 business day.",
+    page_coa_s4_body:  "The Certificate of Analysis is available for every product we sell, passed on as received. Email support@vesselwellness.example with your order number and the product you need documentation for — we'll respond within 1 business day.",
   },
 
   fr: {
@@ -287,7 +287,7 @@ export const translations = {
 
     // Hero
     hero_headline:    "Conçu avec Soin.",
-    hero_sub:         "Provenant d'artisans évalués fournissant la documentation des matériaux par lot. Des pièces réfléchies pour chaque pièce de la maison.",
+    hero_sub:         "Testé en laboratoire tiers pour la puissance et la pureté, lot après lot. Des formules réfléchies pour chaque objectif.",
     hero_cta:         "Magasiner",
     hero_cta2:        "Voir la qualité",
     hero_cat_weight:  "Cuisine",
@@ -296,7 +296,7 @@ export const translations = {
 
     // Store / BentoGrid
     store_headline:   "La Collection.",
-    store_sub:        "Des pièces réfléchies pour votre prochain projet déco.",
+    store_sub:        "Des formules réfléchies pour votre prochain bloc d'entraînement.",
     filter_bestseller:"Meilleures ventes",
     filter_instock:   "En stock",
     filter_all:       "Tous",
@@ -326,22 +326,22 @@ export const translations = {
     pdp_related:      "Vous aimerez aussi",
 
     // Room / use-case tags
-    tag_metabolic:     "Cuisine",
-    tag_endocrine:     "Éclairage",
-    tag_regenerative:  "Literie",
-    tag_longevity:     "Décor",
-    tag_neurological:  "Rangement",
-    tag_pigmentation:  "Extérieur",
-    tag_neuroendocrine:"Salle de bain",
+    tag_protein:       "Protéines",
+    tag_energy:        "Énergie",
+    tag_sleep:         "Sommeil",
+    tag_recovery:      "Récupération",
+    tag_cognitive:     "Cognitif",
+    tag_immunity:      "Immunité",
+    tag_wellness:      "Bien-être",
     tag_ancillary:     "Auxiliaire",
 
     // Quality section
-    quality_headline: "Matériaux Réfléchis. Chaque Commande.",
-    quality_sub:      "Chaque pièce est accompagnée d'une fiche de matériaux émise par l'artisan pour son lot. Guides d'entretien disponibles sur demande.",
-    quality_suppliers:"Réseau d'artisans évalués",
-    quality_grade:    "Qualité atelier",
+    quality_headline: "Testé en Laboratoire. Chaque Lot.",
+    quality_sub:      "Chaque produit est accompagné d'un certificat d'analyse émis par le laboratoire pour son lot. Documentation disponible sur demande.",
+    quality_suppliers:"Réseau de laboratoires indépendants",
+    quality_grade:    "Qualité BPF",
     quality_delivery: "Livraison rapide",
-    quality_coa_link: "Matériaux et entretien →",
+    quality_coa_link: "Tests et qualité →",
     quality_legal_link:"Mentions légales →",
 
     // Reviews section
@@ -482,7 +482,7 @@ export const translations = {
     cookie_decline:   "Essentiels seulement",
 
     // Age gate
-    age_headline:     "Bienvenue chez LOAM.",
+    age_headline:     "Bienvenue chez VESSEL.",
     age_sub:          "Sélectionnez votre province pour confirmer que vous respectez l'âge minimum requis dans votre région.",
     age_province:     "Province / Territoire",
     age_confirm_pre:  "J'ai",
@@ -535,22 +535,22 @@ export const translations = {
     page_reviews_title:  "Ce que disent nos clients.",
 
     page_coa_eyebrow:  "Assurance qualité",
-    page_coa_title:    "Matériaux et entretien",
-    page_coa_sub:      "Chaque pièce que nous vendons est accompagnée d'une fiche de matériaux émise par l'artisan pour ce lot. Nous conservons ces documents et les fournissons sur demande.",
-    page_coa_steps_title: "Notre approvisionnement",
-    page_coa_methods_note: "Voici comment notre réseau d'artisans approvisionne et finit les matériaux, tel que rapporté sur leur documentation. LOAM n'exploite pas d'atelier et n'effectue ni ne commande cette fabrication.",
-    page_coa_cta_title:   "Demander une fiche matériaux",
+    page_coa_title:    "Tests et qualité",
+    page_coa_sub:      "Chaque lot que nous vendons est testé par un laboratoire indépendant accrédité avant l'expédition. Nous conservons ces certificats d'analyse et les fournissons sur demande, afin que vous sachiez exactement ce que contient ce que vous prenez.",
+    page_coa_steps_title: "Comment nous testons",
+    page_coa_methods_note: "Voici comment nos laboratoires partenaires vérifient la puissance et dépistent les contaminants, tel que rapporté sur chaque certificat d'analyse. VESSEL n'exploite pas son propre laboratoire et n'effectue pas ces tests à l'interne.",
+    page_coa_cta_title:   "Demander un certificat d'analyse",
     page_coa_cta_sub:     "Indiquez votre numéro de commande et le nom du produit. Nous répondons dans un jour ouvrable.",
     page_coa_cta_btn:     "Contacter le support",
     page_coa_step: "Étape",
-    page_coa_s1_title: "Production par lot",
-    page_coa_s1_body:  "Chaque lot est produit dans des conditions contrôlées par un artisan de notre réseau évalué. Les artisans conservent les dossiers de production et l'approvisionnement en matières premières pour chaque production.",
-    page_coa_s2_title: "Inspection par l'artisan",
-    page_coa_s2_body:  "Nos artisans et leurs équipes qualité effectuent l'inspection des matériaux, les contrôles de finition et les tests de durabilité avant l'expédition d'un lot. Cette inspection est réalisée par l'artisan — LOAM ne commande pas ses propres tests indépendants et ne vérifie pas ces résultats de façon indépendante.",
-    page_coa_s3_title: "Fiche matériaux émise",
-    page_coa_s3_body:  "L'artisan émet une fiche matériaux pour le lot libéré, indiquant : composition, UGS, numéro de lot, finition et date de production. Nous l'associons au lot que nous recevons.",
+    page_coa_s1_title: "Fabrication par lot",
+    page_coa_s1_body:  "Chaque lot est fabriqué dans des conditions BPF contrôlées par une installation de notre réseau évalué. Les installations conservent les dossiers de production et l'approvisionnement en matières premières pour chaque production.",
+    page_coa_s2_title: "Test en laboratoire indépendant",
+    page_coa_s2_body:  "Un laboratoire indépendant accrédité teste un échantillon de chaque lot pour la puissance, les métaux lourds et les contaminants microbiens avant l'expédition. Ce test est réalisé par le laboratoire — VESSEL n'effectue pas ses propres tests à l'interne et ne modifie ni ne vérifie ces résultats de façon indépendante.",
+    page_coa_s3_title: "Certificat d'analyse émis",
+    page_coa_s3_body:  "Le laboratoire émet un certificat d'analyse pour le lot libéré, indiquant la puissance, les résultats de dépistage des contaminants, l'UGS, le numéro de lot et la date du test. Nous l'associons au lot que nous recevons.",
     page_coa_s4_title: "Disponible sur demande",
-    page_coa_s4_body:  "La fiche matériaux de l'artisan est disponible pour tous nos produits, transmise telle que reçue. Écrivez à support@loamgoods.example avec votre numéro de commande et le produit concerné — nous répondons dans un jour ouvrable.",
+    page_coa_s4_body:  "Le certificat d'analyse est disponible pour tous nos produits, transmis tel que reçu. Écrivez à support@vesselwellness.example avec votre numéro de commande et le produit concerné — nous répondons dans un jour ouvrable.",
   },
 } as const;
 

@@ -12,24 +12,24 @@ const inter = Inter({ subsets: ['latin'] })
 const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron' })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://loamgoods.example'),
+  metadataBase: new URL('https://vesselwellness.example'),
   title: {
-    default: 'LOAM | Considered Home Goods',
-    template: '%s | LOAM',
+    default: 'VESSEL | Third-Party Tested Supplements',
+    template: '%s | VESSEL',
   },
-  description: 'Thoughtfully made home goods with maker-reported material data. Care guides available on request. Shipped Canada-wide in protective packaging.',
-  keywords: ['home goods', 'kitchenware', 'lighting', 'bedding', 'decor', 'Canada', 'handmade', 'homeware'],
+  description: 'Protein, performance, and wellness supplements with a Certificate of Analysis for every batch. Shipped Canada-wide in protective packaging.',
+  keywords: ['supplements', 'protein', 'pre-workout', 'vitamins', 'creatine', 'Canada', 'third-party tested', 'nutraceuticals'],
   openGraph: {
-    title: 'LOAM | Considered Home Goods',
-    description: 'Thoughtfully made home goods with maker-reported material data. Care guides available on request. Shipped Canada-wide in protective packaging.',
+    title: 'VESSEL | Third-Party Tested Supplements',
+    description: 'Protein, performance, and wellness supplements with a Certificate of Analysis for every batch. Shipped Canada-wide in protective packaging.',
     type: 'website',
     url: '/',
-    siteName: 'LOAM',
+    siteName: 'VESSEL',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'LOAM | Considered Home Goods',
-    description: 'Thoughtfully made home goods with maker-reported material data. Shipped Canada-wide in protective packaging.',
+    title: 'VESSEL | Third-Party Tested Supplements',
+    description: 'Protein, performance, and wellness supplements with a Certificate of Analysis for every batch. Shipped Canada-wide in protective packaging.',
   },
   robots: {
     index: true,
@@ -45,13 +45,13 @@ export default function RootLayout({
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "LOAM",
-    url: "https://loamgoods.example",
-    logo: "https://loamgoods.example/icon.svg",
-    email: "support@loamgoods.example",
+    name: "VESSEL",
+    url: "https://vesselwellness.example",
+    logo: "https://vesselwellness.example/icon.svg",
+    email: "support@vesselwellness.example",
     contactPoint: {
       "@type": "ContactPoint",
-      email: "support@loamgoods.example",
+      email: "support@vesselwellness.example",
       contactType: "customer service",
     },
   };

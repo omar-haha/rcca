@@ -13,7 +13,7 @@ const INPUT_CLASS =
 type PayMethod = "etransfer" | "crypto";
 type CryptoCoin = "BTC" | "ETH";
 
-const ETRANSFER_EMAIL = "pay@loamgoods.example";
+const ETRANSFER_EMAIL = "pay@vesselwellness.example";
 
 // Portfolio demo — these are the well-known BIP-173 / public example
 // addresses, not real wallets. Replace before accepting real payments.

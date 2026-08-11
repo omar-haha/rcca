@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props) {
   const p = products.find((p) => p.id === id);
   if (!p) return {};
   return {
-    title: `${p.name} — LOAM`,
+    title: `${p.name} — VESSEL`,
     description: `${p.name} ${p.unit} · ${p.purity} purity · $${p.price.toFixed(2)}`,
   };
 }
@@ -31,7 +31,7 @@ export default async function Page({ params }: Props) {
     description: product.description ?? `${product.name} ${product.unit}, ${product.purity} purity (supplier-reported).`,
     offers: {
       "@type": "Offer",
-      url: `https://loamgoods.example/products/${product.id}`,
+      url: `https://vesselwellness.example/products/${product.id}`,
       priceCurrency: "CAD",
       price: product.price.toFixed(2),
       availability:

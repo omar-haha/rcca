@@ -39,21 +39,21 @@ export default function Home() {
         >
           <div className="w-full flex justify-center items-end px-4 -space-x-5 sm:-space-x-10 md:-space-x-16">
             <GlassVial
-              productName="Ceramic Vase"
+              productName="Creatine Monohydrate"
               weight={10}
-              unit="One Size"
+              unit="60 Servings"
               className="w-[70px] sm:w-[120px] md:w-[160px] mb-[25px] sm:mb-[40px] md:mb-[60px] -rotate-6 z-0 opacity-90"
             />
             <GlassVial
-              productName="Wool Throw Blanket"
+              productName="Whey Protein Isolate"
               weight={10}
-              unit="One Size"
+              unit="1 lb"
               className="w-[105px] sm:w-[160px] md:w-[220px] z-10"
             />
             <GlassVial
-              productName="Brass Bookend Set"
+              productName="Magnesium Glycinate"
               weight={5}
-              unit="Small Pair"
+              unit="90 Capsules"
               className="w-[70px] sm:w-[120px] md:w-[160px] mb-[25px] sm:mb-[40px] md:mb-[60px] rotate-6 z-0 opacity-90"
             />
           </div>

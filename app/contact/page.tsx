@@ -16,7 +16,7 @@ export default function ContactPage() {
   const { t } = useLanguage();
 
   const INFO = [
-    { icon: Mail,   label: t("footer_email"),             value: "support@loamgoods.example", href: "mailto:support@loamgoods.example" },
+    { icon: Mail,   label: t("footer_email"),             value: "support@vesselwellness.example", href: "mailto:support@vesselwellness.example" },
     { icon: Clock,  label: t("page_contact_response"),    value: t("page_contact_response_val"), href: null },
     { icon: MapPin, label: t("page_contact_location"),    value: t("page_contact_location_val"), href: null },
   ];
@@ -42,7 +42,7 @@ export default function ContactPage() {
       if (!res.ok) throw new Error("error");
       setSubmitted(true);
     } catch {
-      setSendError("Failed to send. Please email us directly at support@loamgoods.example.");
+      setSendError("Failed to send. Please email us directly at support@vesselwellness.example.");
     } finally {
       setSending(false);
     }
